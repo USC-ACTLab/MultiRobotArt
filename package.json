@@ -1,0 +1,11 @@
+{
+	"name": "Multi-robot Programming Tool",
+	"version": "0.0",
+	"type": "module",
+	"scripts": {
+		"start": "node scripts/main.js"
+	},
+	"dependencies": {
+		"blockly": "^9.0.0"
+	}
+}
