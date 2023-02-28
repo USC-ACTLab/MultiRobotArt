@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import uuid from "react-uuid";
-import { useBlockEditorState } from "./useBlockEditorState";
 
 export interface CodeBlock {
   id: string;
