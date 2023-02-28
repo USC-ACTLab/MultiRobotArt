@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useBlocklyWorkspace } from "react-blockly";
 import { blocklyToolboxConfiguration } from "../config/BlockToolboxConfig";
 import { useBlockEditorState } from "../state/useBlockEditorState";
@@ -6,6 +6,8 @@ import { pythonGenerator } from "blockly/python";
 import { useMRAState } from "../state/useMRAState";
 import Blockly from "blockly";
 import "../config/customBlocks";
+import { Button } from "flowbite-react";
+import { RenameBlockModal } from "../components/blocks/RenameBlockModal";
 
 export const BlockEditorPanel = () => {
   const workspaceRef = useRef<any>(null);
@@ -15,6 +17,8 @@ export const BlockEditorPanel = () => {
   );
   const setBlocklyXML = useBlockEditorState((state) => state.setBlocklyXML);
   const saveBlock = useMRAState((state) => state.saveBlock);
+
+  const [renameModalOpen, setRenameModalOpen] = useState<boolean>(false);
 
   const { workspace, xml } = useBlocklyWorkspace({
     toolboxConfiguration: blocklyToolboxConfiguration,
@@ -46,16 +50,33 @@ export const BlockEditorPanel = () => {
 
   return (
     <div className="w-full h-full">
-      {!currentBlock && <div>No Block selected.</div>}
+      {!currentBlock && <div className="m-2">No Block selected.</div>}
       {currentBlock && (
-        <div>
-          Editing Block {currentBlock.name} ({currentBlock.id})
-          <span
-            className="p-2 border-2 border-blue-500"
-            onClick={() => saveBlock(currentBlock.id, xml ?? "")}
+        <div className="flex flex-row gap-2 m-2">
+          <div className="flex font-bold text-lg">
+            Editing Block {currentBlock.name} ({currentBlock.id})
+          </div>
+          <Button
+            className="flex"
+            color="success"
+            onClick={() =>
+              saveBlock(currentBlock.id, currentBlock.name, xml ?? "")
+            }
           >
             Save
-          </span>
+          </Button>
+          <Button
+            className="flex"
+            color="danger"
+            onClick={() => setRenameModalOpen(true)}
+          >
+            Rename
+          </Button>
+          <RenameBlockModal
+            open={renameModalOpen}
+            block={currentBlock}
+            onClose={() => setRenameModalOpen(false)}
+          />
         </div>
       )}
       <div ref={workspaceRef} className="w-full h-full"></div>

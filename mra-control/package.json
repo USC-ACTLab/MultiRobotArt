@@ -13,6 +13,8 @@
     "@uiw/react-codemirror": "^4.19.9",
     "autoprefixer": "^10.4.13",
     "blockly": "^9.2.1",
+    "flowbite": "^1.6.3",
+    "flowbite-react": "^0.3.8",
     "postcss": "^8.4.21",
     "react": "^18.2.0",
     "react-blockly": "^7.1.0",

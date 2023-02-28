@@ -35,8 +35,14 @@ export interface MRAState {
 export interface MRAActions {
   loadFile: (file: string) => void;
   saveToFile: () => void;
-  saveBlock: (blockId: string, xml: string) => void;
+  saveBlock: (blockId: string, name: string, xml: string) => void;
   removeBlock: (blockId: string) => void;
+  /**
+   * Renames the current editing block to have the current name.
+   * @param name The name that you want to rename the block to.
+   * @returns
+   */
+  renameBlock: (name: string) => void;
   /**
    * Creates a new block, and returns its ID.
    * @param blockName The name of the block to create.
@@ -59,11 +65,12 @@ export const useMRAState = create<MRAState & MRAActions>((set, get) => ({
   editingBlock: undefined,
   loadFile: (file) => {},
   saveToFile: () => {},
-  saveBlock: (blockId: string, xml: string) => {
+  saveBlock: (blockId: string, name: string, xml: string) => {
     set({
       definedBlocks: get().definedBlocks.map((b) => {
-        if (b.id == blockId) {
+        if (b.id === blockId) {
           b.xml = xml;
+          b.name = name;
         }
         return b;
       }),
@@ -73,6 +80,8 @@ export const useMRAState = create<MRAState & MRAActions>((set, get) => ({
     set({ definedBlocks: get().definedBlocks.filter((a) => a.id !== id) });
     // TODO: Also remove all references to this block on the timeline
   },
+  renameBlock: (name) =>
+    set({ editingBlock: { ...get().editingBlock!, name } }),
   createBlock: (name) => {
     const block: CodeBlock = {
       id: uuid(),

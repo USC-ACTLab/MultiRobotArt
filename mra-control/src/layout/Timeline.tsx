@@ -1,3 +1,4 @@
+import { Button } from "flowbite-react";
 import React from "react";
 import { useBlockEditorState } from "../state/useBlockEditorState";
 import { useMRAState } from "../state/useMRAState";
@@ -8,24 +9,25 @@ export const Timeline = () => {
   const setEditingBlock = useMRAState((state) => state.setEditingBlock);
 
   return (
-    <div className="flex flex-row">
-      <div
-        className="flex cursor-pointer"
+    <div className="flex flex-row gap-2 p-2">
+      <Button
+        className="flex"
         onClick={() => {
           const id = createBlock("New Block");
           setEditingBlock(id);
         }}
       >
         New
-      </div>
+      </Button>
       {blocks.map((b) => (
-        <div
+        <Button
           key={b.id}
-          className="flex m-2 border-2 border-black cursor-pointer"
+          className="flex"
           onClick={() => setEditingBlock(b.id)}
+          color="success"
         >
           {b.name}
-        </div>
+        </Button>
       ))}
     </div>
   );
