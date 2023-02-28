@@ -20,6 +20,7 @@ export const Timeline = () => {
       </div>
       {blocks.map((b) => (
         <div
+          key={b.id}
           className="flex m-2 border-2 border-black cursor-pointer"
           onClick={() => setEditingBlock(b.id)}
         >

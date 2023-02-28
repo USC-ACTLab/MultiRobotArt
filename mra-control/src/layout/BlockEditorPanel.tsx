@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { BlocklyWorkspace, useBlocklyWorkspace } from "react-blockly";
+import { useBlocklyWorkspace } from "react-blockly";
 import { blocklyToolboxConfiguration } from "../config/BlockToolboxConfig";
 import { useBlockEditorState } from "../state/useBlockEditorState";
 import { pythonGenerator } from "blockly/python";
 import { useMRAState } from "../state/useMRAState";
 import Blockly from "blockly";
+import "../config/customBlocks";
 
 export const BlockEditorPanel = () => {
   const workspaceRef = useRef<any>(null);
@@ -43,8 +44,6 @@ export const BlockEditorPanel = () => {
     }
   }, [currentBlock]);
 
-  console.log("rerender of editor panel");
-
   return (
     <div className="w-full h-full">
       {!currentBlock && <div>No Block selected.</div>}
@@ -53,31 +52,13 @@ export const BlockEditorPanel = () => {
           Editing Block {currentBlock.name} ({currentBlock.id})
           <span
             className="p-2 border-2 border-blue-500"
-            onClick={() => saveBlock(currentBlock.id, xml)}
+            onClick={() => saveBlock(currentBlock.id, xml ?? "")}
           >
             Save
           </span>
         </div>
       )}
       <div ref={workspaceRef} className="w-full h-full"></div>
-      {/* <BlocklyWorkspace
-        className="w-full h-full" // you can use whatever classes are appropriate for your app's CSS
-        toolboxConfiguration={blocklyToolboxConfiguration} // this must be a JSON toolbox definition
-        initialXml={currentBlock?.xml}
-        workspaceConfiguration={{
-          grid: {
-            spacing: 20,
-            length: 3,
-            colour: "#ccc",
-            snap: true,
-          },
-        }}
-        onXmlChange={(xml) => setBlocklyXML(xml)}
-        onWorkspaceChange={(workspace) => {
-          const code = pythonGenerator.workspaceToCode(workspace);
-          setBlocklyPython(code);
-        }}
-      /> */}
     </div>
   );
 };
