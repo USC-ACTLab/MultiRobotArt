@@ -20,8 +20,8 @@ function App() {
             </Panel>
           </PanelGroup>
         </Panel>
-        <PanelResizeHandle className="h-12 border-black" />
-        <Panel defaultSize={30} className="border-4 border-black">
+        <PanelResizeHandle className="h-1 border-4 border-black" />
+        <Panel defaultSize={30}>
           <Timeline />
         </Panel>
       </PanelGroup>
