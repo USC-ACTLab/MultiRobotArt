@@ -1,34 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from "react";
+import React from "react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Timeline } from "./layout/Timeline";
+import { BlockEditorPanel } from "./layout/BlockEditorPanel";
+import { BlockCodePanel } from "./layout/BlockCodePanel";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card bg-blue-600">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="flex w-screen h-screen">
+      <PanelGroup direction="vertical">
+        <Panel defaultSize={70}>
+          <PanelGroup direction="horizontal">
+            <Panel defaultSize={50}>
+              <BlockEditorPanel />
+            </Panel>
+            <PanelResizeHandle className="w-1 border-4 border-black" />
+            <Panel defaultSize={50}>
+              <BlockCodePanel />
+            </Panel>
+          </PanelGroup>
+        </Panel>
+        <PanelResizeHandle className="h-12 border-black" />
+        <Panel defaultSize={30} className="border-4 border-black">
+          <Timeline />
+        </Panel>
+      </PanelGroup>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
