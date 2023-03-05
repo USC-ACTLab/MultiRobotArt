@@ -363,6 +363,36 @@ class blocklyPosition:
     def move_xyz(self, x:float, y:float, z:float, speed=PositionHlCommander.DEFAULT):
         PositionHlCommander.move_distance(x, y, z, speed)
 
+    def move_by_angles(self, angle_horizontal_angle, angle_vertical_angle, number_distance, number_name):
+        # phi: angle_horizontal_angle
+        # theta: angle_vertical_angle
+        # rho: number_distance
+        # number_name is speed
+        x = number_distance * math.cos(angle_horizontal_angle) * math.sin(angle_vertical_angle)
+        y = number_distance * math.sin(angle_horizontal_angle) * math.sin(angle_vertical_angle)
+        z = number_distance * math.cos(angle_vertical_angle)
+        PositionHlCommander.move_distance(x, y, z, number_name)
+
+    def set_default_speed(self, speed:float):
+        PositionHlCommander._default_velocity = speed
+
+    def set_default_xy(self, dropdown_xy:coordinates, number_name):
+        if dropdown_xy == coordinates.x:
+            PositionHlCommander._x = number_name
+        elif dropdown_xy == coordinates.y:
+            PositionHlCommander._y = number_name
+        else:
+            print("Error: unknown coordinate")
+
+    def takeoff(self, number_height=PositionHlCommander.DEFAULT, number_speed=PositionHlCommander.DEFAULT):
+        PositionHlCommander.take_off(number_height, number_speed)
+
+    def land(self, number_height=0.04, number_speed=PositionHlCommander.DEFAULT):
+        PositionHlCommander.land(number_height, number_speed)
+
+    def get_position(self):
+        return PositionHlCommander.get_position()  # (x, y, z)
+
     
 
     

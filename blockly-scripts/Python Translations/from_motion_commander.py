@@ -491,52 +491,52 @@ class blocklyMotion:
 
     def circle(self, radius_m, velocity, angle_degrees, direction: direction):
         if direction == direction.left:
-            return MotionCommander.circle_left(radius_m, velocity, angle_degrees)
+            MotionCommander.circle_left(radius_m, velocity, angle_degrees)
         elif direction == direction.right:
-            return MotionCommander.circle_right(radius_m, velocity, angle_degrees)
+            MotionCommander.circle_right(radius_m, velocity, angle_degrees)
         else:
             print("Error: direction must be left or right")
         
     def start_linear_motion(self, velocity_x_m, velocity_y_m, velocity_z_m, rate_yaw=0.0):
-        return MotionCommander.start_linear_motion(velocity_x_m, velocity_y_m, velocity_z_m, rate_yaw)
+        MotionCommander.start_linear_motion(velocity_x_m, velocity_y_m, velocity_z_m, rate_yaw)
 
     def stop(self):
-        return MotionCommander.stop()
+        MotionCommander.stop()
     
     # maybe add a velocity parameter
     def start_circle(radius: int, direction: direction):
         if direction == direction.left:
-            return MotionCommander.start_circle_left(radius)
+            MotionCommander.start_circle_left(radius)
         elif direction == direction.right:
-            return MotionCommander.start_circle_right(radius)
+            MotionCommander.start_circle_right(radius)
         else:
             print("Error: direction must be left or right")
 
     def start_move(self, direction, speed=MotionCommander.VELOCITY):
         if direction == direction.left:
-            return MotionCommander.start_linear_motion(0, speed, 0)
+            MotionCommander.start_linear_motion(0, speed, 0)
         elif direction == direction.right:
-            return MotionCommander.start_linear_motion(0, -speed, 0)
+            MotionCommander.start_linear_motion(0, -speed, 0)
         elif direction == direction.forward:
-            return MotionCommander.start_linear_motion(speed, 0, 0)
+            MotionCommander.start_linear_motion(speed, 0, 0)
         elif direction == direction.backward:
-            return MotionCommander.start_linear_motion(-speed, 0, 0)
+            MotionCommander.start_linear_motion(-speed, 0, 0)
         else:
             print("Error: direction must be left or right or forward or backward")
 
 
     def start_turn(self, direction: direction, rate=MotionCommander.RATE):
         if direction == direction.left:
-            return MotionCommander._set_vel_setpoint(0.0, 0.0, 0.0, -rate)
+            MotionCommander._set_vel_setpoint(0.0, 0.0, 0.0, -rate)
         elif direction == direction.right:
-            return MotionCommander._set_vel_setpoint(0.0, 0.0, 0.0, rate)
+            MotionCommander._set_vel_setpoint(0.0, 0.0, 0.0, rate)
         else:
             print("Error: direction must be left or right")
 
     def turn(self, direction:direction, angle: float, rate=MotionCommander.RATE):
         if direction == direction.left:
-            return MotionCommander.turn_left(angle, rate)
+            MotionCommander.turn_left(angle, rate)
         elif direction == direction.right:
-            return MotionCommander.turn_right(angle, rate)
+            MotionCommander.turn_right(angle, rate)
         else:
             print("Error: direction must be left or right")
