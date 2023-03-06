@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="flex w-screen h-screen">
       <PanelGroup direction="vertical">
-        <Panel defaultSize={70}>
+        <Panel defaultSize={50}>
           <PanelGroup direction="horizontal">
             <Panel defaultSize={50}>
               <BlockEditorPanel />
@@ -21,7 +21,7 @@ function App() {
           </PanelGroup>
         </Panel>
         <PanelResizeHandle className="h-1 border-4 border-black" />
-        <Panel defaultSize={30}>
+        <Panel defaultSize={50}>
           <Timeline />
         </Panel>
       </PanelGroup>
