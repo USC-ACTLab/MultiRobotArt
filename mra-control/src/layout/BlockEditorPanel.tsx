@@ -3,7 +3,7 @@ import { useBlocklyWorkspace } from "react-blockly";
 import { blocklyToolboxConfiguration } from "../config/BlockToolboxConfig";
 import { useBlockEditorState } from "../state/useBlockEditorState";
 import { pythonGenerator } from "blockly/python";
-import { useMRAState } from "../state/useMRAState";
+import { CodeBlock, useRobartState } from "../state/useMRAState";
 import Blockly from "blockly";
 import "../config/customBlocks";
 import { Button } from "flowbite-react";
@@ -11,12 +11,15 @@ import { RenameBlockModal } from "../components/blocks/RenameBlockModal";
 
 export const BlockEditorPanel = () => {
   const workspaceRef = useRef<any>(null);
-  const currentBlock = useMRAState((state) => state.editingBlock);
+  const currentBlockId = useRobartState((state) => state.editingBlockId);
+  const currentBlock: CodeBlock | undefined = useRobartState(
+    (state) => state.blocks[currentBlockId ?? ""]
+  );
   const setBlocklyPython = useBlockEditorState(
     (state) => state.setBlocklyPython
   );
   const setBlocklyXML = useBlockEditorState((state) => state.setBlocklyXML);
-  const saveBlock = useMRAState((state) => state.saveBlock);
+  const saveBlock = useRobartState((state) => state.saveBlock);
 
   const [renameModalOpen, setRenameModalOpen] = useState<boolean>(false);
 
@@ -49,18 +52,21 @@ export const BlockEditorPanel = () => {
   }, [currentBlock]);
 
   return (
-    <div className="w-full h-full">
+    <div className="h-full w-full">
       {!currentBlock && <div className="m-2">No Block selected.</div>}
       {currentBlock && (
-        <div className="flex flex-row gap-2 m-2">
-          <div className="flex font-bold text-lg">
-            Editing Block {currentBlock.name} ({currentBlock.id})
+        <div className="m-2 flex flex-row gap-2">
+          <div className="flex text-lg font-bold">
+            Editing Block {currentBlock.name}
           </div>
           <Button
             className="flex"
             color="success"
             onClick={() =>
-              saveBlock(currentBlock.id, currentBlock.name, xml ?? "")
+              saveBlock(currentBlock.id, {
+                name: currentBlock.name,
+                xml: xml ?? "",
+              })
             }
           >
             Save
@@ -79,7 +85,7 @@ export const BlockEditorPanel = () => {
           />
         </div>
       )}
-      <div ref={workspaceRef} className="w-full h-full"></div>
+      <div ref={workspaceRef} className="h-full w-full"></div>
     </div>
   );
 };

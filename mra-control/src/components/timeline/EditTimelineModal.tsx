@@ -1,25 +1,29 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import { CodeBlock, useRobartState } from "../../state/useMRAState";
+import {
+  CodeBlock,
+  TimelineLaneState,
+  useRobartState,
+} from "../../state/useMRAState";
 
-export const RenameBlockModal = ({
+export const EditTimelineModal = ({
   open,
   onClose,
-  block,
+  lane,
 }: {
   open: boolean;
   onClose: () => void;
-  block: CodeBlock;
+  lane: TimelineLaneState;
 }) => {
-  const [name, setName] = useState<string>(block.name);
-  const renameBlock = useRobartState((state) => state.renameBlock);
+  const [name, setName] = useState<string>(lane.name);
+  const saveLane = useRobartState((state) => state.saveLane);
   return (
     <Modal show={open} onClose={onClose}>
-      <Modal.Header>Rename Block</Modal.Header>
+      <Modal.Header>Edit Timeline Lane</Modal.Header>
       <Modal.Body>
         <div>
           <div className="mb-2 block">
-            <Label value="Block Name" />
+            <Label value="Lane Name" />
           </div>
           <TextInput value={name} onChange={(e) => setName(e.target.value)} />
         </div>
@@ -27,7 +31,7 @@ export const RenameBlockModal = ({
       <Modal.Footer>
         <Button
           onClick={() => {
-            renameBlock(name);
+            saveLane(lane.id, { name });
             onClose();
           }}
         >

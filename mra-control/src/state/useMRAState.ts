@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 import uuid from "react-uuid";
 
 export interface CodeBlock {
@@ -30,31 +32,52 @@ export interface TimelineItem {
 }
 
 export interface TimelineLaneState {
+  id: string;
   name: string;
   items: TimelineItem[];
 }
 
 export interface TimelineState {
-  lanes: TimelineLaneState[];
+  lanes: Record<string, TimelineLaneState>;
+  scale: number;
 }
 
 export interface MRAState {
-  definedBlocks: CodeBlock[];
+  /**
+   * Store of blocks created by the user.
+   */
+  blocks: Record<string, CodeBlock>;
   sessionName: string;
   timelineState: TimelineState;
-  editingBlock: CodeBlock | undefined;
+  editingBlockId: string | undefined;
 }
 
-export interface MRAActions {
-  loadFile: (file: string) => void;
-  saveToFile: () => void;
-  exportToPython: () => string;
-  saveBlock: (blockId: string, name: string, xml: string) => void;
+export interface TimelineActions {
+  /**
+   * Saves a given lane of the timeline. Assumes that the lane already exists.
+   * @param laneId The Id of the lane to update.
+   * @param lane A partial containing properties of the lane we want to save.
+   */
+  saveLane: (laneId: string, lane: Partial<TimelineLaneState>) => void;
+  /**
+   * Creates a new lane in the timeline and returns its unique ID.
+   * @param name The name of the lane to create.
+   * @returns The Id of the newly created timeline lane.
+   */
+  createLane: (name: string) => string;
+}
+
+export interface BlockActions {
+  /**
+   * Saves changes to a given block. Assumes that the block is already present.
+   * @param blockId The Id of the block that we want to save.
+   * @param block A partial containing the fields of the block that we want to update.
+   */
+  saveBlock: (blockId: string, block: Partial<CodeBlock>) => void;
   removeBlock: (blockId: string) => void;
   /**
    * Renames the current editing block to have the current name.
    * @param name The name that you want to rename the block to.
-   * @returns
    */
   renameBlock: (name: string) => void;
   /**
@@ -70,67 +93,85 @@ export interface MRAActions {
   setEditingBlock: (blockId: string | undefined) => void;
 }
 
-export const useMRAState = create<MRAState & MRAActions>((set, get) => ({
-  definedBlocks: [],
-  sessionName: "New Session",
-  timelineState: {
-    lanes: [
-      {
-        name: "Lane 1",
-        items: [],
-      },
-      {
-        name: "Lane 2",
-        items: [],
-      },
-      {
-        name: "Lane 3",
-        items: [],
-      },
-      {
-        name: "Lane 4",
-        items: [],
-      },
-    ],
-  },
-  editingBlock: undefined,
-  loadFile: (file) => {},
-  saveToFile: () => {},
-  exportToPython: () => {
-    return "";
-  },
-  saveBlock: (blockId: string, name: string, xml: string) => {
-    set({
-      definedBlocks: get().definedBlocks.map((b) => {
-        if (b.id === blockId) {
-          b.xml = xml;
-          b.name = name;
-        }
-        return b;
+export interface MRAGeneralActions {
+  loadFile: (file: string) => void;
+  saveToFile: () => void;
+  exportToPython: () => string;
+}
+
+type MRAActions = MRAGeneralActions & TimelineActions & BlockActions;
+
+type MRACompleteState = MRAState & MRAActions;
+
+export const useRobartState = create<MRAState & MRAActions>()(
+  immer(
+    persist(
+      (set, get): MRACompleteState => ({
+        blocks: {},
+        sessionName: "New Session",
+        timelineState: {
+          scale: 1,
+          lanes: {
+            lane1: {
+              id: "lane1",
+              name: "Lane 1",
+              items: [],
+            },
+          },
+        },
+        editingBlockId: undefined,
+        loadFile: (file) => {},
+        saveToFile: () => {},
+        exportToPython: () => {
+          return "";
+        },
+        saveLane: (laneId, lane) => {},
+        createLane: (name) => {
+          const id = uuid();
+          const lane: TimelineLaneState = {
+            id,
+            name,
+            items: [],
+          };
+          set((state) => {
+            state.timelineState.lanes[id] = lane;
+          });
+          return id;
+        },
+        saveBlock: (blockId: string, block: Partial<CodeBlock>) => {
+          set((state) => {
+            state.blocks[blockId] = { ...state.blocks[blockId], ...block };
+          });
+        },
+        removeBlock: (id) => {
+          set((state) => delete state.blocks[id]);
+          // TODO: Also remove all references to this block on the timeline
+        },
+        renameBlock: (name) =>
+          set((state) => {
+            state.blocks[state.editingBlockId!].name = name;
+          }),
+        createBlock: (name) => {
+          const block: CodeBlock = {
+            id: uuid(),
+            name: name,
+            xml: "",
+            python: "",
+            duration: 10,
+          };
+          set((state) => {
+            state.blocks[block.id] = block;
+          });
+          return block.id;
+        },
+        setEditingBlock: (blockId) => {
+          set({ editingBlockId: blockId });
+        },
       }),
-    });
-  },
-  removeBlock: (id) => {
-    set({ definedBlocks: get().definedBlocks.filter((a) => a.id !== id) });
-    // TODO: Also remove all references to this block on the timeline
-  },
-  renameBlock: (name) =>
-    set({ editingBlock: { ...get().editingBlock!, name } }),
-  createBlock: (name) => {
-    const block: CodeBlock = {
-      id: uuid(),
-      name: name,
-      xml: "",
-      python: "",
-      duration: 10,
-    };
-    const blocks = get().definedBlocks;
-    blocks.push(block);
-    set({ definedBlocks: blocks });
-    return block.id;
-  },
-  setEditingBlock: (blockId) => {
-    const existingBlock = get().definedBlocks.filter((i) => i.id == blockId)[0];
-    set({ editingBlock: existingBlock });
-  },
-}));
+      {
+        storage: createJSONStorage(() => sessionStorage),
+        name: "robartState",
+      }
+    )
+  )
+);

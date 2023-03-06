@@ -6,7 +6,8 @@
 		"start": "node scripts/main.js"
 	},
 	"dependencies": {
-		"blockly": "^9.0.0"
+		"blockly": "^9.0.0",
+		"immer": "^9.0.19"
 	},
 	"devDependencies": {
 		"autoprefixer": "^10.4.13",
