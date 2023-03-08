@@ -9,6 +9,9 @@ import { BlockEditorHeader } from "./BlockEditorHeader";
 
 export const BlockEditorPanel = () => {
   const workspaceRef = useRef<any>(null);
+  const [localBlockId, setLocalBlockId] = useState<string | undefined>(
+    undefined
+  );
   const currentBlockId = useRobartState((state) => state.editingBlockId);
 
   const saveBlock = useRobartState((state) => state.saveBlock);
@@ -27,15 +30,17 @@ export const BlockEditorPanel = () => {
     onWorkspaceChange: (workspace) => {
       const python = pythonGenerator.workspaceToCode(workspace);
 
-      console.log("Workspace change with id", currentBlockId);
-      if (currentBlockId && xml) saveBlock(currentBlockId, { xml, python });
+      console.log("Workspace change with id", currentBlockId, xml?.length);
+      if (localBlockId && xml) saveBlock(localBlockId, { xml, python });
     },
     ref: workspaceRef,
   });
 
   useEffect(() => {
-    console.log("Current block changed", currentBlockId);
+    workspace?.setResizesEnabled(true);
+    setLocalBlockId(currentBlockId);
     if (currentBlockId) {
+      workspace?.setVisible(true);
       const currentBlock: CodeBlock =
         useRobartState.getState().blocks[currentBlockId];
       console.log(workspace, currentBlock);
@@ -46,6 +51,7 @@ export const BlockEditorPanel = () => {
         workspace.clear();
       }
     } else if (workspace) {
+      workspace.setVisible(false);
       workspace.clear();
     }
   }, [currentBlockId]);
@@ -53,9 +59,7 @@ export const BlockEditorPanel = () => {
   return (
     <div className="h-full w-full">
       <BlockEditorHeader />
-      {currentBlockId && (
-        <div ref={workspaceRef} className="h-full w-full"></div>
-      )}
+      <div ref={workspaceRef} className="h-full w-full"></div>
     </div>
   );
 };

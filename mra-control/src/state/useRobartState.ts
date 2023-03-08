@@ -52,7 +52,7 @@ export interface MRAState {
    * Store of blocks created by the user.
    */
   blocks: Record<string, CodeBlock>;
-  sessionName: string;
+  projectName: string;
   timelineState: TimelineState;
   editingBlockId: string | undefined;
   version: number;
@@ -100,10 +100,29 @@ export interface BlockActions {
 }
 
 export interface MRAGeneralActions {
-  loadFile: (fileContents: string) => void;
-  saveToFile: (fileName?: string) => void;
+  loadProject: (fileContents: string) => void;
+  saveProjectToFile: (fileName?: string) => void;
+  resetProject: () => void;
+  setProjectName: (projectName: string) => void;
   exportToPython: () => string;
 }
+
+const defaultRobartState: MRAState = {
+  blocks: {},
+  projectName: "New Robart Project",
+  timelineState: {
+    scale: 1,
+    lanes: {
+      lane1: {
+        id: "lane1",
+        name: "Lane 1",
+        items: [],
+      },
+    },
+  },
+  editingBlockId: undefined,
+  version: ROBART_VERSION,
+};
 
 type MRAActions = MRAGeneralActions & TimelineActions & BlockActions;
 
@@ -113,34 +132,25 @@ export const useRobartState = create<MRAState & MRAActions>()(
   immer(
     persist(
       (set, get): MRACompleteState => ({
-        blocks: {},
-        sessionName: "New Session",
-        timelineState: {
-          scale: 1,
-          lanes: {
-            lane1: {
-              id: "lane1",
-              name: "Lane 1",
-              items: [],
-            },
-          },
-        },
-        editingBlockId: undefined,
-        version: ROBART_VERSION,
-        loadFile: (file) => {
+        ...defaultRobartState,
+        loadProject: (file) => {
           const newState = loadProjectFromFile(file);
           set(newState);
         },
-        saveToFile: (fileName: string | undefined) => {
+        saveProjectToFile: (fileName: string | undefined) => {
           const state: MRAState = {
             blocks: get().blocks,
             editingBlockId: undefined,
-            sessionName: get().sessionName,
+            projectName: get().projectName,
             timelineState: get().timelineState,
             version: ROBART_VERSION,
           };
           saveProjectToFile(state, fileName);
         },
+        resetProject: () => {
+          set(defaultRobartState);
+        },
+        setProjectName: (name) => set({ projectName: name }),
         exportToPython: () => {
           return "";
         },

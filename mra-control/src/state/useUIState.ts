@@ -10,6 +10,9 @@ export interface UIActions {
 
 export type UIStoreState = UIState & UIActions;
 
+/**
+ * Store for non-persistent UI state.
+ */
 export const useUIState = create<UIStoreState>()((set, get) => ({
   settingsModalOpen: false,
   toggleSettingsModal: () =>

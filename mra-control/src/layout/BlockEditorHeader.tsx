@@ -18,7 +18,7 @@ export const BlockEditorHeader = () => {
       <div className="flex flex-grow justify-end gap-5">
         <Button
           className="border-1 flex border-green-500"
-          color="danger"
+          color="gray"
           onClick={() => setRenameModalOpen(true)}
         >
           Rename

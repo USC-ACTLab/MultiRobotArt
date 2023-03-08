@@ -6,7 +6,7 @@ export const saveProjectToFile = (
   fileName: string | undefined = undefined
 ) => {
   const projectStateJson = JSON.stringify(projectState);
-  fileName = fileName ?? projectState.sessionName.replace(" ", "") + ".robart";
+  fileName = fileName ?? projectState.projectName.replace(" ", "") + ".robart";
   saveToFile(fileName, projectStateJson);
 };
 
