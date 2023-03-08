@@ -6,12 +6,13 @@ export const saveProjectToFile = (
   fileName: string | undefined = undefined
 ) => {
   const projectStateJson = JSON.stringify(projectState);
-  fileName = fileName ?? projectState.projectName.replace(" ", "") + ".robart";
+  fileName =
+    fileName ?? projectState.projectName.replaceAll(" ", "") + ".robart";
   saveToFile(fileName, projectStateJson);
 };
 
 export const loadProjectFromFile = (fileContents: string): MRAState => {
   const projectState = JSON.parse(fileContents) as MRAState;
-  // TODO: Other sanity checks to make sure it is valid.
+  // TODO: Other sanity checks to make sure it is valid. (ZOD)
   return projectState;
 };

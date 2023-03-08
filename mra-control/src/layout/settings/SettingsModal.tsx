@@ -6,6 +6,7 @@ import { useUIState } from "../../state/useUIState";
 import { faSync } from "@fortawesome/free-solid-svg-icons";
 import { useRobartState } from "../../state/useRobartState";
 import { ConfirmationModal } from "../../components/modal/ConfirmationModal";
+import { CurveEditorModal } from "../CurveEditorModal";
 
 export const SettingsModal = () => {
   const settingsModalOpen = useUIState((state) => state.settingsModalOpen);
@@ -13,6 +14,7 @@ export const SettingsModal = () => {
   const resetProject = useRobartState((state) => state.resetProject);
   const projectName = useRobartState((state) => state.projectName);
   const setProjectName = useRobartState((state) => state.setProjectName);
+  const toggleCurveEditor = useUIState((state) => state.toggleCurveEditor);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -36,6 +38,9 @@ export const SettingsModal = () => {
             </Tabs.Item>
             <Tabs.Item title="Blocks">Block Settings</Tabs.Item>
             <Tabs.Item title="Preferences">User Preferences</Tabs.Item>
+            <Tabs.Item title="Utilities">
+              <Button onClick={toggleCurveEditor}>Curve Editor</Button>
+            </Tabs.Item>
           </Tabs.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -60,6 +65,7 @@ export const SettingsModal = () => {
       >
         Are you sure?
       </ConfirmationModal>
+      <CurveEditorModal />
     </>
   );
 };
