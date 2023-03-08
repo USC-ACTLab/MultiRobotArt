@@ -1,6 +1,7 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { CancelButton } from "../buttons/CancelButton";
 
 export const UploadFileModal = ({
   open,
@@ -48,17 +49,11 @@ export const UploadFileModal = ({
           {...getRootProps()}
         >
           <input ref={inputRef} {...getInputProps()} />
-          {isDragActive ? (
-            <p>Drop the files here ...</p>
-          ) : (
-            <p>Drag 'n' drop some files here, or click to select files</p>
-          )}
+          <p>Drag & drop a project file here, or click to select a file</p>
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button color="gray" onClick={onClose}>
-          Cancel
-        </Button>
+        <CancelButton onClick={onClose} />
       </Modal.Footer>
     </Modal>
   );

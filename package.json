@@ -6,6 +6,9 @@
 		"start": "node scripts/main.js"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^6.3.0",
+		"@fortawesome/free-solid-svg-icons": "^6.3.0",
+		"@fortawesome/react-fontawesome": "^0.2.0",
 		"blockly": "^9.0.0",
 		"immer": "^9.0.19",
 		"react-dropzone": "^14.2.3"

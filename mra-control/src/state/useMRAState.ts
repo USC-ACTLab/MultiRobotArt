@@ -101,7 +101,7 @@ export interface BlockActions {
 
 export interface MRAGeneralActions {
   loadFile: (fileContents: string) => void;
-  saveToFile: (fileName: string | undefined) => void;
+  saveToFile: (fileName?: string) => void;
   exportToPython: () => string;
 }
 
