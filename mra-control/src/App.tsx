@@ -5,25 +5,12 @@ import { BlockEditorPanel } from "./layout/BlockEditorPanel";
 import { BlockCodePanel } from "./layout/BlockCodePanel";
 import { BlockManagerPanel } from "./layout/BlockManagerPanel";
 import { useRobartState } from "./state/useMRAState";
+import { NavigationBar } from "./layout/NavigationBar";
 
 function App() {
-  const saveToFile = useRobartState((state) => state.saveToFile);
   return (
     <div className="flex h-screen w-screen flex-col gap-1">
-      <div className="flex h-8 flex-row gap-2 border-b-2 border-black">
-        <div className="flex">Robart</div>
-        <div
-          className="flex"
-          onClick={() => {
-            const text = saveToFile();
-          }}
-        >
-          Save
-        </div>
-        <div className="flex">
-          <input type="file" onChange={(e) => console.log(e)} /> Load
-        </div>
-      </div>
+      <NavigationBar />
       <div className="flex flex-grow">
         <PanelGroup direction="vertical">
           <Panel defaultSize={50}>

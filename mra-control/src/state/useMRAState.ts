@@ -2,6 +2,11 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import uuid from "react-uuid";
+import { ROBART_VERSION } from "../config/Version";
+import {
+  loadProjectFromFile,
+  saveProjectToFile,
+} from "../tools/projectFileConversion";
 
 export interface CodeBlock {
   id: string;
@@ -50,6 +55,7 @@ export interface MRAState {
   sessionName: string;
   timelineState: TimelineState;
   editingBlockId: string | undefined;
+  version: number;
 }
 
 export interface TimelineActions {
@@ -94,8 +100,8 @@ export interface BlockActions {
 }
 
 export interface MRAGeneralActions {
-  loadFile: (file: string) => void;
-  saveToFile: () => void;
+  loadFile: (fileContents: string) => void;
+  saveToFile: (fileName: string | undefined) => void;
   exportToPython: () => string;
 }
 
@@ -120,8 +126,21 @@ export const useRobartState = create<MRAState & MRAActions>()(
           },
         },
         editingBlockId: undefined,
-        loadFile: (file) => {},
-        saveToFile: () => {},
+        version: ROBART_VERSION,
+        loadFile: (file) => {
+          const newState = loadProjectFromFile(file);
+          set(newState);
+        },
+        saveToFile: (fileName: string | undefined) => {
+          const state: MRAState = {
+            blocks: get().blocks,
+            editingBlockId: undefined,
+            sessionName: get().sessionName,
+            timelineState: get().timelineState,
+            version: ROBART_VERSION,
+          };
+          saveProjectToFile(state, fileName);
+        },
         exportToPython: () => {
           return "";
         },
