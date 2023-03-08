@@ -1,7 +1,7 @@
 import { Button } from "flowbite-react";
 import React, { useState } from "react";
 import { RenameBlockModal } from "../components/blocks/RenameBlockModal";
-import { CodeBlock, useRobartState } from "../state/useMRAState";
+import { CodeBlock, useRobartState } from "../state/useRobartState";
 
 export const BlockEditorHeader = () => {
   const [renameModalOpen, setRenameModalOpen] = useState<boolean>(false);

@@ -1,4 +1,4 @@
-import { MRAState } from "../state/useMRAState";
+import { MRAState } from "../state/useRobartState";
 import { saveToFile } from "./saveToFile";
 
 export const saveProjectToFile = (
@@ -6,7 +6,7 @@ export const saveProjectToFile = (
   fileName: string | undefined = undefined
 ) => {
   const projectStateJson = JSON.stringify(projectState);
-  fileName = fileName ?? projectState.sessionName + ".robart";
+  fileName = fileName ?? projectState.sessionName.replace(" ", "") + ".robart";
   saveToFile(fileName, projectStateJson);
 };
 

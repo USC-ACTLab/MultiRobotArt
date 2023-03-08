@@ -1,6 +1,6 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import { CodeBlock, useRobartState } from "../../state/useMRAState";
+import { CodeBlock, useRobartState } from "../../state/useRobartState";
 
 export const RenameBlockModal = ({
   open,

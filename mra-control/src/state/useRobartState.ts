@@ -184,6 +184,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
           return block.id;
         },
         setEditingBlock: (blockId) => {
+          set({ editingBlockId: undefined });
           set({ editingBlockId: blockId });
         },
       }),

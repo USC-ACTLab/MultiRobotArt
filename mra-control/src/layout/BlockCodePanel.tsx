@@ -1,7 +1,7 @@
 import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
-import { CodeBlock, useRobartState } from "../state/useMRAState";
+import { CodeBlock, useRobartState } from "../state/useRobartState";
 
 export const BlockCodePanel = () => {
   const currentBlockId = useRobartState((state) => state.editingBlockId);
