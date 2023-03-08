@@ -29,21 +29,19 @@ export const BlockEditorPanel = () => {
     },
     onWorkspaceChange: (workspace) => {
       const python = pythonGenerator.workspaceToCode(workspace);
-
-      console.log("Workspace change with id", currentBlockId, xml?.length);
       if (localBlockId && xml) saveBlock(localBlockId, { xml, python });
     },
     ref: workspaceRef,
   });
 
   useEffect(() => {
-    workspace?.setResizesEnabled(true);
+    window.dispatchEvent(new Event("resize"));
+
     setLocalBlockId(currentBlockId);
     if (currentBlockId) {
       workspace?.setVisible(true);
       const currentBlock: CodeBlock =
         useRobartState.getState().blocks[currentBlockId];
-      console.log(workspace, currentBlock);
       if (currentBlock.xml && workspace) {
         var xmlDom = Blockly.Xml.textToDom(currentBlock.xml);
         Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom, workspace);
@@ -57,9 +55,9 @@ export const BlockEditorPanel = () => {
   }, [currentBlockId]);
 
   return (
-    <div className="h-full w-full">
+    <div className="flex h-full w-full flex-col">
       <BlockEditorHeader />
-      <div ref={workspaceRef} className="h-full w-full"></div>
+      <div ref={workspaceRef} className="w-full flex-grow"></div>
     </div>
   );
 };

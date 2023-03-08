@@ -15,9 +15,15 @@ function App() {
         <NavigationBar />
         <div className="flex flex-grow">
           <PanelGroup direction="vertical">
-            <Panel defaultSize={50}>
+            <Panel
+              defaultSize={50}
+              onResize={() => window.dispatchEvent(new Event("resize"))}
+            >
               <PanelGroup direction="horizontal">
-                <Panel defaultSize={50}>
+                <Panel
+                  defaultSize={50}
+                  onResize={() => window.dispatchEvent(new Event("resize"))}
+                >
                   <BlockEditorPanel />
                 </Panel>
                 <PanelResizeHandle className="w-2 bg-blue-50 opacity-30 shadow-lg" />

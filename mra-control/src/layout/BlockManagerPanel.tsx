@@ -9,7 +9,7 @@ export const BlockManagerPanel = () => {
   const setEditingBlock = useRobartState((state) => state.setEditingBlock);
   return (
     <div>
-      <div className="flex flex-row gap-2 p-2">
+      <div className="flex flex-wrap gap-2 p-2">
         <Button
           className="flex"
           onClick={() => {
