@@ -17,7 +17,7 @@ const BINOMIAL_COEFFICIENTS = [
 
 export const MAX_CONTROL_POINTS = BINOMIAL_COEFFICIENTS.length;
 
-const computeBezierPoint = (
+export const computeBezierPoint = (
   controlPoints: THREE.Vector3[],
   t: number
 ): THREE.Vector3 => {

@@ -24,7 +24,6 @@ export const CurveEditorModal = () => {
   );
 
   useEffect(() => {
-    console.log("SETTING");
     setPoints(bezierPoints);
   }, [selectedPoint, pointCount]);
 

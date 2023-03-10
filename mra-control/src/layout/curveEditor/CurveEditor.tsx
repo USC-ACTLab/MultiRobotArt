@@ -6,10 +6,17 @@ import {
   GizmoHelper,
   GizmoViewport,
   Grid,
+  Point,
+  PointMaterial,
+  Points,
   Sphere,
 } from "@react-three/drei/core";
-import { MeshPhongMaterial } from "three";
 import { useCurveEditorState } from "../../state/useCurveEditorState";
+import { computeBezierPoint } from "../../tools/vectors/bezier";
+import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import { type Group, type Mesh } from "three";
+import { Crazyflie } from "../../components/vector/Crazyflie";
 
 export const CurveEditor = () => {
   const bezierControlPoints = useCurveEditorState(
@@ -18,6 +25,19 @@ export const CurveEditor = () => {
   const bezierLinePoints = useCurveEditorState(
     (state) => state.bezierLinePoints
   );
+
+  const duration = bezierControlPoints.length;
+  const marker = useRef<any>();
+
+  useFrame(({ clock }) => {
+    const a = clock.getElapsedTime();
+    const nextPoint = computeBezierPoint(
+      bezierControlPoints,
+      (a % duration) / duration
+    );
+    marker.current?.position.set(nextPoint.x, nextPoint.y, nextPoint.z);
+  });
+
   return (
     <>
       <OrbitControls
@@ -37,10 +57,10 @@ export const CurveEditor = () => {
         args={[10.5, 10.5]}
         cellSize={0.6}
         cellThickness={1}
-        cellColor={"#6f6f6f"}
+        cellColor={"black"}
         sectionSize={3.3}
         sectionThickness={1.5}
-        sectionColor={"#9d4b4b"}
+        sectionColor={"black"}
         fadeDistance={100}
         fadeStrength={0.5}
         followCamera={true}
@@ -56,19 +76,44 @@ export const CurveEditor = () => {
         azimuth={0.25}
       />
       <group>
-        {bezierControlPoints.map((point, i) => (
-          <Sphere key={i} position={point} scale={0.2}>
-            <meshLambertMaterial color="blue" />
-          </Sphere>
-        ))}
+        {bezierControlPoints.map((point, i) =>
+          i === 0 || i === bezierControlPoints.length - 1 ? (
+            <Sphere key={i} position={point} scale={0.2}>
+              <PointMaterial
+                transparent
+                vertexColors
+                size={25}
+                sizeAttenuation={false}
+                depthWrite={false}
+              />{" "}
+            </Sphere>
+          ) : (
+            <Sphere key={i} position={point} scale={0.2}>
+              <PointMaterial
+                transparent
+                vertexColors
+                size={25}
+                sizeAttenuation={false}
+                depthWrite={false}
+              />
+            </Sphere>
+          )
+        )}
+
+        <group ref={marker}>
+          <Crazyflie />
+        </group>
+
         <CatmullRomLine
           points={bezierLinePoints}
           closed={false}
           curveType="centripetal"
           tension={0.5}
           color="black"
-          lineWidth={2}
+          lineWidth={3}
           dashed={true}
+          dashSize={0.5}
+          dashScale={5}
         />
       </group>
     </>

@@ -2,7 +2,10 @@ import { create } from "zustand";
 import * as THREE from "three";
 import { immer } from "zustand/middleware/immer";
 import { subscribeWithSelector } from "zustand/middleware";
-import { interpolateBezierPoints } from "../tools/vectors/bezier";
+import {
+  interpolateBezierPoints,
+  MAX_CONTROL_POINTS,
+} from "../tools/vectors/bezier";
 
 export interface CurveEditorState {
   bezierControlPoints: THREE.Vector3[];
@@ -37,6 +40,7 @@ export const useCurveEditorState = create<CurveEditorStoreState>()(
       addBezierControlPoint: (point) => {
         const points = [...get().bezierControlPoints];
         points.push(point);
+        if (points.length > MAX_CONTROL_POINTS) return;
         set({
           bezierControlPoints: points,
         });
@@ -44,7 +48,6 @@ export const useCurveEditorState = create<CurveEditorStoreState>()(
       removeBezierControlPoint: (idx) => {
         const points = [...get().bezierControlPoints];
         points.splice(idx, 1);
-        console.log(points);
         set({
           bezierControlPoints: points,
         });

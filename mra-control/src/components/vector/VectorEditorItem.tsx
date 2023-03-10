@@ -25,8 +25,6 @@ export const VectorEditorItem = ({
     z: `${point.z}`,
   });
 
-  console.log(id, point);
-
   useEffect(() => {
     updatePoint(
       id,
