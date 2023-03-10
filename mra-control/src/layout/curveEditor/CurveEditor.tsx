@@ -1,19 +1,31 @@
 import { OrbitControls, Sky, Stage } from "@react-three/drei";
 import {
+  CatmullRomLine,
+  Circle,
   Environment,
   GizmoHelper,
   GizmoViewport,
   Grid,
   Sphere,
 } from "@react-three/drei/core";
+import { MeshPhongMaterial } from "three";
 import { useCurveEditorState } from "../../state/useCurveEditorState";
 
 export const CurveEditor = () => {
-  const bezierPoints = useCurveEditorState((state) => state.bezierPoints);
+  const bezierControlPoints = useCurveEditorState(
+    (state) => state.bezierControlPoints
+  );
+  const bezierLinePoints = useCurveEditorState(
+    (state) => state.bezierLinePoints
+  );
   return (
     <>
-      <OrbitControls makeDefault />
-      <Environment preset="city" />
+      <OrbitControls
+        makeDefault
+        maxPolarAngle={Math.PI * (1 / 2 - 1 / 10)}
+        minPolarAngle={0}
+      />
+      <Environment preset="warehouse" />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport
           axisColors={["#9d4b4b", "#2f7f4f", "#3b5b9d"]}
@@ -36,7 +48,7 @@ export const CurveEditor = () => {
       />
       <OrbitControls makeDefault />
       <ambientLight intensity={0.1} />
-      <directionalLight color="red" position={[0, 0, 5]} />
+      <directionalLight color="blue" position={[0, 5, 5]} />
       <Sky
         distance={450000}
         sunPosition={[0, 1, 0]}
@@ -44,11 +56,20 @@ export const CurveEditor = () => {
         azimuth={0.25}
       />
       <group>
-        {bezierPoints.map((point, i) => (
-          <mesh key={i}>
-            <Sphere position={point} scale={0.2} />
-          </mesh>
+        {bezierControlPoints.map((point, i) => (
+          <Sphere key={i} position={point} scale={0.2}>
+            <meshLambertMaterial color="blue" />
+          </Sphere>
         ))}
+        <CatmullRomLine
+          points={bezierLinePoints}
+          closed={false}
+          curveType="centripetal"
+          tension={0.5}
+          color="black"
+          lineWidth={2}
+          dashed={true}
+        />
       </group>
     </>
   );
