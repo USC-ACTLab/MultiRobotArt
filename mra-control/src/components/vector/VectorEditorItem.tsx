@@ -45,7 +45,6 @@ export const VectorEditorItem = ({
       <span>{`${id + 1}.`}</span>
       <TextInput
         className="text-center"
-        defaultValue={point.x}
         value={pos.x}
         onChange={(e) =>
           setPos((oldState) => {
@@ -55,7 +54,6 @@ export const VectorEditorItem = ({
       />
       <TextInput
         className="text-center"
-        defaultValue={point.y}
         value={pos.y}
         onChange={(e) =>
           setPos((oldState) => {
@@ -65,7 +63,6 @@ export const VectorEditorItem = ({
       />
       <TextInput
         className="text-center"
-        defaultValue={point.z}
         value={pos.z}
         onChange={(e) =>
           setPos((oldState) => {

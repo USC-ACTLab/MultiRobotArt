@@ -6,7 +6,7 @@ import { useUIState } from "../../state/useUIState";
 import { faSync } from "@fortawesome/free-solid-svg-icons";
 import { useRobartState } from "../../state/useRobartState";
 import { ConfirmationModal } from "../../components/modal/ConfirmationModal";
-import { CurveEditorModal } from "../CurveEditorModal";
+import { CurveEditorModal } from "../curveEditor/CurveEditorModal";
 
 export const SettingsModal = () => {
   const settingsModalOpen = useUIState((state) => state.settingsModalOpen);

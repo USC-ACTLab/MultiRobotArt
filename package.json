@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@react-spring/three": "^9.7.1",
+    "@use-gesture/react": "^10.2.24"
+  }
+}

@@ -9,7 +9,7 @@ import {
 
 export interface CurveEditorState {
   bezierControlPoints: THREE.Vector3[];
-  selectedPoint: number | undefined;
+  selectedControlPoint: number | undefined;
   bezierLinePoints: THREE.Vector3[];
 }
 
@@ -35,7 +35,8 @@ export const useCurveEditorState = create<CurveEditorStoreState>()(
         new THREE.Vector3(1, 1, 1),
         new THREE.Vector3(2, 5, 4),
       ],
-      selectedPoint: undefined,
+      selectedControlPoint: undefined,
+      hoveredControlPoint: undefined,
       bezierLinePoints: [],
       addBezierControlPoint: (point) => {
         const points = [...get().bezierControlPoints];
@@ -58,7 +59,7 @@ export const useCurveEditorState = create<CurveEditorStoreState>()(
         }),
       setSelectedControlPoint: (idx) => {
         set({
-          selectedPoint: idx,
+          selectedControlPoint: idx,
         });
       },
       updateBezierInterpolationPoints: () => {
