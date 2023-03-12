@@ -1,4 +1,250 @@
 [{
+  "type": "circle",
+  "message0": "%1 %2 m %3 at speed %4 m/s %5 for %6 degrees, %7 %8",
+  "args0": [
+    {
+      "type": "field_label_serializable",
+      "name": "Circular motion",
+      "text": "Go in circle of radius"
+    },
+    {
+      "type": "field_number",
+      "name": "radius_m",
+      "value": 0,
+      "min": 0
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "velocity",
+      "value": 0.2
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_angle",
+      "name": "angle_degrees",
+      "angle": 90
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_dropdown",
+      "name": "direction",
+      "options": [
+        [
+          "counterclockwise",
+          "ccw"
+        ],
+        [
+          "clockwise",
+          "cw"
+        ]
+      ]
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 90,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "start_linear_motion",
+  "message0": "Start linear motion with speeds in %1 x direction: %2 m/s %3 y direction: %4 m/s %5 z direction: %6 m/s %7 yaw: %8 /s",
+  "args0": [
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "velocity_x_m",
+      "value": 0
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "velocity_y_m",
+      "value": 0
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "velocity_z_m",
+      "value": 0
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_angle",
+      "name": "rate_yaw",
+      "angle": 90
+    }
+  ],
+  "colour": 90,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "stop",
+  "message0": "stop and hover",
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "start_circle",
+  "message0": "start cricling %1 meter radius %2",
+  "args0": [
+    {
+      "type": "field_number",
+      "name": "radius",
+      "value": 0
+    },
+    {
+      "type": "field_dropdown",
+      "name": "direction",
+      "options": [
+        [
+          "right",
+          "circle_right"
+        ],
+        [
+          "left",
+          "circle_left"
+        ]
+      ]
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 90,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "start_move",
+  "message0": "start moving %1 at %2 m/s",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "direction",
+      "options": [
+        [
+          "up",
+          "up"
+        ],
+        [
+          "down",
+          "down"
+        ],
+        [
+          "left",
+          "left"
+        ],
+        [
+          "right",
+          "right"
+        ],
+        [
+          "forward",
+          "forward"
+        ],
+        [
+          "backward",
+          "backward"
+        ]
+      ]
+    },
+    {
+      "type": "field_number",
+      "name": "speed",
+      "value": 0
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 90,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "start_turn",
+  "message0": "start turning %1 at %2 degrees/s",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "direction",
+      "options": [
+        [
+          "right",
+          "right"
+        ],
+        [
+          "left",
+          "left"
+        ]
+      ]
+    },
+    {
+      "type": "field_angle",
+      "name": "rate",
+      "angle": 0
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 90,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "turn",
+  "message0": "turn %1 %2 at %3 degrees/s",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "direction",
+      "options": [
+        [
+          "right",
+          "\n\t\t\t\t\t\t\t\t\tright\n\t\t\t\t\t\t\t\t"
+        ],
+        [
+          "left",
+          "left"
+        ]
+      ]
+    },
+    {
+      "type": "field_angle",
+      "name": "degrees",
+      "angle": 0
+    },
+    {
+      "type": "field_angle",
+      "name": "rate",
+      "angle": 0
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 90,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
   "type": "set_default_height",
   "message0": "set default height to %1 meters",
   "args0": [
@@ -75,7 +321,6 @@
       "value": 0
     }
   ],
-  "inputsInline": false,
   "previousStatement": null,
   "nextStatement": null,
   "colour": 90,
