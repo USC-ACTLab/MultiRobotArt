@@ -540,3 +540,18 @@ class blocklyMotion:
             MotionCommander.turn_right(angle, rate)
         else:
             print("Error: direction must be left or right")
+
+    def spin(direction: direction, velocity=VELOCITY):
+        """
+        CONCERNS: if velocity is high enough, the rate the drone will spin might
+        be excessive; the radius should change if a different drone is being
+        commanded otherwise it will not spin correctly
+        """
+        CRAZYFLIE_RADIUS = 0.02;
+        radius = CRAZYFLIE_RADIUS; #should make this a constant like CRAZYFLIE_RADIUS
+        if direction == direction.left:
+            MotionCommander.start_circle_left(radius)
+        elif direction == direction.right:
+            MotionCommander.start_circle_right(radius)
+        else:
+            print("Error: direction must be left or right")
