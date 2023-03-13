@@ -71,6 +71,17 @@ export interface TimelineActions {
    * @returns The Id of the newly created timeline lane.
    */
   createLane: (name: string) => string;
+  /**
+   * Adds a block to timeline and returns its unique ID.
+   * @param laneId The id of the lane to add the block to
+   * @param blockId The id of the block to add to the timeline lane
+   * @param startTime The start time of the block's execution
+   */
+  addBlockToTimeline: (
+    laneId: string,
+    blockId: string,
+    startTime: number
+  ) => void;
 }
 
 export interface BlockActions {
@@ -166,6 +177,14 @@ export const useRobartState = create<MRAState & MRAActions>()(
             state.timelineState.lanes[id] = lane;
           });
           return id;
+        },
+        addBlockToTimeline: (laneId, blockId, startTime) => {
+          set((state) => {
+            state.timelineState.lanes[laneId].items.push({
+              blockId,
+              startTime,
+            });
+          });
         },
         saveBlock: (blockId: string, block: Partial<CodeBlock>) => {
           set((state) => {
