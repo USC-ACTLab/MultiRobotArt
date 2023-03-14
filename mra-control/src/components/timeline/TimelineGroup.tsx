@@ -1,15 +1,15 @@
 import React, { useRef } from "react";
-import { TimelineLaneState, useRobartState } from "../../state/useRobartState";
+import { TimelineGroupState, useRobartState } from "../../state/useRobartState";
 import { TimelineBlock } from "./TimelineBlock";
 
-interface TimelineLaneProps {
-  lane: TimelineLaneState;
+interface TimelineGroupProps {
+  group: TimelineGroupState;
 }
 
 // 1 distance unit = 100 pixels = 1 second * scale  = scale 1
 export const PIXELS_PER_SECOND = 10;
 
-export const TimelineLane = ({ lane }: TimelineLaneProps) => {
+export const TimelineGroup = ({ group }: TimelineGroupProps) => {
   // Assume the outer is in a vertical flex-col
   const r = useRef<HTMLDivElement>(null);
   const scale = useRobartState((state) => state.timelineState.scale);
@@ -23,7 +23,7 @@ export const TimelineLane = ({ lane }: TimelineLaneProps) => {
     <div className="flex h-24 flex-row gap-1 rounded">
       <div className="bg-red flex w-16 justify-center rounded bg-green-400">
         <div className="flex flex-col justify-center font-bold">
-          {lane.name}
+          {group.name}
         </div>
       </div>
       <div
@@ -46,7 +46,7 @@ export const TimelineLane = ({ lane }: TimelineLaneProps) => {
 
             const selectedBlock = blocks[selectedBlockId];
 
-            const noOverlap = lane.items.every((items) => {
+            const noOverlap = group.items.every((items) => {
               const itemStart = items.startTime;
               const itemEnd = items.startTime + blocks[items.blockId].duration;
               const newBlockStart = startTime;
@@ -57,11 +57,11 @@ export const TimelineLane = ({ lane }: TimelineLaneProps) => {
 
             if (!noOverlap) return;
 
-            addBlockToTimeline(lane.id, selectedBlockId, startTime);
+            addBlockToTimeline(group.id, selectedBlockId, startTime);
           }
         }}
       >
-        {lane.items.map((item, idx) => (
+        {group.items.map((item, idx) => (
           <TimelineBlock key={idx} scale={scale} item={item} />
         ))}
       </div>

@@ -1,6 +1,6 @@
 import { TimelineItem, useRobartState } from "../../state/useRobartState";
 
-import { PIXELS_PER_SECOND } from "./TimelineLane";
+import { PIXELS_PER_SECOND } from "./TimelineGroup";
 
 export const TimelineBlock = ({
   item,

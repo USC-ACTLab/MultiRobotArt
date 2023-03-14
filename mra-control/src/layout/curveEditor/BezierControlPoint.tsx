@@ -34,6 +34,7 @@ export const BezierControlPoint = ({ id, point }: BezierControlPointProps) => {
   const [spring, set] = useSpring(() => ({
     scale: [1, 1, 1],
     position: [point.x, point.y, point.z],
+    config: { mass: 1, tension: 0, friction: 18 },
   }));
 
   const bind = useGesture({
@@ -48,18 +49,18 @@ export const BezierControlPoint = ({ id, point }: BezierControlPointProps) => {
         camera
       );
 
-      // create plane parallel to camera that passes through dragBase
+      // create pgroup parallel to camera that passes through dragBase
       const plane = new THREE.Plane();
       plane.setFromNormalAndCoplanarPoint(
         camera.getWorldDirection(new THREE.Vector3(0, 0, 1)),
         dragBase
       );
 
-      //   compute intersection of mouse ray and plane
+      //   compute intersection of mouse ray and pgroup
       const intersection = new THREE.Vector3();
       mouseRay.ray.intersectPlane(plane, intersection);
 
-      console.log({ dragBase, intersection, plane, mouseX, mouseY });
+      console.log({ dragBase, intersection, plane: plane, mouseX, mouseY });
 
       set({
         position: intersection.toArray(),

@@ -2,30 +2,30 @@ import { Button, Label, Modal, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import {
   CodeBlock,
-  TimelineLaneState,
+  TimelineGroupState,
   useRobartState,
 } from "../../state/useRobartState";
 
-export const EditLaneModal = ({
+export const EditGroupModal = ({
   open,
   onClose,
-  laneId,
+  groupId,
 }: {
   open: boolean;
   onClose: () => void;
-  laneId: string;
+  groupId: string;
 }) => {
-  const lane = useRobartState((state) => state.timelineState.lanes[laneId]);
+  const group = useRobartState((state) => state.timelineState.groups[groupId]);
 
   return (
     <Modal show={open} onClose={onClose}>
-      <Modal.Header>Edit Lane</Modal.Header>
+      <Modal.Header>Edit Group</Modal.Header>
       <Modal.Body>
         <div>
           <div className="mb-2 block">
             <Label value="Block Name" />
           </div>
-          <TextInput value={lane.name} onChange={(e) => {}} />
+          <TextInput value={group.name} onChange={(e) => {}} />
         </div>
       </Modal.Body>
       <Modal.Footer>

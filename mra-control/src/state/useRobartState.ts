@@ -36,18 +36,18 @@ export interface TimelineItem {
   startTime: number;
 }
 
-export interface TimelineLaneState {
+export interface TimelineGroupState {
   id: string;
   name: string;
   items: TimelineItem[];
   /**
-   * List of robot ids assigned to this lane
+   * List of robot ids assigned to this group
    */
   robots: string[];
 }
 
 export interface TimelineState {
-  lanes: Record<string, TimelineLaneState>;
+  groups: Record<string, TimelineGroupState>;
   scale: number;
 }
 
@@ -69,29 +69,30 @@ export interface MRAState {
   timelineState: TimelineState;
   editingBlockId: string | undefined;
   version: number;
+  robots: Record<string, RobotState>;
 }
 
 export interface TimelineActions {
   /**
-   * Saves a given lane of the timeline. Assumes that the lane already exists.
-   * @param groupId The Id of the lane to update.
-   * @param group A partial containing properties of the lane we want to save.
+   * Saves a given group of the timeline. Assumes that the group already exists.
+   * @param groupId The Id of the group to update.
+   * @param group A partial containing properties of the group we want to save.
    */
-  saveGroup: (groupId: string, group: Partial<TimelineLaneState>) => void;
+  saveGroup: (groupId: string, group: Partial<TimelineGroupState>) => void;
   /**
-   * Creates a new lane in the timeline and returns its unique ID.
-   * @param name The name of the lane to create.
-   * @returns The Id of the newly created timeline lane.
+   * Creates a new group in the timeline and returns its unique ID.
+   * @param name The name of the group to create.
+   * @returns The Id of the newly created timeline group.
    */
   createGroup: (name: string) => string;
   /**
    * Adds a block to timeline and returns its unique ID.
-   * @param laneId The id of the lane to add the block to
-   * @param blockId The id of the block to add to the timeline lane
+   * @param groupId The id of the group to add the block to
+   * @param blockId The id of the block to add to the timeline group
    * @param startTime The start time of the block's execution
    */
   addBlockToTimeline: (
-    laneId: string,
+    groupId: string,
     blockId: string,
     startTime: number
   ) => void;
@@ -132,7 +133,7 @@ export interface RobotActions {
 
 export interface MRAGeneralActions {
   loadProject: (fileContents: string) => void;
-  saveProjectToFile: (fileName?: string) => void;
+  saveProject: (fileName?: string) => void;
   resetProject: () => void;
   setProjectName: (projectName: string) => void;
   exportToPython: () => string;
@@ -143,19 +144,24 @@ const defaultRobartState: MRAState = {
   projectName: "New Robart Project",
   timelineState: {
     scale: 1,
-    lanes: {
-      lane1: {
-        id: "lane1",
-        name: "Lane 1",
+    groups: {
+      group1: {
+        id: "group1",
+        name: "Group 1",
         items: [],
+        robots: [],
       },
     },
   },
   editingBlockId: undefined,
   version: ROBART_VERSION,
+  robots: {},
 };
 
-type MRAActions = MRAGeneralActions & TimelineActions & BlockActions;
+type MRAActions = MRAGeneralActions &
+  TimelineActions &
+  BlockActions &
+  RobotActions;
 
 type MRACompleteState = MRAState & MRAActions;
 
@@ -168,13 +174,14 @@ export const useRobartState = create<MRAState & MRAActions>()(
           const newState = loadProjectFromFile(file);
           set(newState);
         },
-        saveProjectToFile: (fileName: string | undefined) => {
+        saveProject: (fileName: string | undefined) => {
           const state: MRAState = {
             blocks: get().blocks,
             editingBlockId: undefined,
             projectName: get().projectName,
             timelineState: get().timelineState,
             version: ROBART_VERSION,
+            robots: get().robots,
           };
           saveProjectToFile(state, fileName);
         },
@@ -185,22 +192,23 @@ export const useRobartState = create<MRAState & MRAActions>()(
         exportToPython: () => {
           return "";
         },
-        saveGroup: (laneId, lane) => {},
+        saveGroup: (groupId, group) => {},
         createGroup: (name) => {
           const id = uuid();
-          const lane: TimelineLaneState = {
+          const group: TimelineGroupState = {
             id,
             name,
             items: [],
+            robots: [],
           };
           set((state) => {
-            state.timelineState.lanes[id] = lane;
+            state.timelineState.groups[id] = group;
           });
           return id;
         },
-        addBlockToTimeline: (laneId, blockId, startTime) => {
+        addBlockToTimeline: (groupId, blockId, startTime) => {
           set((state) => {
-            state.timelineState.lanes[laneId].items.push({
+            state.timelineState.groups[groupId].items.push({
               blockId,
               startTime,
             });
@@ -235,6 +243,29 @@ export const useRobartState = create<MRAState & MRAActions>()(
         setEditingBlock: (blockId) => {
           set({ editingBlockId: undefined });
           set({ editingBlockId: blockId });
+        },
+        addRobotToGroup: (groupId, robotId) => {
+          set((state) => {
+            state.timelineState.groups[groupId].robots.push(robotId);
+          });
+        },
+        createRobot: () => {
+          const id = uuid();
+          const numRobots = Object.keys(get().robots).length;
+          set((state) => {
+            state.robots[id] = {
+              id,
+              name: `CF ${numRobots}`,
+              type: "crazyflie",
+              startingPosition: [0, 0, 0],
+            };
+          });
+          return id;
+        },
+        saveRobot: (id, robot) => {
+          set((state) => {
+            state.robots[id] = { ...state.robots[id], ...robot };
+          });
         },
       }),
       {

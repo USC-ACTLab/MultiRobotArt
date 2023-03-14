@@ -14,7 +14,7 @@ import { SettingsModal } from "./settings/SettingsModal";
 
 export const NavigationBar = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
-  const saveToFile = useRobartState((state) => state.saveProjectToFile);
+  const saveToFile = useRobartState((state) => state.saveProject);
   const loadFile = useRobartState((state) => state.loadProject);
   const toggleSettingsModal = useUIState((state) => state.toggleSettingsModal);
   const projectName = useRobartState((state) => state.projectName);
