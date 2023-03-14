@@ -40,11 +40,24 @@ export interface TimelineLaneState {
   id: string;
   name: string;
   items: TimelineItem[];
+  /**
+   * List of robot ids assigned to this lane
+   */
+  robots: string[];
 }
 
 export interface TimelineState {
   lanes: Record<string, TimelineLaneState>;
   scale: number;
+}
+
+export type RobotType = "crazyflie";
+
+export interface RobotState {
+  id: string;
+  name: string;
+  startingPosition: [number, number, number];
+  type: RobotType;
 }
 
 export interface MRAState {
@@ -61,16 +74,16 @@ export interface MRAState {
 export interface TimelineActions {
   /**
    * Saves a given lane of the timeline. Assumes that the lane already exists.
-   * @param laneId The Id of the lane to update.
-   * @param lane A partial containing properties of the lane we want to save.
+   * @param groupId The Id of the lane to update.
+   * @param group A partial containing properties of the lane we want to save.
    */
-  saveLane: (laneId: string, lane: Partial<TimelineLaneState>) => void;
+  saveGroup: (groupId: string, group: Partial<TimelineLaneState>) => void;
   /**
    * Creates a new lane in the timeline and returns its unique ID.
    * @param name The name of the lane to create.
    * @returns The Id of the newly created timeline lane.
    */
-  createLane: (name: string) => string;
+  createGroup: (name: string) => string;
   /**
    * Adds a block to timeline and returns its unique ID.
    * @param laneId The id of the lane to add the block to
@@ -82,6 +95,8 @@ export interface TimelineActions {
     blockId: string,
     startTime: number
   ) => void;
+
+  addRobotToGroup: (groupId: string, robotId: string) => void;
 }
 
 export interface BlockActions {
@@ -108,6 +123,11 @@ export interface BlockActions {
    * @param blockId The ID of the block to select in the block editor for editing.
    */
   setEditingBlock: (blockId: string | undefined) => void;
+}
+
+export interface RobotActions {
+  createRobot: () => string;
+  saveRobot: (id: string, robot: Partial<RobotState>) => void;
 }
 
 export interface MRAGeneralActions {
@@ -165,8 +185,8 @@ export const useRobartState = create<MRAState & MRAActions>()(
         exportToPython: () => {
           return "";
         },
-        saveLane: (laneId, lane) => {},
-        createLane: (name) => {
+        saveGroup: (laneId, lane) => {},
+        createGroup: (name) => {
           const id = uuid();
           const lane: TimelineLaneState = {
             id,

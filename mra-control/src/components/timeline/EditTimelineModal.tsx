@@ -16,7 +16,7 @@ export const EditTimelineModal = ({
   lane: TimelineLaneState;
 }) => {
   const [name, setName] = useState<string>(lane.name);
-  const saveLane = useRobartState((state) => state.saveLane);
+  const saveLane = useRobartState((state) => state.saveGroup);
   return (
     <Modal show={open} onClose={onClose}>
       <Modal.Header>Edit Timeline Lane</Modal.Header>
