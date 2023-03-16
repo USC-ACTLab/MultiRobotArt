@@ -1,9 +1,11 @@
-import React, { useRef } from "react";
+import { useGesture } from "@use-gesture/react";
+import React, { useRef, useState } from "react";
 import {
     CodeBlock,
     TimelineGroupState,
     useRobartState,
 } from "../../state/useRobartState";
+import { HoverTimelineBlock } from "./HoverTimelineBlock";
 import { TimelineBlock } from "./TimelineBlock";
 
 interface TimelineGroupProps {
@@ -22,8 +24,19 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
     );
     const selectedBlockId = useRobartState((state) => state.editingBlockId);
     const blocks = useRobartState((state) => state.blocks);
+    const [hoverX, setHoverX] = useState<number | undefined>();
 
-    const blockOverlaps = (startTime: number, selectedBlock: CodeBlock) =>
+    const bind = useGesture({
+        onMouseMove: ({ event: { clientX } }) => {
+            setHoverX(clientX);
+        },
+    });
+
+    const blockOverlaps = (
+        startTime: number | undefined,
+        selectedBlock: CodeBlock
+    ) =>
+        startTime === undefined ||
         group.items.some((items) => {
             const currItemStart = items.startTime;
             const currItemEnd =
@@ -37,10 +50,9 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
             );
         });
 
-    const computeTimelineBlockOffset = (
-        e: React.MouseEvent<HTMLDivElement>
-    ) => {
-        const { clientX } = e;
+    const computeTimelineBlockOffset = (clientX?: number) => {
+        if (clientX === undefined) return;
+
         if (laneBodyRef.current) {
             const parentOffsetX = laneBodyRef.current.offsetLeft;
             const parentScrollOffsetX =
@@ -67,12 +79,10 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
             className="relative h-16 rounded bg-blue-300"
             style={{ width: 2000 }}
             ref={laneBodyRef}
-            onClick={(e) => {
+            onClick={({ clientX }) => {
                 if (selectedBlockId === undefined) return;
 
-                console.log("ehre?");
-
-                const startTime = computeTimelineBlockOffset(e);
+                const startTime = computeTimelineBlockOffset(clientX);
 
                 if (
                     startTime &&
@@ -80,10 +90,19 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
                 )
                     addBlockToTimeline(group.id, selectedBlockId, startTime);
             }}
+            {...bind()}
         >
             {group.items.map((item, idx) => (
                 <TimelineBlock key={idx} scale={scale} item={item} />
             ))}
+            <HoverTimelineBlock
+                scale={scale}
+                startTime={computeTimelineBlockOffset(hoverX)}
+                isOverlapping={blockOverlaps(
+                    computeTimelineBlockOffset(hoverX),
+                    blocks[selectedBlockId ?? ""]
+                )}
+            />
         </div>
     );
 };
