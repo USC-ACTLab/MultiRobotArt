@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
-import { TimelineGroupState, useRobartState } from "../../state/useRobartState";
+import {
+    CodeBlock,
+    TimelineGroupState,
+    useRobartState,
+} from "../../state/useRobartState";
 import { TimelineBlock } from "./TimelineBlock";
 
 interface TimelineGroupProps {
@@ -19,49 +23,62 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
     const selectedBlockId = useRobartState((state) => state.editingBlockId);
     const blocks = useRobartState((state) => state.blocks);
 
+    const blockOverlaps = (startTime: number, selectedBlock: CodeBlock) =>
+        group.items.some((items) => {
+            const currItemStart = items.startTime;
+            const currItemEnd =
+                items.startTime + blocks[items.blockId].duration;
+            const newBlockStart = startTime;
+            const newBlockEnd = startTime + selectedBlock.duration;
+
+            return (
+                newBlockStart < 0 ||
+                !(currItemEnd < newBlockStart || newBlockEnd < currItemStart)
+            );
+        });
+
+    const computeTimelineBlockOffset = (
+        e: React.MouseEvent<HTMLDivElement>
+    ) => {
+        const { clientX } = e;
+        if (laneBodyRef.current) {
+            const parentOffsetX = laneBodyRef.current.offsetLeft;
+            const parentScrollOffsetX =
+                laneBodyRef.current.parentElement?.scrollLeft;
+            const offsetX = clientX - parentOffsetX;
+
+            // Add the block to the timeline
+            if (
+                selectedBlockId === undefined ||
+                parentScrollOffsetX === undefined
+            )
+                return;
+
+            const startTime =
+                (offsetX + parentScrollOffsetX) / (PIXELS_PER_SECOND * scale) -
+                blocks[selectedBlockId].duration / 2;
+
+            return startTime;
+        }
+    };
+
     return (
         <div
             className="relative h-16 rounded bg-blue-300"
             style={{ width: 2000 }}
             ref={laneBodyRef}
             onClick={(e) => {
-                const { clientX } = e;
-                if (laneBodyRef.current) {
-                    const parentOffsetX = laneBodyRef.current.offsetLeft;
-                    const parentScrollOffsetX =
-                        laneBodyRef.current.parentElement?.scrollLeft;
-                    const offsetX = clientX - parentOffsetX;
+                if (selectedBlockId === undefined) return;
 
-                    // Add the block to the timeline
-                    if (
-                        selectedBlockId === undefined ||
-                        parentScrollOffsetX === undefined
-                    )
-                        return;
+                console.log("ehre?");
 
-                    const startTime =
-                        (offsetX + parentScrollOffsetX) /
-                            (PIXELS_PER_SECOND * scale) -
-                        blocks[selectedBlockId].duration / 2;
+                const startTime = computeTimelineBlockOffset(e);
 
-                    const selectedBlock = blocks[selectedBlockId];
-
-                    const noOverlap = group.items.every((items) => {
-                        const itemStart = items.startTime;
-                        const itemEnd =
-                            items.startTime + blocks[items.blockId].duration;
-                        const newBlockStart = startTime;
-                        const newBlockEnd = startTime + selectedBlock.duration;
-
-                        return (
-                            itemEnd < newBlockStart || newBlockEnd < itemStart
-                        );
-                    });
-
-                    if (!noOverlap) return;
-
+                if (
+                    startTime &&
+                    !blockOverlaps(startTime, blocks[selectedBlockId])
+                )
                     addBlockToTimeline(group.id, selectedBlockId, startTime);
-                }
             }}
         >
             {group.items.map((item, idx) => (
