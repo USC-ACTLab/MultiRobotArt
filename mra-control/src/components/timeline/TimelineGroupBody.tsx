@@ -28,13 +28,20 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
                 const { clientX } = e;
                 if (laneBodyRef.current) {
                     const parentOffsetX = laneBodyRef.current.offsetLeft;
+                    const parentScrollOffsetX =
+                        laneBodyRef.current.parentElement?.scrollLeft;
                     const offsetX = clientX - parentOffsetX;
 
                     // Add the block to the timeline
-                    if (!selectedBlockId) return;
+                    if (
+                        selectedBlockId === undefined ||
+                        parentScrollOffsetX === undefined
+                    )
+                        return;
 
                     const startTime =
-                        offsetX / (PIXELS_PER_SECOND * scale) -
+                        (offsetX + parentScrollOffsetX) /
+                            (PIXELS_PER_SECOND * scale) -
                         blocks[selectedBlockId].duration / 2;
 
                     const selectedBlock = blocks[selectedBlockId];
