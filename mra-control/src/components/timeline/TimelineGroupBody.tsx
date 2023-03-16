@@ -27,6 +27,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
     const [hoverX, setHoverX] = useState<number | undefined>();
 
     const bind = useGesture({
+        onMouseOut: () => setHoverX(undefined),
         onMouseMove: ({ event: { clientX } }) => {
             setHoverX(clientX);
         },
