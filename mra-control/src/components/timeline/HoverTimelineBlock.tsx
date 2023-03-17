@@ -24,7 +24,7 @@ export const HoverTimelineBlock = ({
     return (
         <div
             className={clsx(
-                "absolute top-1/2 flex h-5/6 -translate-y-1/2 items-center justify-center rounded-xl border",
+                "absolute top-1/2 flex h-5/6 -translate-y-1/2 items-center justify-center rounded-xl border border-dashed",
                 isOverlapping
                     ? "border-red-500/50 bg-red-300/50 text-red-500/50"
                     : "border-green-500/50 bg-green-300/50 text-green-500/50"
