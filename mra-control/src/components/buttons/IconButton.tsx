@@ -17,7 +17,7 @@ export const IconButton = ({
     return (
         <Button onClick={onClick} color={color}>
             <FontAwesomeIcon icon={icon} />
-            <span className="ml-2">{text}</span>
+            {text !== "" ? <span className="ml-2">{text}</span> : null}
         </Button>
     );
 };

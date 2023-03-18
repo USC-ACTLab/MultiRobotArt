@@ -4,16 +4,34 @@ import { IconButton } from "../components/buttons/IconButton";
 import { TimelineGroupBody } from "../components/timeline/TimelineGroupBody";
 import { TimelineGroupLabel } from "../components/timeline/TimelineGroupLabel";
 import { useRobartState } from "../state/useRobartState";
+import { useUIState } from "../state/useUIState";
+import { RobotManagerModal } from "./robotManager/RobotManagerModal";
 
 export const Timeline = () => {
     const timelineState = useRobartState((state) => state.timelineState);
     const groups = Object.values(timelineState.groups);
+    const toggleRobotManagerModal = useUIState(
+        (state) => state.toggleRobotManager
+    );
+    const toggleSimulationModal = useUIState(
+        (state) => state.toggleSimulationModal
+    );
 
     return (
         <div className="flex h-full w-full flex-col gap-2 rounded bg-blue-100">
             <div className="flex justify-end gap-3 pt-2 pr-3">
-                <IconButton icon={faRobot} text="Manage Robots" />
-                <IconButton icon={faPlay} text="Run Sim" color="success" />
+                <IconButton
+                    icon={faRobot}
+                    onClick={toggleRobotManagerModal}
+                    text="Manage Robots"
+                />
+                <RobotManagerModal />
+                <IconButton
+                    icon={faPlay}
+                    onClick={toggleSimulationModal}
+                    text="Run Sim"
+                    color="success"
+                />
             </div>
             <div className="overflow-y-auto">
                 <div className="flex flex-shrink-0 gap-2">
