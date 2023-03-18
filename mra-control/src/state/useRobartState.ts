@@ -43,7 +43,7 @@ export interface TimelineGroupState {
     /**
      * List of robot ids assigned to this group
      */
-    robots: Set<string>;
+    robots: Record<string, RobotState>;
 }
 
 export interface TimelineState {
@@ -58,7 +58,6 @@ export interface RobotState {
     name: string;
     startingPosition: [number, number, number];
     type: RobotType;
-    groups: Set<string>;
 }
 
 export interface MRAState {
@@ -99,6 +98,7 @@ export interface TimelineActions {
     ) => void;
 
     addRobotToGroup: (groupId: string, robotId: string) => void;
+    removeRobotFromGroup: (groupId: string, robotId: string) => void;
 }
 
 export interface BlockActions {
@@ -151,55 +151,55 @@ const defaultRobartState: MRAState = {
                 id: "group1",
                 name: "Group 1",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group2: {
                 id: "group2",
                 name: "Group 2",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group3: {
                 id: "group3",
                 name: "Group 3",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group4: {
                 id: "group4",
                 name: "Group 4",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group5: {
                 id: "group5",
                 name: "Group 5",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group6: {
                 id: "group6",
                 name: "Group 6",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group7: {
                 id: "group7",
                 name: "Group 7",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group8: {
                 id: "group8",
                 name: "Group 8",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
             group9: {
                 id: "group9",
                 name: "Group 9",
                 items: [],
-                robots: new Set(),
+                robots: {},
             },
         },
     },
@@ -249,7 +249,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
                         id,
                         name,
                         items: [],
-                        robots: new Set(),
+                        robots: {},
                     };
                     set((state) => {
                         state.timelineState.groups[id] = group;
@@ -300,17 +300,16 @@ export const useRobartState = create<MRAState & MRAActions>()(
                         set({ editingBlockId: blockId });
                 },
                 addRobotToGroup: (groupId, robotId) => {
-                    const updatedGroups = new Set(
-                        get().timelineState.groups[groupId].robots
-                    ).add(robotId);
-                    const updateRobotGroups = new Set(
-                        get().robots[robotId].groups
-                    ).add(groupId);
-
                     set((state) => {
-                        state.timelineState.groups[groupId].robots =
-                            updatedGroups;
-                        state.robots[robotId].groups = updateRobotGroups;
+                        state.timelineState.groups[groupId].robots[robotId] =
+                            state.robots[robotId];
+                    });
+                },
+                removeRobotFromGroup: (groupId, robotId) => {
+                    set((state) => {
+                        delete state.timelineState.groups[groupId].robots[
+                            robotId
+                        ];
                     });
                 },
                 createRobot: () => {
@@ -322,7 +321,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
                             name: `CF ${numRobots}`,
                             type: "crazyflie",
                             startingPosition: [0, 0, 0],
-                            groups: new Set(),
                         };
                     });
                     return id;
