@@ -2,11 +2,11 @@ import {
     faCheck,
     faPencil,
     faPlusCircle,
+    faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { rename } from "blockly/core/procedures";
-import { Button, TextInput } from "flowbite-react";
-import { useEffect, useRef, useState } from "react";
+import { TextInput } from "flowbite-react";
+import { useEffect, useState } from "react";
 import { IconButton } from "../../components/buttons/IconButton";
 import { useRobartState } from "../../state/useRobartState";
 
@@ -18,6 +18,7 @@ export const RobotManager = () => {
         string | undefined
     >();
     const [showRename, setShowRename] = useState(false);
+    const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
         if (
@@ -53,23 +54,36 @@ export const RobotManager = () => {
                                 <TextInput
                                     className="w-full"
                                     sizing="4xl"
-                                    value={robots[selectedRobotId].name}
+                                    value={inputValue}
                                     onChange={(e) =>
-                                        updateRobot(selectedRobotId, {
-                                            name: e.target.value,
-                                        })
+                                        setInputValue(e.target.value)
                                     }
                                 />
                                 <FontAwesomeIcon
                                     icon={faCheck}
-                                    className="cursor-pointer text-xl"
-                                    onClick={() => setShowRename(false)}
+                                    className="cursor-pointer text-xl text-green-500"
+                                    onClick={() => {
+                                        updateRobot(selectedRobotId, {
+                                            name: inputValue,
+                                        });
+                                        setShowRename(false);
+                                    }}
+                                />
+                                <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className="cursor-pointer text-xl text-red-500"
+                                    onClick={() => {
+                                        setShowRename(false);
+                                    }}
                                 />
                             </div>
                         ) : (
                             <h2
                                 className="flex h-min w-fit items-center gap-4 rounded-md border-2 border-white p-2  text-4xl font-extrabold hover:border-black"
-                                onClick={() => setShowRename(true)}
+                                onClick={() => {
+                                    setInputValue(robots[selectedRobotId].name);
+                                    setShowRename(true);
+                                }}
                             >
                                 {robots[selectedRobotId].name}
                             </h2>
