@@ -1,5 +1,4 @@
 import { Modal } from "flowbite-react";
-import { useEffect } from "react";
 import { useUIState } from "../../state/useUIState";
 import { RobotManager } from "./RobotManger";
 
