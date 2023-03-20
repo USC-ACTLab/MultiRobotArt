@@ -18,7 +18,9 @@ export const TimelineBlock = ({
                 left: PIXELS_PER_SECOND * scale * item.startTime,
             }}
         >
-            {block.name}
+            <span className="block overflow-hidden text-ellipsis whitespace-nowrap">
+                {block.name}
+            </span>
         </div>
     );
 };

@@ -7,6 +7,7 @@ import { BlockManagerPanel } from "./layout/BlockManagerPanel";
 import { useRobartState } from "./state/useRobartState";
 import { NavigationBar } from "./layout/NavigationBar";
 import { SettingsModal } from "./layout/settings/SettingsModal";
+import { RightPanel } from "./layout/RightPanel";
 
 function App() {
     return (
@@ -34,7 +35,7 @@ function App() {
                                 </Panel>
                                 <PanelResizeHandle className="w-2 bg-blue-50 opacity-30 shadow-lg" />
                                 <Panel defaultSize={50}>
-                                    <BlockCodePanel />
+                                    <RightPanel />
                                 </Panel>
                             </PanelGroup>
                         </Panel>

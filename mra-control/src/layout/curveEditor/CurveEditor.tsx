@@ -37,8 +37,6 @@ export const CurveEditor = () => {
         marker.current?.position.set(nextPoint.x, nextPoint.y, nextPoint.z);
     });
 
-    useEffect(() => {}, [selectedControlPoint]);
-
     return (
         <>
             <OrbitControls

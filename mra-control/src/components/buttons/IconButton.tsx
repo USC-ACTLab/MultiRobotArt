@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 
 import { Button } from "flowbite-react";
+import { ReactEventHandler } from "react";
 
 export const IconButton = ({
     icon,
@@ -14,7 +15,7 @@ export const IconButton = ({
     text: string;
     color?: "gray" | "warning" | "success" | "failure";
     className?: string;
-    onClick?: () => void;
+    onClick?: ReactEventHandler;
 }) => {
     return (
         <Button className={className} onClick={onClick} color={color}>

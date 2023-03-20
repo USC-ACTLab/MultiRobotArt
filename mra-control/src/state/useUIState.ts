@@ -3,15 +3,15 @@ import { create } from "zustand";
 export interface UIState {
     settingsModalOpen: boolean;
     curveEditorOpen: boolean;
-    simulationModalOpen: boolean;
+    openSimulation: boolean;
     robotManagerModalOpen: boolean;
 }
 
 export interface UIActions {
     toggleSettingsModal: () => void;
     toggleCurveEditor: () => void;
-    toggleSimulationModal: () => void;
     toggleRobotManager: () => void;
+    toggleSimulation: () => void;
 }
 
 export type UIStoreState = UIState & UIActions;
@@ -22,14 +22,15 @@ export type UIStoreState = UIState & UIActions;
 export const useUIState = create<UIStoreState>()((set, get) => ({
     settingsModalOpen: false,
     curveEditorOpen: false,
-    simulationModalOpen: false,
+    openSimulation: false,
     robotManagerModalOpen: false,
     toggleSettingsModal: () =>
         set({ settingsModalOpen: !get().settingsModalOpen }),
     toggleCurveEditor: () => set({ curveEditorOpen: !get().curveEditorOpen }),
-    toggleSimulationModal: () =>
-        set({ simulationModalOpen: !get().simulationModalOpen }),
     toggleRobotManager: () => {
         set({ robotManagerModalOpen: !get().robotManagerModalOpen });
+    },
+    toggleSimulation: () => {
+        set({ openSimulation: !get().openSimulation });
     },
 }));

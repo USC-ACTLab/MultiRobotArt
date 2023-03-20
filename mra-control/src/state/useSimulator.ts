@@ -19,6 +19,7 @@ type Trajectory =
     | null;
 
 export interface RobotSimState {
+    id: string;
     pos: THREE.Vector3;
     vel: THREE.Vector3;
     acc: THREE.Vector3;
@@ -62,7 +63,7 @@ export interface SimulatorActions {
         position: THREE.Vector3,
         velocity: THREE.Vector3,
         acceleration: THREE.Vector3
-    ) => void;
+    ) => Trajectory;
 }
 
 export const useSimulator = create<SimulatorState & SimulatorActions>()(
@@ -72,17 +73,20 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         pause: () => set({ status: "PAUSED" }),
         halt: () => set({ status: "STOPPED" }),
         step: () => {
-            const { status, time, timeDilation, robots } = get();
+            const { status, time, timeDilation, robots: currentRobots } = get();
             if (status !== "RUNNING") return;
             const deltaT = 1 / (FPS * timeDilation);
             const newSimTime = time + deltaT;
+            const robots = { ...currentRobots };
 
             Object.keys(robots).forEach((robotId) => {
                 const robot = robots[robotId];
                 if (robot.trajectory === null) return;
 
                 const newPos = new THREE.Vector3();
-                const trajectoryTime = robot.timeAlongTrajectory + deltaT;
+                const trajectoryTime =
+                    robot.timeAlongTrajectory +
+                    deltaT / robot.trajectoryDuration;
                 robot.trajectory.map((coefficient, i) => {
                     newPos.addScaledVector(
                         coefficient,
@@ -95,6 +99,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
                     pos: newPos,
                     timeAlongTrajectory: trajectoryTime,
                 };
+                console.log(trajectoryTime);
 
                 if (robots[robotId].timeAlongTrajectory >= 1) {
                     robots[robotId].trajectory = null;
@@ -111,6 +116,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
             const simRobots: Record<string, RobotSimState> = {};
             Object.values(robots).forEach((robot) => {
                 simRobots[robot.id] = {
+                    id: robot.id,
                     pos: new THREE.Vector3(...robot.startingPosition),
                     vel: new THREE.Vector3(),
                     acc: new THREE.Vector3(),
@@ -132,8 +138,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
             const robot = get().robots[robotId];
 
             // Degree 7 Polynomial solution to IVP
-            const a0 = robot.pos;
-            const a1 = robot.vel;
+            const a0 = robot.pos.clone();
+            const a1 = robot.vel.clone();
             const a2 = robot.acc.clone().multiplyScalar(0.5);
             const a3 = new THREE.Vector3();
             const a4 = robot.acc
@@ -168,22 +174,23 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
                 .addScaledVector(robot.vel, 5)
                 .addScaledVector(vel, 5)
                 .addScaledVector(robot.pos, 10)
-                .addScaledVector(pos, -1)
+                .addScaledVector(pos, -10)
                 .multiplyScalar(2);
 
-            set(
-                (state) =>
-                    (state.robots[robotId].trajectory = [
-                        a0,
-                        a1,
-                        a2,
-                        a3,
-                        a4,
-                        a5,
-                        a6,
-                        a7,
-                    ])
-            );
+            return [a0, a1, a2, a3, a4, a5, a6, a7];
+            // set(
+            //     (state) =>
+            //         (state.robots[robotId].trajectory = [
+            //             a0,
+            //             a1,
+            //             a2,
+            //             a3,
+            //             a4,
+            //             a5,
+            //             a6,
+            //             a7,
+            //         ])
+            // );
         },
     }))
 );

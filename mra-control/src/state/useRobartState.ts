@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import {
+    createJSONStorage,
+    persist,
+    subscribeWithSelector,
+} from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import uuid from "react-uuid";
 import { ROBART_VERSION } from "../config/Version";
@@ -7,6 +11,7 @@ import {
     loadProjectFromFile,
     saveProjectToFile,
 } from "../tools/projectFileConversion";
+import { useSimulator } from "./useSimulator";
 
 export interface CodeBlock {
     id: string;
@@ -217,130 +222,143 @@ type MRACompleteState = MRAState & MRAActions;
 
 export const useRobartState = create<MRAState & MRAActions>()(
     immer(
-        persist(
-            (set, get): MRACompleteState => ({
-                ...defaultRobartState,
-                loadProject: (file) => {
-                    const newState = loadProjectFromFile(file);
-                    set(newState);
-                },
-                saveProject: (fileName: string | undefined) => {
-                    const state: MRAState = {
-                        blocks: get().blocks,
-                        editingBlockId: undefined,
-                        projectName: get().projectName,
-                        timelineState: get().timelineState,
-                        version: ROBART_VERSION,
-                        robots: get().robots,
-                    };
-                    saveProjectToFile(state, fileName);
-                },
-                resetProject: () => {
-                    set(defaultRobartState);
-                },
-                setProjectName: (name) => set({ projectName: name }),
-                exportToPython: () => {
-                    return "";
-                },
-                saveGroup: (groupId, group) => {},
-                createGroup: (name) => {
-                    const id = uuid();
-                    const group: TimelineGroupState = {
-                        id,
-                        name,
-                        items: [],
-                        robots: {},
-                    };
-                    set((state) => {
-                        state.timelineState.groups[id] = group;
-                    });
-                    return id;
-                },
-                addBlockToTimeline: (groupId, blockId, startTime) => {
-                    set((state) => {
-                        state.timelineState.groups[groupId].items.push({
-                            blockId,
-                            startTime,
-                        });
-                    });
-                },
-                saveBlock: (blockId: string, block: Partial<CodeBlock>) => {
-                    set((state) => {
-                        state.blocks[blockId] = {
-                            ...state.blocks[blockId],
-                            ...block,
+        subscribeWithSelector(
+            persist(
+                (set, get): MRACompleteState => ({
+                    ...defaultRobartState,
+                    loadProject: (file) => {
+                        const newState = loadProjectFromFile(file);
+                        set(newState);
+                    },
+                    saveProject: (fileName: string | undefined) => {
+                        const state: MRAState = {
+                            blocks: get().blocks,
+                            editingBlockId: undefined,
+                            projectName: get().projectName,
+                            timelineState: get().timelineState,
+                            version: ROBART_VERSION,
+                            robots: get().robots,
                         };
-                    });
-                },
-                removeBlock: (id) => {
-                    set((state) => delete state.blocks[id]);
-                    // TODO: Also remove all references to this block on the timeline
-                },
-                renameBlock: (name) =>
-                    set((state) => {
-                        state.blocks[state.editingBlockId!].name = name;
-                    }),
-                createBlock: (name) => {
-                    const block: CodeBlock = {
-                        id: uuid(),
-                        name: name,
-                        xml: "",
-                        python: "",
-                        duration: 10,
-                    };
-                    set((state) => {
-                        state.blocks[block.id] = block;
-                    });
-                    return block.id;
-                },
-                setEditingBlock: (blockId) => {
-                    const oldEditingBlockId = get().editingBlockId;
-                    set({ editingBlockId: undefined });
-                    if (blockId != oldEditingBlockId)
-                        set({ editingBlockId: blockId });
-                },
-                addRobotToGroup: (groupId, robotId) => {
-                    set((state) => {
-                        state.timelineState.groups[groupId].robots[robotId] =
-                            state.robots[robotId];
-                    });
-                },
-                removeRobotFromGroup: (groupId, robotId) => {
-                    set((state) => {
-                        delete state.timelineState.groups[groupId].robots[
-                            robotId
-                        ];
-                    });
-                },
-                createRobot: () => {
-                    const id = uuid();
-                    const numRobots = Object.keys(get().robots).length;
-                    set((state) => {
-                        state.robots[id] = {
+                        saveProjectToFile(state, fileName);
+                    },
+                    resetProject: () => {
+                        set(defaultRobartState);
+                    },
+                    setProjectName: (name) => set({ projectName: name }),
+                    exportToPython: () => {
+                        return "";
+                    },
+                    saveGroup: (groupId, group) => {},
+                    createGroup: (name) => {
+                        const id = uuid();
+                        const group: TimelineGroupState = {
                             id,
-                            name: `CF ${numRobots}`,
-                            type: "crazyflie",
-                            startingPosition: [0, 0, 0],
+                            name,
+                            items: [],
+                            robots: {},
                         };
-                    });
-                    return id;
-                },
-                saveRobot: (id, robot) => {
-                    set((state) => {
-                        state.robots[id] = { ...state.robots[id], ...robot };
-                    });
-                },
-                deleteRobot: (id) => {
-                    const newRobots = { ...get().robots };
-                    delete newRobots[id];
+                        set((state) => {
+                            state.timelineState.groups[id] = group;
+                        });
+                        return id;
+                    },
+                    addBlockToTimeline: (groupId, blockId, startTime) => {
+                        set((state) => {
+                            state.timelineState.groups[groupId].items.push({
+                                blockId,
+                                startTime,
+                            });
+                        });
+                    },
+                    saveBlock: (blockId: string, block: Partial<CodeBlock>) => {
+                        set((state) => {
+                            state.blocks[blockId] = {
+                                ...state.blocks[blockId],
+                                ...block,
+                            };
+                        });
+                    },
+                    removeBlock: (id) => {
+                        set((state) => delete state.blocks[id]);
+                        // TODO: Also remove all references to this block on the timeline
+                    },
+                    renameBlock: (name) =>
+                        set((state) => {
+                            state.blocks[state.editingBlockId!].name = name;
+                        }),
+                    createBlock: (name) => {
+                        const block: CodeBlock = {
+                            id: uuid(),
+                            name: name,
+                            xml: "",
+                            python: "",
+                            duration: 10,
+                        };
+                        set((state) => {
+                            state.blocks[block.id] = block;
+                        });
+                        return block.id;
+                    },
+                    setEditingBlock: (blockId) => {
+                        const oldEditingBlockId = get().editingBlockId;
+                        set({ editingBlockId: undefined });
+                        if (blockId != oldEditingBlockId)
+                            set({ editingBlockId: blockId });
+                    },
+                    addRobotToGroup: (groupId, robotId) => {
+                        set((state) => {
+                            state.timelineState.groups[groupId].robots[
+                                robotId
+                            ] = state.robots[robotId];
+                        });
+                    },
+                    removeRobotFromGroup: (groupId, robotId) => {
+                        set((state) => {
+                            delete state.timelineState.groups[groupId].robots[
+                                robotId
+                            ];
+                        });
+                    },
+                    createRobot: () => {
+                        const id = uuid();
+                        const numRobots = Object.keys(get().robots).length;
+                        set((state) => {
+                            state.robots[id] = {
+                                id,
+                                name: `CF ${numRobots}`,
+                                type: "crazyflie",
+                                startingPosition: [0, 0, 0],
+                            };
+                        });
+                        return id;
+                    },
+                    saveRobot: (id, robot) => {
+                        set((state) => {
+                            state.robots[id] = {
+                                ...state.robots[id],
+                                ...robot,
+                            };
+                        });
+                    },
+                    deleteRobot: (id) => {
+                        const newRobots = { ...get().robots };
+                        delete newRobots[id];
 
-                    set({ robots: newRobots });
-                },
-            }),
-            {
-                storage: createJSONStorage(() => sessionStorage),
-                name: "robartState",
-            }
+                        set({ robots: newRobots });
+                    },
+                }),
+                {
+                    storage: createJSONStorage(() => sessionStorage),
+                    name: "robartState",
+                }
+            )
         )
     )
+);
+
+useRobartState.subscribe(
+    (state) => state.robots,
+    (robots) => {
+        useSimulator.getState().setRobots(robots);
+    }
 );

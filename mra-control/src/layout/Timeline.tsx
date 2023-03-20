@@ -1,11 +1,11 @@
-import { faPlay, faRobot } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
+import { faPlay, faRobot, faSquare } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "../components/buttons/IconButton";
 import { TimelineGroupBody } from "../components/timeline/TimelineGroupBody";
 import { TimelineGroupLabel } from "../components/timeline/TimelineGroupLabel";
 import { useRobartState } from "../state/useRobartState";
 import { useUIState } from "../state/useUIState";
 import { RobotManagerModal } from "./robotManager/RobotManagerModal";
+import { SimulationPanel } from "./simulation/SimulationPanel";
 
 export const Timeline = () => {
     const timelineState = useRobartState((state) => state.timelineState);
@@ -13,9 +13,8 @@ export const Timeline = () => {
     const toggleRobotManagerModal = useUIState(
         (state) => state.toggleRobotManager
     );
-    const toggleSimulationModal = useUIState(
-        (state) => state.toggleSimulationModal
-    );
+    const openSimulation = useUIState((state) => state.openSimulation);
+    const toggleSimulation = useUIState((state) => state.toggleSimulation);
 
     return (
         <div className="flex h-full w-full flex-col gap-2 rounded bg-blue-100">
@@ -26,12 +25,22 @@ export const Timeline = () => {
                     text="Manage Robots"
                 />
                 <RobotManagerModal />
-                <IconButton
-                    icon={faPlay}
-                    onClick={toggleSimulationModal}
-                    text="Run Sim"
-                    color="success"
-                />
+
+                {openSimulation ? (
+                    <IconButton
+                        icon={faSquare}
+                        onClick={toggleSimulation}
+                        text="Stop Sim"
+                        color="failure"
+                    />
+                ) : (
+                    <IconButton
+                        icon={faPlay}
+                        onClick={toggleSimulation}
+                        text="Run Sim"
+                        color="success"
+                    />
+                )}
             </div>
             <div className="overflow-y-auto">
                 <div className="flex flex-shrink-0 gap-2">

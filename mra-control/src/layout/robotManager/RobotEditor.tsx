@@ -45,7 +45,7 @@ export const RobotEditor = () => {
             />
 
             <div className="flex flex-col gap-10">
-                <StartingPositionEditor />
+                <StartingPositionEditor robotId={selectedRobotId} />
                 <RobotGroupEditor />
             </div>
 
