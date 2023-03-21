@@ -1,28 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useBlocklyWorkspace } from "react-blockly";
 import { blocklyToolboxConfiguration } from "../config/BlockToolboxConfig";
-import { useBlockEditorState } from "../state/useBlockEditorState";
 import { pythonGenerator } from "blockly/python";
-import { useMRAState } from "../state/useMRAState";
+import { CodeBlock, useRobartState } from "../state/useRobartState";
 import Blockly from "blockly";
 import "../config/customBlocks";
-import { Button } from "flowbite-react";
-import { RenameBlockModal } from "../components/blocks/RenameBlockModal";
+import { BlockEditorHeader } from "./BlockEditorHeader";
 
 export const BlockEditorPanel = () => {
   const workspaceRef = useRef<any>(null);
-  const currentBlock = useMRAState((state) => state.editingBlock);
-  const setBlocklyPython = useBlockEditorState(
-    (state) => state.setBlocklyPython
+  const [localBlockId, setLocalBlockId] = useState<string | undefined>(
+    undefined
   );
-  const setBlocklyXML = useBlockEditorState((state) => state.setBlocklyXML);
-  const saveBlock = useMRAState((state) => state.saveBlock);
+  const currentBlockId = useRobartState((state) => state.editingBlockId);
 
-  const [renameModalOpen, setRenameModalOpen] = useState<boolean>(false);
+  const saveBlock = useRobartState((state) => state.saveBlock);
 
   const { workspace, xml } = useBlocklyWorkspace({
     toolboxConfiguration: blocklyToolboxConfiguration,
-    initialXml: currentBlock?.xml ?? "",
+    initialXml: "",
     workspaceConfiguration: {
       grid: {
         spacing: 20,
@@ -32,54 +28,36 @@ export const BlockEditorPanel = () => {
       },
     },
     onWorkspaceChange: (workspace) => {
-      const code = pythonGenerator.workspaceToCode(workspace);
-      setBlocklyPython(code);
-      if (xml) setBlocklyXML(xml);
+      const python = pythonGenerator.workspaceToCode(workspace);
+      if (localBlockId && xml) saveBlock(localBlockId, { xml, python });
     },
     ref: workspaceRef,
   });
 
   useEffect(() => {
-    if (currentBlock && currentBlock.xml && workspace) {
-      var xmlDom = Blockly.Xml.textToDom(currentBlock.xml);
-      Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom, workspace);
-    } else if (currentBlock && !currentBlock.xml && workspace) {
+    window.dispatchEvent(new Event("resize"));
+
+    setLocalBlockId(currentBlockId);
+    if (currentBlockId) {
+      workspace?.setVisible(true);
+      const currentBlock: CodeBlock =
+        useRobartState.getState().blocks[currentBlockId];
+      if (currentBlock.xml && workspace) {
+        var xmlDom = Blockly.Xml.textToDom(currentBlock.xml);
+        Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom, workspace);
+      } else if (!currentBlock.xml && workspace) {
+        workspace.clear();
+      }
+    } else if (workspace) {
+      workspace.setVisible(false);
       workspace.clear();
     }
-  }, [currentBlock]);
+  }, [currentBlockId]);
 
   return (
-    <div className="w-full h-full">
-      {!currentBlock && <div className="m-2">No Block selected.</div>}
-      {currentBlock && (
-        <div className="flex flex-row gap-2 m-2">
-          <div className="flex font-bold text-lg">
-            Editing Block {currentBlock.name} ({currentBlock.id})
-          </div>
-          <Button
-            className="flex"
-            color="success"
-            onClick={() =>
-              saveBlock(currentBlock.id, currentBlock.name, xml ?? "")
-            }
-          >
-            Save
-          </Button>
-          <Button
-            className="flex"
-            color="danger"
-            onClick={() => setRenameModalOpen(true)}
-          >
-            Rename
-          </Button>
-          <RenameBlockModal
-            open={renameModalOpen}
-            block={currentBlock}
-            onClose={() => setRenameModalOpen(false)}
-          />
-        </div>
-      )}
-      <div ref={workspaceRef} className="w-full h-full"></div>
+    <div className="flex h-full w-full flex-col">
+      <BlockEditorHeader />
+      <div ref={workspaceRef} className="w-full flex-grow"></div>
     </div>
   );
 };

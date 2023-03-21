@@ -1,38 +1,34 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import { CodeBlock, useRobartState } from "../../state/useRobartState";
+import {
+  CodeBlock,
+  TimelineGroupState,
+  useRobartState,
+} from "../../state/useRobartState";
 
-export const RenameBlockModal = ({
+export const EditGroupModal = ({
   open,
   onClose,
-  block,
+  groupId,
 }: {
   open: boolean;
   onClose: () => void;
-  block: CodeBlock;
+  groupId: string;
 }) => {
-  const [name, setName] = useState<string>(block.name);
-  const renameBlock = useRobartState((state) => state.renameBlock);
+  const group = useRobartState((state) => state.timelineState.groups[groupId]);
+
   return (
     <Modal show={open} onClose={onClose}>
-      <Modal.Header>Rename Block</Modal.Header>
+      <Modal.Header>Edit Group</Modal.Header>
       <Modal.Body>
         <div>
           <div className="mb-2 block">
             <Label value="Block Name" />
           </div>
-          <TextInput value={name} onChange={(e) => setName(e.target.value)} />
+          <TextInput value={group.name} onChange={(e) => {}} />
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button
-          onClick={() => {
-            renameBlock(name);
-            onClose();
-          }}
-        >
-          Rename
-        </Button>
         <Button color="gray" onClick={onClose}>
           Cancel
         </Button>

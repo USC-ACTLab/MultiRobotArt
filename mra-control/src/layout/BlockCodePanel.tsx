@@ -1,19 +1,22 @@
 import React from "react";
-import { useBlockEditorState } from "../state/useBlockEditorState";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
+import { CodeBlock, useRobartState } from "../state/useRobartState";
 
 export const BlockCodePanel = () => {
-  const blocklyPython = useBlockEditorState((state) => state.blocklyPython);
-  return (
-    <div className="w-full h-full">
-      <div className="text-lg font-bold">Code panel</div>
-      <CodeMirror
-        value={blocklyPython}
-        className="w-full h-full"
-        extensions={[python()]}
-        readOnly={true}
-      />
-    </div>
-  );
+    const currentBlockId = useRobartState((state) => state.editingBlockId);
+    const currentBlock: CodeBlock | undefined = useRobartState(
+        (state) => state.blocks[currentBlockId ?? ""]
+    );
+    return (
+        <div className="h-full w-full">
+            <h2 className="text-lg font-bold">Code panel</h2>
+            <CodeMirror
+                value={currentBlock?.python}
+                className="h-full w-full"
+                extensions={[python()]}
+                readOnly={true}
+            />
+        </div>
+    );
 };
