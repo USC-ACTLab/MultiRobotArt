@@ -34,7 +34,7 @@ export const RobotEditor = () => {
         <div className="relative flex basis-4/5 flex-col p-4">
             <RenamableText
                 text={selectedRobot.name}
-                className="h-min w-fit min-w-[10px] gap-4 rounded-md border-2 border-white p-2 text-4xl font-extrabold transition-[width] duration-150 hover:border-black"
+                className={"text-4xl font-extrabold"}
                 updateText={(newText) =>
                     newText !== ""
                         ? updateRobot(selectedRobotId, { name: newText })

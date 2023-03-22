@@ -27,7 +27,7 @@ export const NavigationBar = () => {
         <>
             <div className="flex items-center gap-5 border-b-2 border-black p-4">
                 <RenamableText
-                    className="h-min w-fit min-w-[10px] gap-4 rounded-md border-2 border-white p-2 text-4xl font-extrabold transition-[width] duration-150 hover:border-black"
+                    className="text-4xl font-extrabold"
                     text={projectName}
                     updateText={(newText) => {
                         newText !== ""

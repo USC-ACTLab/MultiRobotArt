@@ -17,9 +17,7 @@ export const BlockEditorHeader = () => {
         <div className="m-2 flex items-center gap-2">
             <RenamableText
                 text={currentBlock.name}
-                className={
-                    "flex h-min w-fit min-w-[10px] gap-4 rounded-md border-2 border-white p-2 text-lg font-bold transition-[width] duration-150 hover:border-black"
-                }
+                className="text-lg font-bold"
                 updateText={(newText) => {
                     newText !== ""
                         ? renameBlock(newText)

@@ -1,5 +1,3 @@
-import { faCheck, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 
@@ -25,9 +23,12 @@ export const RenamableText = ({
         setWidth(span.current?.offsetWidth);
     }, [inputValue]);
 
+    const defaultClassName =
+        "h-min w-fit rounded-md border-2 border-white hover:border-black";
+
     return !showRenameInput ? (
         <h2
-            className={className}
+            className={clsx(defaultClassName, className)}
             onClick={() => {
                 setInputValue(text);
                 setShowRenameInput(true);
@@ -44,15 +45,19 @@ export const RenamableText = ({
             }}
         >
             <span
-                className={clsx(className, "absolute -z-40 opacity-0")}
+                className={clsx(
+                    defaultClassName,
+                    className,
+                    "absolute -z-40 whitespace-pre"
+                )}
                 ref={span}
             >
                 {inputValue}
             </span>
             <input
-                className={clsx(className, "overflow-hidden")}
+                className={clsx(defaultClassName, className)}
                 value={inputValue}
-                style={{ width }}
+                style={{ width: `calc(${width}px + 1ch)` }}
                 onChange={(e) => setInputValue(e.target.value)}
                 onBlur={() => setShowRenameInput(false)}
                 autoFocus
