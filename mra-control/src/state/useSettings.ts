@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export interface BlocklySettings {
   categories: string[]; // TODO: Use a stricter type from the blockly category definitions
@@ -21,8 +21,8 @@ export const useSettings = create<SettingsState>()(
       },
     }),
     {
-      name: "settingsStore",
+      name: 'settingsStore',
       storage: createJSONStorage(() => sessionStorage),
-    }
-  )
+    },
+  ),
 );

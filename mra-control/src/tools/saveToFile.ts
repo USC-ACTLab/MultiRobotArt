@@ -4,8 +4,8 @@
  * @param contents
  */
 export const saveToFile = (fileName: string, contents: string) => {
-  const element = document.createElement("a");
-  const file = new Blob([contents], { type: "text/plain" });
+  const element = document.createElement('a');
+  const file = new Blob([contents], { type: 'text/plain' });
   element.href = URL.createObjectURL(file);
   element.download = fileName;
   document.body.appendChild(element); // Required for this to work in FireFox

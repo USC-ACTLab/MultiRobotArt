@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import _ from "lodash";
+import _ from 'lodash';
+import * as THREE from 'three';
 
 const BINOMIAL_COEFFICIENTS = [
   [1],
@@ -17,25 +17,16 @@ const BINOMIAL_COEFFICIENTS = [
 
 export const MAX_CONTROL_POINTS = BINOMIAL_COEFFICIENTS.length;
 
-export const computeBezierPoint = (
-  controlPoints: THREE.Vector3[],
-  t: number
-): THREE.Vector3 => {
+export const computeBezierPoint = (controlPoints: THREE.Vector3[], t: number): THREE.Vector3 => {
   const b = new THREE.Vector3(0, 0, 0);
   const n = controlPoints.length - 1;
   for (let i = 0; i <= n; i++) {
-    b.addScaledVector(
-      controlPoints[i],
-      BINOMIAL_COEFFICIENTS[n][i] * Math.pow(1 - t, n - i) * Math.pow(t, i)
-    );
+    b.addScaledVector(controlPoints[i], BINOMIAL_COEFFICIENTS[n][i] * Math.pow(1 - t, n - i) * Math.pow(t, i));
   }
   return b;
 };
 
-export const interpolateBezierPoints = (
-  controlPoints: THREE.Vector3[],
-  interpolationCount: number
-): THREE.Vector3[] => {
+export const interpolateBezierPoints = (controlPoints: THREE.Vector3[], interpolationCount: number): THREE.Vector3[] => {
   return Array(interpolationCount)
     .fill(0)
     .map((_, i) => computeBezierPoint(controlPoints, i / interpolationCount));

@@ -1,6 +1,7 @@
-import { Button } from "flowbite-react";
-import React from "react";
-import { useRobartState } from "../state/useRobartState";
+import { Button } from 'flowbite-react';
+import React from 'react';
+
+import { useRobartState } from '../state/useRobartState';
 
 export const BlockManagerPanel = () => {
   const blocksMap = useRobartState((state) => state.blocks);
@@ -13,19 +14,14 @@ export const BlockManagerPanel = () => {
         <Button
           className="flex"
           onClick={() => {
-            const id = createBlock("New Block");
+            const id = createBlock('New Block');
             setEditingBlock(id);
           }}
         >
           New
         </Button>
         {blocks.map((b) => (
-          <Button
-            key={b.id}
-            className="flex"
-            onClick={() => setEditingBlock(b.id)}
-            color="success"
-          >
+          <Button key={b.id} className="flex" onClick={() => setEditingBlock(b.id)} color="success">
             {b.name}
           </Button>
         ))}

@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-declare module "*.glb" {
+declare module '*.glb' {
   const src: string;
   export default src;
 }

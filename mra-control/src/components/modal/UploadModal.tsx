@@ -1,7 +1,8 @@
-import { Button, Label, Modal, TextInput } from "flowbite-react";
-import React, { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { CancelButton } from "../buttons/CancelButton";
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import React, { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+
+import { CancelButton } from '../buttons/CancelButton';
 
 export const UploadFileModal = ({
   open,
@@ -18,8 +19,8 @@ export const UploadFileModal = ({
     acceptedFiles.forEach((file: File) => {
       const reader = new FileReader();
 
-      reader.onabort = () => console.log("file reading was aborted!");
-      reader.onerror = () => console.log("file reading failed!");
+      reader.onabort = () => console.log('file reading was aborted!');
+      reader.onerror = () => console.log('file reading failed!');
       reader.onload = () => {
         onFileUpload(reader.result as string);
         onClose();
@@ -36,7 +37,7 @@ export const UploadFileModal = ({
     onDragLeave: (e: any) => {},
     onDragOver: (e: any) => {},
     accept: {
-      "application/json": [".robart"],
+      'application/json': ['.robart'],
     },
   });
 
@@ -44,10 +45,7 @@ export const UploadFileModal = ({
     <Modal show={open} onClose={onClose}>
       <Modal.Header>{header}</Modal.Header>
       <Modal.Body>
-        <div
-          className="border-1 flex justify-center border-gray-500 bg-gray-50 p-5 py-14 text-lg shadow-lg"
-          {...getRootProps()}
-        >
+        <div className="border-1 flex justify-center border-gray-500 bg-gray-50 p-5 py-14 text-lg shadow-lg" {...getRootProps()}>
           <input ref={inputRef} {...getInputProps()} />
           <p>Drag & drop a project file here, or click to select a file</p>
         </div>

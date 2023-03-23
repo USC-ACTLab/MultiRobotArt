@@ -1,4 +1,4 @@
-import { VectorEditorItem } from "./VectorEditorItem";
+import { VectorEditorItem } from './VectorEditorItem';
 
 export const VectorEditor = ({ points }: { points: THREE.Vector3[] }) => {
   return (

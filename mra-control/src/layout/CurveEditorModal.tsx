@@ -1,41 +1,31 @@
-import { Button, Modal } from "flowbite-react";
-import { useRobartState } from "../state/useRobartState";
-import { useUIState } from "../state/useUIState";
-import { Canvas } from "@react-three/fiber";
-import { CurveEditor } from "./curveEditor/CurveEditor";
-import { useCurveEditorState } from "../state/useCurveEditorState";
-import * as THREE from "three";
-import { IconButton } from "../components/buttons/IconButton";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { VectorEditor } from "../components/vector/VectorEditor";
-import { useEffect, useState } from "react";
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Canvas } from '@react-three/fiber';
+import { Button, Modal } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import * as THREE from 'three';
+
+import { IconButton } from '../components/buttons/IconButton';
+import { VectorEditor } from '../components/vector/VectorEditor';
+import { useCurveEditorState } from '../state/useCurveEditorState';
+import { useRobartState } from '../state/useRobartState';
+import { useUIState } from '../state/useUIState';
+import { CurveEditor } from './curveEditor/CurveEditor';
 
 export const CurveEditorModal = () => {
   const [points, setPoints] = useState<THREE.Vector3[]>([]);
   const curveEditorOpen = useUIState((state) => state.curveEditorOpen);
   const toggleCurveEditor = useUIState((state) => state.toggleCurveEditor);
-  const bezierControlPoints = useCurveEditorState(
-    (state) => state.bezierControlPoints
-  );
+  const bezierControlPoints = useCurveEditorState((state) => state.bezierControlPoints);
   const addPoint = useCurveEditorState((state) => state.addBezierControlPoint);
-  const selectedPoint = useCurveEditorState(
-    (state) => state.selectedControlPoint
-  );
-  const pointCount = useCurveEditorState(
-    (state) => state.bezierControlPoints.length
-  );
+  const selectedPoint = useCurveEditorState((state) => state.selectedControlPoint);
+  const pointCount = useCurveEditorState((state) => state.bezierControlPoints.length);
 
   useEffect(() => {
     setPoints(bezierControlPoints);
   }, [selectedPoint, pointCount]);
 
   return (
-    <Modal
-      show={curveEditorOpen}
-      onClose={toggleCurveEditor}
-      className="!w-full"
-      size="w-full h-5/6"
-    >
+    <Modal show={curveEditorOpen} onClose={toggleCurveEditor} className="!w-full" size="w-full h-5/6">
       <Modal.Header>Curve Editor</Modal.Header>
       <Modal.Body className="h-[80vh]">
         <div className="flex h-full flex-row">
@@ -48,9 +38,7 @@ export const CurveEditorModal = () => {
                 bezierControlPoints.forEach((point) => {
                   runningSum.add(point);
                 });
-                const average = runningSum.divideScalar(
-                  bezierControlPoints.length
-                );
+                const average = runningSum.divideScalar(bezierControlPoints.length);
                 addPoint(average);
               }}
             />

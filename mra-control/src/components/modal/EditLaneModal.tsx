@@ -1,20 +1,9 @@
-import { Button, Label, Modal, TextInput } from "flowbite-react";
-import React, { useState } from "react";
-import {
-  CodeBlock,
-  TimelineGroupState,
-  useRobartState,
-} from "../../state/useRobartState";
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import React, { useState } from 'react';
 
-export const EditGroupModal = ({
-  open,
-  onClose,
-  groupId,
-}: {
-  open: boolean;
-  onClose: () => void;
-  groupId: string;
-}) => {
+import { CodeBlock, TimelineGroupState, useRobartState } from '../../state/useRobartState';
+
+export const EditGroupModal = ({ open, onClose, groupId }: { open: boolean; onClose: () => void; groupId: string }) => {
   const group = useRobartState((state) => state.timelineState.groups[groupId]);
 
   return (
