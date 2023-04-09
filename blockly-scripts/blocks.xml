@@ -1528,4 +1528,391 @@
 				<field name="HUE">230</field>
 			</block>
 		</value>
-	</block></xml>
+	</block><block type="factory_base" id="ATdza9NAyjouDXUemNay" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"></mutation>
+    <field name="NAME">sinusoid</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_value" id="l;TQAw%TYYUN(tiEO@0v">
+        <field name="INPUTNAME">NAME</field>
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="qLsDq%7)u;.E.WKYS]L7">
+            <field name="TEXT">move in sinusoid in the</field>
+            <next>
+              <block type="field_dropdown" id="B!(6*pDQnOX[[[%lM}6a">
+                <mutation options="[&quot;text&quot;,&quot;text&quot;,&quot;text&quot;]"></mutation>
+                <field name="FIELDNAME">axis</field>
+                <field name="USER0">x</field>
+                <field name="CPU0">x</field>
+                <field name="USER1">y</field>
+                <field name="CPU1">y</field>
+                <field name="USER2">z</field>
+                <field name="CPU2">z</field>
+                <next>
+                  <block type="field_static" id="}c)tQyyjjk)tB:p1w?LB">
+                    <field name="TEXT">axis with</field>
+                    <next>
+                      <block type="field_number" id="w2.B~a~yQ!rCq7T(v$8[">
+                        <field name="VALUE">0</field>
+                        <field name="FIELDNAME">amplitude</field>
+                        <field name="MIN">-Infinity</field>
+                        <field name="MAX">Infinity</field>
+                        <field name="PRECISION">0</field>
+                        <next>
+                          <block type="field_static" id="ahqIV6Dul#[-m)Be=@`P">
+                            <field name="TEXT">amplitude for</field>
+                            <next>
+                              <block type="field_number" id="4-5vu18#by@u0[}It}[z">
+                                <field name="VALUE">0</field>
+                                <field name="FIELDNAME">distance</field>
+                                <field name="MIN">-Infinity</field>
+                                <field name="MAX">Infinity</field>
+                                <field name="PRECISION">0</field>
+                                <next>
+                                  <block type="field_static" id="9HF6W6?)vWQa)Tfq(ORS">
+                                    <field name="TEXT">meters in</field>
+                                    <next>
+                                      <block type="field_number" id="kQPoESlTr2mhZ(ZDKNb(">
+                                        <field name="VALUE">0</field>
+                                        <field name="FIELDNAME">cycles</field>
+                                        <field name="MIN">-Infinity</field>
+                                        <field name="MAX">Infinity</field>
+                                        <field name="PRECISION">0.1</field>
+                                        <next>
+                                          <block type="field_static" id="k3)~$!(!wcGreX`hBqhf">
+                                            <field name="TEXT">cycles</field>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="TYPE">
+          <shadow type="type_null" id="T$uDbd4hkeT,B2dlLO(%"></shadow>
+        </value>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="$R|#E3;X6_Mus5(~|5HJ" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="/[:y`oV]HB#TKABwwG-@" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id=":nJp.GIbF+v{eGRHO`q~"></shadow>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="SlQe*tEfVJ`4z+BQ9,ct"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="zeXF}p,6WLBH_/$A1uD?">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="=r6;H4-gYO_{4Tc{fnsS" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"></mutation>
+    <field name="NAME">rose</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_value" id="GZV[Q5fu$?]^P!6nFv%9">
+        <field name="INPUTNAME">NAME</field>
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="tXDPOG(=VhYgx!Mq?O3@">
+            <field name="TEXT">move in rose curve with</field>
+            <next>
+              <block type="field_number" id="V1-^a7FQi0VG/tVPlCcU">
+                <field name="VALUE">0</field>
+                <field name="FIELDNAME">petals</field>
+                <field name="MIN">-Infinity</field>
+                <field name="MAX">Infinity</field>
+                <field name="PRECISION">0</field>
+                <next>
+                  <block type="field_static" id="C)-1YZv2Nok.~`@kean`">
+                    <field name="TEXT">petals and</field>
+                    <next>
+                      <block type="field_number" id="K;Gv~4jy(+~T?oMIeL{B">
+                        <field name="VALUE">0</field>
+                        <field name="FIELDNAME">radius</field>
+                        <field name="MIN">-Infinity</field>
+                        <field name="MAX">Infinity</field>
+                        <field name="PRECISION">0</field>
+                        <next>
+                          <block type="field_static" id="vD=q?~w7xvJ9%v)xjJXS">
+                            <field name="TEXT">radius in the</field>
+                            <next>
+                              <block type="field_dropdown" id="]2gwS%~7(.l=/z*[l8P@">
+                                <mutation options="[&quot;text&quot;,&quot;text&quot;,&quot;text&quot;]"></mutation>
+                                <field name="FIELDNAME">plane</field>
+                                <field name="USER0">xy</field>
+                                <field name="CPU0">xy</field>
+                                <field name="USER1">yz</field>
+                                <field name="CPU1">yz</field>
+                                <field name="USER2">xz</field>
+                                <field name="CPU2">xz</field>
+                                <next>
+                                  <block type="field_static" id="a=wcUTJSr-mMi4ip4u2%">
+                                    <field name="TEXT">plane</field>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="TYPE">
+          <shadow type="type_null" id="Oo;@CHT=a7BD=iXJA{hi"></shadow>
+        </value>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="opL*,tNIz=`%wUc/Pnzn" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="is3p+Gga}r/f!Sr;e.A(" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="jZkmBOskl8zoTOZ81wi`"></shadow>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="U:13$o]3?XwSphh=EoLa"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="b2f/11dQ[{FTRiUz4eJg">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="G8R6QIiyD?cPjqgP=:H6" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"></mutation>
+    <field name="NAME">sprial</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_value" id="Z;~9iitW1v+F+C?cTE!_">
+        <field name="INPUTNAME">NAME</field>
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="AKs1k(_0sIuOSZ/^CmGl">
+            <field name="TEXT">move in</field>
+            <next>
+              <block type="field_dropdown" id="2Q@H^Asf1zkj97)fPV#L">
+                <mutation options="[&quot;text&quot;,&quot;text&quot;]"></mutation>
+                <field name="FIELDNAME">direction</field>
+                <field name="USER0">clockwise</field>
+                <field name="CPU0">clockwise</field>
+                <field name="USER1">counterclockwise</field>
+                <field name="CPU1">counter</field>
+                <next>
+                  <block type="field_static" id="iLzv9olg]6{V8!x;xv~!">
+                    <field name="TEXT">spiral with a max radius of</field>
+                    <next>
+                      <block type="field_number" id="_`Zm{y`:Ps?io%fz;36{">
+                        <field name="VALUE">0</field>
+                        <field name="FIELDNAME">max_radius</field>
+                        <field name="MIN">-Infinity</field>
+                        <field name="MAX">Infinity</field>
+                        <field name="PRECISION">0</field>
+                        <next>
+                          <block type="field_static" id="V~pJo31^qk6~L2*g_swC">
+                            <field name="TEXT">for</field>
+                            <next>
+                              <block type="field_number" id="S*fG%6Qeym6!kWAeqM+~">
+                                <field name="VALUE">0</field>
+                                <field name="FIELDNAME">rotations</field>
+                                <field name="MIN">-Infinity</field>
+                                <field name="MAX">Infinity</field>
+                                <field name="PRECISION">0.1</field>
+                                <next>
+                                  <block type="field_static" id="=h.9z;[|IL{e}d4|%#!A">
+                                    <field name="TEXT">rotations in the</field>
+                                    <next>
+                                      <block type="field_dropdown" id="]2gwS%~7(.l=/z*[l8P@">
+                                        <mutation options="[&quot;text&quot;,&quot;text&quot;,&quot;text&quot;]"></mutation>
+                                        <field name="FIELDNAME">plane</field>
+                                        <field name="USER0">xy</field>
+                                        <field name="CPU0">xy</field>
+                                        <field name="USER1">yz</field>
+                                        <field name="CPU1">yz</field>
+                                        <field name="USER2">xz</field>
+                                        <field name="CPU2">xz</field>
+                                        <next>
+                                          <block type="field_static" id=":$;aYqL`es8XY,Pr8=Aa">
+                                            <field name="TEXT">plane</field>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="TYPE">
+          <shadow type="type_null" id="Lo/{6$ZWU6(9bd7#x)a1"></shadow>
+        </value>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="i(=o:El7%/!NJjK!U-3L" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="!^Cgl3lOKMAsU;wW`|sK" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="zEPQ^NB-*|*%}1hyL6j5"></shadow>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="uGV!!$^b!1lf[k7UxR#("></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="npLFPjD/G|l#PXSV?C2-">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="ws1mix=xXEhp!z4+@H_:" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"></mutation>
+    <field name="NAME">helix</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_value" id="16`.nh*ikc%F+A((=ED,">
+        <field name="INPUTNAME">NAME</field>
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="%bt#!3t|q:qnJ=l`g{3A">
+            <field name="TEXT">move in helix of</field>
+            <next>
+              <block type="field_number" id="JSR|$GsfaK~nbZVB_Klq">
+                <field name="VALUE">0</field>
+                <field name="FIELDNAME">radius</field>
+                <field name="MIN">-Infinity</field>
+                <field name="MAX">Infinity</field>
+                <field name="PRECISION">0</field>
+                <next>
+                  <block type="field_static" id="ogsgm9,3])@5tI[T[s.{">
+                    <field name="TEXT">radius in the</field>
+                    <next>
+                      <block type="field_dropdown" id="B!(6*pDQnOX[[[%lM}6a">
+                        <mutation options="[&quot;text&quot;,&quot;text&quot;,&quot;text&quot;]"></mutation>
+                        <field name="FIELDNAME">axis</field>
+                        <field name="USER0">x</field>
+                        <field name="CPU0">x</field>
+                        <field name="USER1">y</field>
+                        <field name="CPU1">y</field>
+                        <field name="USER2">z</field>
+                        <field name="CPU2">z</field>
+                        <next>
+                          <block type="field_static" id="8Hg!5m3g$7hLx1Qszr/e">
+                            <field name="TEXT">axis for</field>
+                            <next>
+                              <block type="field_number" id="]yan8N{oHV+*fS!k|$yS">
+                                <field name="VALUE">0</field>
+                                <field name="FIELDNAME">time</field>
+                                <field name="MIN">-Infinity</field>
+                                <field name="MAX">Infinity</field>
+                                <field name="PRECISION">0</field>
+                                <next>
+                                  <block type="field_static" id="a6*-]Z-9bS(`_i9f@Kh9">
+                                    <field name="TEXT">seconds at</field>
+                                    <next>
+                                      <block type="field_number" id="/X(?siL)?;/BrbV=/a?y">
+                                        <field name="VALUE">0</field>
+                                        <field name="FIELDNAME">speed</field>
+                                        <field name="MIN">-Infinity</field>
+                                        <field name="MAX">Infinity</field>
+                                        <field name="PRECISION">0</field>
+                                        <next>
+                                          <block type="field_static" id="{Cyn/E{e*8+E]@~8qX*]">
+                                            <field name="TEXT">m/s</field>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="TYPE">
+          <shadow type="type_null" id="rX^1/e1*+zjnZWjg77VZ"></shadow>
+        </value>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="I[:nj*F+-kQCKGp5,,#W" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="gs7i$9dl@WnYC$aC1WyY" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="O3mf~_tWGY4~A/Xdl0N@"></shadow>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="hn|ldUkX)`ze,3Cx5L*)"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="mEb(6nw5.JwDE[2b=ul9">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block></xml>
