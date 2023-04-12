@@ -1,11 +1,9 @@
-import { create } from "zustand";
-import * as THREE from "three";
-import { immer } from "zustand/middleware/immer";
-import { subscribeWithSelector } from "zustand/middleware";
-import {
-  interpolateBezierPoints,
-  MAX_CONTROL_POINTS,
-} from "../tools/vectors/bezier";
+import * as THREE from 'three';
+import { create } from 'zustand';
+import { subscribeWithSelector } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+
+import { MAX_CONTROL_POINTS, interpolateBezierPoints } from '../tools/vectors/bezier';
 
 export interface CurveEditorState {
   bezierControlPoints: THREE.Vector3[];
@@ -31,10 +29,7 @@ const INTERPOLATION_COUNT = 1000;
 export const useCurveEditorState = create<CurveEditorStoreState>()(
   subscribeWithSelector(
     immer((set, get) => ({
-      bezierControlPoints: [
-        new THREE.Vector3(1, 1, 1),
-        new THREE.Vector3(2, 5, 4),
-      ],
+      bezierControlPoints: [new THREE.Vector3(1, 1, 1), new THREE.Vector3(2, 5, 4)],
       selectedControlPoint: undefined,
       hoveredControlPoint: undefined,
       bezierLinePoints: [],
@@ -63,19 +58,16 @@ export const useCurveEditorState = create<CurveEditorStoreState>()(
         });
       },
       updateBezierInterpolationPoints: () => {
-        const interpolationPoints = interpolateBezierPoints(
-          get().bezierControlPoints,
-          INTERPOLATION_COUNT
-        );
+        const interpolationPoints = interpolateBezierPoints(get().bezierControlPoints, INTERPOLATION_COUNT);
         set({ bezierLinePoints: interpolationPoints });
       },
-    }))
-  )
+    })),
+  ),
 );
 
 useCurveEditorState.subscribe(
   (state) => state.bezierControlPoints,
   () => {
     useCurveEditorState.getState().updateBezierInterpolationPoints();
-  }
+  },
 );

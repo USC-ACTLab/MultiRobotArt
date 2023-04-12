@@ -1,24 +1,15 @@
-import { Button, TextInput } from "flowbite-react";
-import { IconButton } from "../buttons/IconButton";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
-import { useCurveEditorState } from "../../state/useCurveEditorState";
-import * as THREE from "three";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, TextInput } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import * as THREE from 'three';
 
-export const VectorEditorItem = ({
-  id,
-  point,
-}: {
-  id: number;
-  point: THREE.Vector3;
-}) => {
-  const updatePoint = useCurveEditorState(
-    (state) => state.updateBezierControlPoint
-  );
-  const removeBezierPoint = useCurveEditorState(
-    (state) => state.removeBezierControlPoint
-  );
+import { useCurveEditorState } from '../../state/useCurveEditorState';
+import { IconButton } from '../buttons/IconButton';
+
+export const VectorEditorItem = ({ id, point }: { id: number; point: THREE.Vector3 }) => {
+  const updatePoint = useCurveEditorState((state) => state.updateBezierControlPoint);
+  const removeBezierPoint = useCurveEditorState((state) => state.removeBezierControlPoint);
   const [pos, setPos] = useState({
     x: `${point.x}`,
     y: `${point.y}`,
@@ -26,14 +17,7 @@ export const VectorEditorItem = ({
   });
 
   useEffect(() => {
-    updatePoint(
-      id,
-      new THREE.Vector3(
-        parseFloat(pos.x) || 0,
-        parseFloat(pos.y) || 0,
-        parseFloat(pos.z) || 0
-      )
-    );
+    updatePoint(id, new THREE.Vector3(parseFloat(pos.x) || 0, parseFloat(pos.y) || 0, parseFloat(pos.z) || 0));
   }, [pos]);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
-#  `mra-control` - Web UI for Robot Block Programming
+# `mra-control` - Web UI for Robot Block Programming
 
-This is the (proposed) scaffolding for the UI (control) part of MRA. This is a pretty basic React (Typescript) app that 
+This is the (proposed) scaffolding for the UI (control) part of MRA. This is a pretty basic React (Typescript) app that
 
 Some notes for the folder structure of this sub-project:
 
@@ -11,7 +11,9 @@ Some notes for the folder structure of this sub-project:
 
 Some other notes on things that I propose to use (and have done so in scaffolding this so far):
 
-1.  `tailwind` - Keeps CSS styling in closest terms to raw CSS styles as possible, while also being very quick and modular. Fluent classes are provided, which aims to be accessible to folks who may have some basic CSS experience but not other higher-level frameworks (like boostrap).
-2. `flowbite` - Higher level tailwind framework that provides simple but nice looking base components (`Button`, `Modal`, etc).
-3. `zustand` - Simple/lightweight/accessible state management framework. Preferred to larger frameworks that require more boilerplate (such as `redux`). Allows for state to be shared between otherwise unrelated components.
-4. `react-blockly` - Blockly integration into `react` (really just a lightweight wrapper).
+1.  `tailwind` - Keeps CSS styling in closest terms to raw CSS styles as possible, while also being very quick and modular. Fluent classes are
+    provided, which aims to be accessible to folks who may have some basic CSS experience but not other higher-level frameworks (like boostrap).
+2.  `flowbite` - Higher level tailwind framework that provides simple but nice looking base components (`Button`, `Modal`, etc).
+3.  `zustand` - Simple/lightweight/accessible state management framework. Preferred to larger frameworks that require more boilerplate (such as
+    `redux`). Allows for state to be shared between otherwise unrelated components.
+4.  `react-blockly` - Blockly integration into `react` (really just a lightweight wrapper).
