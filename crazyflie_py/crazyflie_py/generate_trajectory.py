@@ -65,36 +65,41 @@ def func_eq_constraint_der_value(coefficients, i, t, desired_value, order):
   #   result += (e.yaw - yaw) ** 2
   # return result
 
-def generate_trajectory_from_file(filename, num_pieces=5):
+def generate_trajectory_from_file(filename, num_pieces=5, approx=False):
   data = np.loadtxt(filename, delimiter=',', skiprows=1)
-  return generate_trajectory(data, num_pieces)
+  return generate_trajectory(data, num_pieces, approx)
 
 
-def generate_trajectory(data, num_pieces):
+def generate_trajectory(data, num_pieces, approx=False):
   piece_length = data[-1,0] / num_pieces
-
+  # print(piece_length)
   x0 = np.zeros(num_pieces * 8)
 
   constraints = []
   # piecewise values and derivatives have to match
   for i in range(1, num_pieces):
     for order in range(0, 4):
-      constraints.append({'type': 'eq', 'fun': func_eq_constraint_der, 'args': (i, piece_length, order)})
+        if approx:
+            constraints.append({'type': 'ineq', 'fun': lambda coef, i, p, l: np.abs(func_eq_constraint_der(coef, i, p, l)) - 0.0005, 'args': (i, piece_length, order)})
+            # constraints.append({'type': 'ineq', 'fun': lambda coef, i, p, l: -func_eq_constraint_der(coef, i, p, l) - 0.0005, 'args': (i, piece_length, order)})
+            # constraints.append({'type': 'eq', 'fun': func_eq_constraint_der, 'ub': 0.005, 'lb': 0.005, 'args': (i, piece_length, order)})
+        else:
+            constraints.append({'type': 'eq', 'fun': func_eq_constraint_der, 'args': (i, piece_length, order)})
 
   # zero derivative at the beginning and end
   for order in range(1, 3):
     constraints.append({'type': 'eq', 'fun': func_eq_constraint_der_value, 'args': (0, 0, 0, order)})
     constraints.append({'type': 'eq', 'fun': func_eq_constraint_der_value, 'args': (num_pieces-1, piece_length, 0, order)})
 
-  print("fitting x")
-  resX = scipy.optimize.minimize(func, x0, (data[:,0], data[:,1], piece_length), method="SLSQP", options={"maxiter": 100}, 
+  # print("fitting x")
+  resX = scipy.optimize.minimize(func, x0, (data[:,0], data[:,1], piece_length), method="SLSQP", options={"maxiter": 100},
     constraints=constraints
     )
-  print("fitting y")
-  resY = scipy.optimize.minimize(func, x0, (data[:,0], data[:,2], piece_length), method="SLSQP", options={"maxiter": 100}, 
+  # print("fitting y")
+  resY = scipy.optimize.minimize(func, x0, (data[:,0], data[:,2], piece_length), method="SLSQP", options={"maxiter": 100},
     constraints=constraints
     )
-  print("fitting z")
+  # print("fitting z")
   resZ = scipy.optimize.minimize(func, x0, (data[:,0], data[:,3], piece_length), method="SLSQP", options={"maxiter": 100}, 
     constraints=constraints
     )
@@ -110,7 +115,6 @@ def generate_trajectory(data, num_pieces):
     np.array(resY.x[i*8:(i+1)*8][::-1]),
     np.array(resZ.x[i*8:(i+1)*8][::-1]),
     np.array(resYaw.x[i*8:(i+1)*8][::-1])) for i in range(0, num_pieces)]
-    
   traj.duration = data[-1,0]
   return traj
 
@@ -119,11 +123,14 @@ def constant_traj(t):
 
 def generate_position_data(fx=constant_traj, fy=constant_traj, fz=constant_traj, fyaw=constant_traj, domain=(0,1), output='test.csv'):
   t = np.linspace(*domain, int(domain[1] - domain[0]) * 30) # 20 points per second to fit
+  data = []
   with open(output, 'w') as f:
     f.write("t,x,y,z,yaw\n")
 
     for i in t:
       f.write("{},{},{},{},{}\n".format(i, fx(i), fy(i), fz(i), fyaw(i)))
+      data.append((i, fx(i), fy(i), fz(i), fyaw(i)))
+  return data
   
 
 
