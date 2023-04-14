@@ -13,6 +13,10 @@ def main():
     timeHelper = swarm.timeHelper
     allcfs = swarm.allcfs
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     for p in traj1.polynomials:
         temp_z = p.pz
         temp_y = p.py
@@ -21,7 +25,11 @@ def main():
         p.pz = temp_y
 
     TRIALS = 1
+<<<<<<< HEAD
     TIMESCALE = 5.0
+=======
+    TIMESCALE = 5 
+>>>>>>> origin/main
     for i in range(TRIALS):
         for cf in allcfs.crazyflies:
             cf.uploadTrajectory(0, 0, traj1)

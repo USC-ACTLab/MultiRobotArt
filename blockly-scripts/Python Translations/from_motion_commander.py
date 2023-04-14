@@ -489,7 +489,7 @@ class direction(Enum):
 
 class blocklyMotion:
 
-    def circle(self, radius_m, velocity, angle_degrees, direction: direction):
+    def circle_turning(self, radius_m, velocity, angle_degrees, direction: direction):
         if direction == direction.left:
             MotionCommander.circle_left(radius_m, velocity, angle_degrees)
         elif direction == direction.right:
