@@ -75,7 +75,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           pos: newPos,
           timeAlongTrajectory: trajectoryTime,
         };
-        console.log(trajectoryTime);
 
         if (robots[robotId].timeAlongTrajectory >= 1) {
           robots[robotId].trajectory = null;

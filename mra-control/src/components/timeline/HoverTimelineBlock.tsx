@@ -9,7 +9,7 @@ export const HoverTimelineBlock = ({ scale, startTime, isOverlapping }: { scale:
   const selectedBlockId = useRobartState((state) => state.editingBlockId);
   const selectedBlock = useRobartState((state) => state.blocks[selectedBlockId ?? '']);
 
-  if (startTime !== undefined || !selectedBlockId) return <></>;
+  if (startTime === undefined || !selectedBlockId) return <></>;
 
   return (
     <div

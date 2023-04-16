@@ -28,13 +28,10 @@ export const Simulation = () => {
         updateTrajectory(robot.id, trajectory, Math.random() * 8 + 2);
       });
     }, 5 * 1000);
-
-    // console.log(robots);
   }, []);
 
   useFrame(({ clock }) => {
     step();
-    console.log(robots);
   });
 
   return (

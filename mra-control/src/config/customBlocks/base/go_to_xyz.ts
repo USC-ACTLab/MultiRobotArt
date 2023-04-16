@@ -1,5 +1,7 @@
 import Blockly from 'blockly';
 import { pythonGenerator as python } from 'blockly/python';
+import { javascriptGenerator as js } from 'blockly/javascript';
+import { useSimulator } from '@MRAControl/state/useSimulator';
 
 Blockly.Blocks['go_to_xyz'] = {
   init: function () {
@@ -26,11 +28,11 @@ python['go_to_xyz'] = (block: Blockly.Block) => {
   return code;
 };
 
-Blockly.JavaScript['go_to_xyz'] = (block: Blockly.Block) => {
-  var x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
-  var y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
-  var z = Blockly.JavaScript.valueToCode(block, 'z', Blockly.JavaScript.ORDER_ATOMIC);
-  var speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC);
+js['go_to_xyz'] = (block: Blockly.Block) => {
+  var x = js.valueToCode(block, 'x', js.ORDER_ATOMIC);
+  var y = js.valueToCode(block, 'y', js.ORDER_ATOMIC);
+  var z = js.valueToCode(block, 'z', js.ORDER_ATOMIC);
+  var speed = js.valueToCode(block, 'speed', js.ORDER_ATOMIC);
 
-  return `COMMAND_GOTO(${x}, ${y}, ${z}, ${speed})`;
+  return `simulator_go_to_xyz(group_state, ${x}, ${y}, ${z}, ${speed})`;
 };

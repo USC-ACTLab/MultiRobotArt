@@ -21,6 +21,10 @@ export interface CodeBlock {
    */
   python: string;
   /**
+   * The JavaScript code that we can execute in the browser to simulate the action in browser simulation.
+   */
+  javaScript: string;
+  /**
    * The user-defined name of the block.
    */
   name: string;
@@ -304,6 +308,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
               name: name,
               xml: '',
               python: '',
+              javaScript: '',
               duration: 10,
             };
             set((state) => {

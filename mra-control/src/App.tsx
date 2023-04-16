@@ -1,7 +1,7 @@
 import React from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
-import { BlockCodePanel } from './layout/BlockCodePanel';
+import { BlockPythonCodePanel } from './layout/BlockPythonCodePanel';
 import { BlockEditorPanel } from './layout/BlockEditorPanel';
 import { BlockManagerPanel } from './layout/BlockManagerPanel';
 import { NavigationBar } from './layout/NavigationBar';
