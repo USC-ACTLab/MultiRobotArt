@@ -1,11 +1,12 @@
 import { faPlay, faRobot, faSquare } from '@fortawesome/free-solid-svg-icons';
-
 import { IconButton } from '../components/buttons/IconButton';
 import { TimelineGroupBody } from '../components/timeline/TimelineGroupBody';
 import { TimelineGroupLabel } from '../components/timeline/TimelineGroupLabel';
 import { useRobartState } from '../state/useRobartState';
 import { useUIState } from '../state/useUIState';
 import { RobotManagerModal } from './robotManager/RobotManagerModal';
+import { SimulationPanel } from './simulation/SimulationPanel';
+import { TimelineMarker } from '@MRAControl/components/timeline/TimelineMarker';
 
 export const Timeline = () => {
   const timelineState = useRobartState((state) => state.timelineState);
@@ -33,10 +34,11 @@ export const Timeline = () => {
               <TimelineGroupLabel group={group} key={group.id} />
             ))}
           </div>
-          <div className="flex h-full flex-col gap-2 overflow-x-auto">
+          <div className="relative flex h-full flex-col gap-2 overflow-x-auto">
             {groups.map((group) => (
               <TimelineGroupBody group={group} key={group.id} />
             ))}
+            <TimelineMarker />
           </div>
         </div>
       </div>

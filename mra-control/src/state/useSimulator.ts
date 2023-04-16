@@ -50,7 +50,7 @@ export interface SimulatorActions {
 export const useSimulator = create<SimulatorState & SimulatorActions>()(
   immer((set, get) => ({
     ...defaultSimulatorState,
-    play: () => set({ status: 'RUNNING' }),
+    play: () => set({ status: 'RUNNING', time: 0 }),
     pause: () => set({ status: 'PAUSED' }),
     halt: () => set({ status: 'STOPPED' }),
     step: () => {
@@ -154,19 +154,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         .multiplyScalar(2);
 
       return [a0, a1, a2, a3, a4, a5, a6, a7];
-      // set(
-      //     (state) =>
-      //         (state.robots[robotId].trajectory = [
-      //             a0,
-      //             a1,
-      //             a2,
-      //             a3,
-      //             a4,
-      //             a5,
-      //             a6,
-      //             a7,
-      //         ])
-      // );
     },
   })),
 );

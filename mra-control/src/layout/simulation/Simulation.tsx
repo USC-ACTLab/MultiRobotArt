@@ -40,7 +40,7 @@ export const Simulation = () => {
   return (
     <>
       <OrbitControls maxPolarAngle={Math.PI * (1 / 2 - 1 / 10)} minPolarAngle={0} minDistance={15} maxDistance={20} />
-      <Environment preset="warehouse" />
+      <Environment preset="night" background={true} />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
       </GizmoHelper>
@@ -54,13 +54,19 @@ export const Simulation = () => {
         fadeStrength={1.2}
         infiniteGrid={true}
       />
-      <ambientLight intensity={0.1} />
-      <directionalLight color="blue" position={[0, 5, 5]} />
-      <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
+      {/* <ambientLight intensity={0.1} />
+      <directionalLight color="blue" position={[0, 5, 5]} /> */}
+      {/* <Sky
+                distance={450000}
+                sunPosition={[0, 1, 0]}
+                inclination={0}
+                azimuth={0.25}
+            /> */}
 
       {Object.values(robots).map((robot) => (
         <group key={robot.id} ref={marker} position={robot.pos}>
           <Crazyflie />
+          <pointLight intensity={1} />
         </group>
       ))}
     </>

@@ -9,7 +9,7 @@ export const HoverTimelineBlock = ({ scale, startTime, isOverlapping }: { scale:
   const selectedBlockId = useRobartState((state) => state.editingBlockId);
   const selectedBlock = useRobartState((state) => state.blocks[selectedBlockId ?? '']);
 
-  if (startTime === undefined) return <></>;
+  if (startTime !== undefined || !selectedBlockId) return <></>;
 
   return (
     <div
@@ -19,7 +19,7 @@ export const HoverTimelineBlock = ({ scale, startTime, isOverlapping }: { scale:
       )}
       style={{
         width: PIXELS_PER_SECOND * scale * selectedBlock.duration,
-        left: PIXELS_PER_SECOND * scale * startTime,
+        left: PIXELS_PER_SECOND * scale * startTime!,
       }}
     >
       {isOverlapping ? <FontAwesomeIcon icon={faXmarkCircle} /> : <FontAwesomeIcon icon={faPlusCircle} />}
