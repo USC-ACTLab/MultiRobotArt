@@ -10,7 +10,7 @@ interface TimelineGroupProps {
 }
 
 // 1 distance unit = 100 pixels = 1 second * scale  = scale 1
-export const PIXELS_PER_SECOND = 10;
+export const PIXELS_PER_SECOND = 25;
 
 export const blockOverlaps = (
   group: TimelineGroupState,

@@ -8,14 +8,20 @@ import * as SIM from './simulatorCommands';
 
 export const FPS = 60;
 
-type Trajectory = [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3] | null;
+type TrajectoryPolynomial = [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3] | null;
+
+export interface Trajectory {
+  polynomial: TrajectoryPolynomial;
+  duration: number;
+}
 
 export interface RobotSimState {
   id: string;
   pos: THREE.Vector3;
   vel: THREE.Vector3;
   acc: THREE.Vector3;
-  trajectory: Trajectory;
+  trajectories: Trajectory[];
+  trajectory: TrajectoryPolynomial;
   trajectoryDuration: number;
   timeAlongTrajectory: number;
 }
@@ -34,6 +40,8 @@ const defaultSimulatorState: SimulatorState = {
   status: 'STOPPED',
 };
 
+const SIMULATOR_TIMEOUTS: NodeJS.Timeout[] = [];
+
 export interface SimulatorActions {
   play: () => void;
   pause: () => void;
@@ -46,9 +54,10 @@ export interface SimulatorActions {
    * @returns
    */
   setRobots: (robots: Record<string, RobotState>) => void;
-  updateTrajectory: (robotId: string, trajectory: Trajectory, duration: number) => void;
-  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => Trajectory;
+  updateTrajectory: (robotId: string, trajectory: TrajectoryPolynomial, duration: number) => void;
+  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => TrajectoryPolynomial;
   executeSimulation: (startTime: number) => void;
+  cancelSimulation: () => void;
 }
 
 export const useSimulator = create<SimulatorState & SimulatorActions>()(
@@ -60,12 +69,16 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
    },
     pause: () => {
       set({ status: 'PAUSED' });
+      get().cancelSimulation();
     },
     resume: () => {
       set({ status: 'RUNNING' });
       get().executeSimulation(get().time);
     },
-    halt: () => set({ status: 'STOPPED' }),
+    halt: () => {
+      set({ status: 'STOPPED' });
+      get().cancelSimulation();
+    },
     step: () => {
       const { status, time, timeDilation, robots: currentRobots } = get();
       if (status !== 'RUNNING') return;
@@ -113,6 +126,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           timeAlongTrajectory: 0,
           trajectory: null,
           trajectoryDuration: 0,
+          trajectories: []
         };
       });
       set({ robots: simRobots });
@@ -188,9 +202,18 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           const timeout = setTimeout(() => {
             eval(blocks[timelineItem.blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
           }, timeline.scale * offset * 1000);
+          SIMULATOR_TIMEOUTS.push(timeout);
           console.log('Set block', timelineItem.blockId, ' to execute with timeout ', offset);
         });
       })
+    },
+    cancelSimulation: () => {
+      // Clear all of the timeouts
+      SIMULATOR_TIMEOUTS.map(timeout => clearInterval(timeout));
+      while(SIMULATOR_TIMEOUTS.length > 0) 
+        SIMULATOR_TIMEOUTS.pop();
+
+      console.log('cancelled the timeouts');
     }
   })),
 );
