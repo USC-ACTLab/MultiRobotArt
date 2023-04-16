@@ -2,9 +2,11 @@ import * as THREE from 'three';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import { RobotState } from './useRobartState';
+import { RobotState, TimelineState, useRobartState } from './useRobartState';
+import { SimulatorGroupState } from './simulatorCommands';
+import * as SIM from './simulatorCommands';
 
-export const FPS = 30;
+export const FPS = 60;
 
 type Trajectory = [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3] | null;
 
@@ -29,12 +31,13 @@ const defaultSimulatorState: SimulatorState = {
   robots: {},
   time: 0,
   timeDilation: 1,
-  status: 'RUNNING',
+  status: 'STOPPED',
 };
 
 export interface SimulatorActions {
   play: () => void;
   pause: () => void;
+  resume: () => void;
   halt: () => void;
   step: () => void;
   /**
@@ -45,13 +48,23 @@ export interface SimulatorActions {
   setRobots: (robots: Record<string, RobotState>) => void;
   updateTrajectory: (robotId: string, trajectory: Trajectory, duration: number) => void;
   robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => Trajectory;
+  executeSimulation: (startTime: number) => void;
 }
 
 export const useSimulator = create<SimulatorState & SimulatorActions>()(
   immer((set, get) => ({
     ...defaultSimulatorState,
-    play: () => set({ status: 'RUNNING', time: 0 }),
-    pause: () => set({ status: 'PAUSED' }),
+    play: () => { 
+      set({ status: 'RUNNING', time: 0 });
+      get().executeSimulation(0);
+   },
+    pause: () => {
+      set({ status: 'PAUSED' });
+    },
+    resume: () => {
+      set({ status: 'RUNNING' });
+      get().executeSimulation(get().time);
+    },
     halt: () => set({ status: 'STOPPED' }),
     step: () => {
       const { status, time, timeDilation, robots: currentRobots } = get();
@@ -69,6 +82,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         robot.trajectory.map((coefficient, i) => {
           newPos.addScaledVector(coefficient, Math.pow(trajectoryTime, i));
         });
+
+        console.log('robot', robotId, 'newpos', newPos);
 
         robots[robotId] = {
           ...robots[robotId],
@@ -152,7 +167,30 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         .addScaledVector(pos, -10)
         .multiplyScalar(2);
 
-      return [a0, a1, a2, a3, a4, a5, a6, a7];
+      return [a0, a1, a2, a3, a4, a5, a6, a7] as any; // TODO: For some reason typescript is unhappy here...
     },
+    executeSimulation: (startTime) => {
+      const timeline = useRobartState.getState().timelineState;
+      const blocks = useRobartState.getState().blocks;
+      console.log('execute', timeline.groups);
+      Object.values(timeline.groups).forEach(group => {
+        // Need the following local variables so that the EVAL works properly.
+        const group_state: SimulatorGroupState = {
+          robotIDs: Object.keys(group.robots)
+        };
+        const simulator_go_to_xyz = SIM.simulator_go_to_xyz; 
+        // END: The need of said local variables
+        Object.values(group.items).forEach(timelineItem => {
+          console.log('item time', timelineItem.startTime);
+          const offset = timelineItem.startTime - startTime;
+          if(offset < 0) return;
+          
+          const timeout = setTimeout(() => {
+            eval(blocks[timelineItem.blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+          }, timeline.scale * offset * 1000);
+          console.log('Set block', timelineItem.blockId, ' to execute with timeout ', offset);
+        });
+      })
+    }
   })),
 );

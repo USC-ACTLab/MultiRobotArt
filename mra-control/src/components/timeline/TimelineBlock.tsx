@@ -22,7 +22,6 @@ export const TimelineBlock = ({ item, scale }: { item: TimelineItem; scale: numb
       updateItem(item.groupId, item.id, newStartTime);
     }
   });
-
   return (
     <div
       className={clsx(

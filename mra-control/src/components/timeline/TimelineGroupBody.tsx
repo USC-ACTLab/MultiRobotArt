@@ -64,7 +64,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
       if (selectedBlockId === undefined || parentScrollOffsetX === undefined) return;
 
       const startTime = (offsetX + parentScrollOffsetX) / (PIXELS_PER_SECOND * scale) - blocks[selectedBlockId].duration / 2;
-
+ 
       return startTime;
     }
   };
