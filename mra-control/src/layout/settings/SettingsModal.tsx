@@ -1,12 +1,13 @@
-import { Button, Label, Modal, Tabs, TabsRef, TextInput } from "flowbite-react";
-import React, { useRef, useState } from "react";
-import { CancelButton } from "../../components/buttons/CancelButton";
-import { IconButton } from "../../components/buttons/IconButton";
-import { useUIState } from "../../state/useUIState";
-import { faSync } from "@fortawesome/free-solid-svg-icons";
-import { useRobartState } from "../../state/useRobartState";
-import { ConfirmationModal } from "../../components/modal/ConfirmationModal";
-import { CurveEditorModal } from "../curveEditor/CurveEditorModal";
+import { faSync } from '@fortawesome/free-solid-svg-icons';
+import { Button, Label, Modal, Tabs, TabsRef, TextInput } from 'flowbite-react';
+import React, { useRef, useState } from 'react';
+
+import { CancelButton } from '../../components/buttons/CancelButton';
+import { IconButton } from '../../components/buttons/IconButton';
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal';
+import { useRobartState } from '../../state/useRobartState';
+import { useUIState } from '../../state/useUIState';
+import { CurveEditorModal } from '../curveEditor/CurveEditorModal';
 
 export const SettingsModal = () => {
   const settingsModalOpen = useUIState((state) => state.settingsModalOpen);
@@ -30,10 +31,7 @@ export const SettingsModal = () => {
                 <div className="mb-2 block">
                   <Label value="Project Name" />
                 </div>
-                <TextInput
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                />
+                <TextInput value={projectName} onChange={(e) => setProjectName(e.target.value)} />
               </div>
             </Tabs.Item>
             <Tabs.Item title="Blocks">Block Settings</Tabs.Item>
@@ -45,12 +43,7 @@ export const SettingsModal = () => {
         </Modal.Body>
         <Modal.Footer>
           <CancelButton onClick={toggleSettingsModal} />
-          <IconButton
-            color="warning"
-            text="Reset Project"
-            icon={faSync}
-            onClick={() => setConfirmOpen(true)}
-          />
+          <IconButton color="warning" text="Reset Project" icon={faSync} onClick={() => setConfirmOpen(true)} />
         </Modal.Footer>
       </Modal>
       <ConfirmationModal

@@ -1,47 +1,47 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useBlocklyWorkspace } from "react-blockly";
-import { blocklyToolboxConfiguration } from "../config/BlockToolboxConfig";
-import { pythonGenerator } from "blockly/python";
-import { CodeBlock, useRobartState } from "../state/useRobartState";
-import Blockly from "blockly";
-import "../config/customBlocks";
-import { BlockEditorHeader } from "./BlockEditorHeader";
+import Blockly from 'blockly';
+import { pythonGenerator } from 'blockly/python';
+import { javascriptGenerator } from 'blockly/javascript';
+import React, { useEffect, useRef, useState } from 'react';
+import { useBlocklyWorkspace } from 'react-blockly';
+
+import { blocklyToolboxConfiguration } from '../config/BlockToolboxConfig';
+import '../config/customBlocks';
+import { CodeBlock, useRobartState } from '../state/useRobartState';
+import { BlockEditorHeader } from './BlockEditorHeader';
 
 export const BlockEditorPanel = () => {
   const workspaceRef = useRef<any>(null);
-  const [localBlockId, setLocalBlockId] = useState<string | undefined>(
-    undefined
-  );
+  const [localBlockId, setLocalBlockId] = useState<string | undefined>(undefined);
   const currentBlockId = useRobartState((state) => state.editingBlockId);
 
   const saveBlock = useRobartState((state) => state.saveBlock);
 
   const { workspace, xml } = useBlocklyWorkspace({
     toolboxConfiguration: blocklyToolboxConfiguration,
-    initialXml: "",
+    initialXml: '',
     workspaceConfiguration: {
       grid: {
         spacing: 20,
         length: 3,
-        colour: "#ccc",
+        colour: '#ccc',
         snap: true,
       },
     },
     onWorkspaceChange: (workspace) => {
       const python = pythonGenerator.workspaceToCode(workspace);
-      if (localBlockId && xml) saveBlock(localBlockId, { xml, python });
+      const javaScript = javascriptGenerator.workspaceToCode(workspace);
+      if (localBlockId && xml) saveBlock(localBlockId, { xml, python, javaScript });
     },
     ref: workspaceRef,
   });
 
   useEffect(() => {
-    window.dispatchEvent(new Event("resize"));
+    window.dispatchEvent(new Event('resize'));
 
     setLocalBlockId(currentBlockId);
     if (currentBlockId) {
       workspace?.setVisible(true);
-      const currentBlock: CodeBlock =
-        useRobartState.getState().blocks[currentBlockId];
+      const currentBlock: CodeBlock = useRobartState.getState().blocks[currentBlockId];
       if (currentBlock.xml && workspace) {
         var xmlDom = Blockly.Xml.textToDom(currentBlock.xml);
         Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom, workspace);

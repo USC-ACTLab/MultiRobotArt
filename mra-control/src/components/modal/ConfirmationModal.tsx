@@ -1,4 +1,4 @@
-import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
 
 interface ConfirmationModalProps {
   open: boolean;
@@ -7,13 +7,7 @@ interface ConfirmationModalProps {
   header: string;
 }
 
-export const ConfirmationModal = ({
-  open,
-  onCancel,
-  onConfirm,
-  header,
-  children,
-}: React.PropsWithChildren<ConfirmationModalProps>) => {
+export const ConfirmationModal = ({ open, onCancel, onConfirm, header, children }: React.PropsWithChildren<ConfirmationModalProps>) => {
   return (
     <Modal show={open} onClose={onCancel}>
       <Modal.Header>{header}</Modal.Header>
