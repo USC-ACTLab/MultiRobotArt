@@ -1,5 +1,16 @@
 # `mra-control` - Web UI for Robot Block Programming
 
+## Instructions
+
+To run the project, you should just need to do the following:
+
+1. Clone the repository, and `cd` into the `mra-control` directory.
+2. Install NodeJS/NPM if you do not have it installed already.
+3. Install the required packages using `npm i`.
+4. Launch the application with `npm run dev`.
+
+## Overall Design Considerations
+
 This is the (proposed) scaffolding for the UI (control) part of MRA. This is a pretty basic React (Typescript) app that
 
 Some notes for the folder structure of this sub-project:
