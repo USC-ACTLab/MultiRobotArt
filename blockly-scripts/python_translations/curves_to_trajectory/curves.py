@@ -77,6 +77,7 @@ def sine(amplitude, flight_time, distance, cycles=1):
 
 # a defines the radius of the rose.
 # https://en.wikipedia.org/wiki/Rose_(mathematics)
+# Make rose return a var called Domain to adjust the time
 def rose(a, n, d, flight_time):
     param = d * 2 * np.pi / flight_time
     k = n / d
@@ -99,9 +100,9 @@ def spiral(b, r_max, flight_time):
     return x_fun, y_fun
 
 
-def helix(r, flight_time, speed_z, angle_degrees=360):
-    x_fun, y_fun = circle_facing_constant(r, flight_time,
-                                          angle_degrees=angle_degrees)
+def helix(center, flight_time, speed_z, angle_degrees=360, clockwise=True):
+    x_fun, y_fun = circle_facing_constant(center, flight_time,
+                                          angle_degrees=angle_degrees, clockwise=clockwise)
     z_fun = lambda t: speed_z * t
 
     plot_curve_3d(x_fun, y_fun, z_fun, flight_time)

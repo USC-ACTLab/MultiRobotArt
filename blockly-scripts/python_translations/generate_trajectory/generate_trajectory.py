@@ -4,7 +4,7 @@ import argparse
 
 import numpy as np
 import scipy.optimize
-from crazyflie_py.crazyflie_py import uav_trajectory
+from crazyflie_py import uav_trajectory
 
 
 # computes the difference between current interpolation and desired values
@@ -145,14 +145,15 @@ def constant_traj(t):
 def generate_position_data(fx=constant_traj, fy=constant_traj, fz=constant_traj,
     fyaw=constant_traj, domain=(0, 1), output='test.csv'):
     t = np.linspace(*domain, int(
-        domain[1] - domain[0]) * 30)  # 20 points per second to fit
+        domain[1] - domain[0]) * 20)  # 20 points per second to fit
     data = []
     with open(output, 'w') as f:
         f.write("t,x,y,z,yaw\n")
 
         for i in t:
-            f.write("{},{},{},{},{}\n".format(i, fx(i), fy(i), fz(i), fyaw(i)))
-            data.append((i, fx(i), fy(i), fz(i), fyaw(i)))
+            step = (i, fx(i) - fx(domain[0]), fy(i)-fy(domain[0]), fz(i) - fz(domain[0]), fyaw(i) - fyaw(domain[0]))
+            f.write("{},{},{},{},{}\n".format(*step))
+            data.append(step)
     return data
 
 
