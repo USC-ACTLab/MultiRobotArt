@@ -15,9 +15,9 @@ export const Simulation = () => {
   const setRobots = useSimulator((state) => state.setRobots);
   const step = useSimulator((state) => state.step);
 
-  useEffect(() => {
-    setRobots(useRobartState.getState().robots);
-  }, []);
+  // useEffect(() => {
+  //   setRobots(useRobartState.getState().robots);
+  // }, [robots]);
 
   useFrame(({ clock }) => {
     step();
