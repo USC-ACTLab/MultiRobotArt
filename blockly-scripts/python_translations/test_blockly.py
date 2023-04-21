@@ -1,4 +1,6 @@
-from crazyflie_py import Crazyswarm 
+from pathlib import Path
+
+from crazyflie_py import Crazyswarm
 from generate_trajectory import generate_trajectory, plot_trajectory
 from generate_trajectory.uav_trajectory import Trajectory
 from curves_to_trajectory.curves import *
@@ -12,7 +14,6 @@ def main():
     allcfs = swarm.allcfs
 
     # TODO: Edit the following line to change the curve
-    # fx, fz = circle_facing_constant((1, 0), 10)
     fx, fy, fz = helix((1, 0), 10, 1)
     flight_time = 10
 
@@ -22,7 +23,7 @@ def main():
         # Method 1: Load the trajectory from a file
         traj = Trajectory()
         print("Loading trajectory")
-        traj.loadcsv('data/rose1_traj.csv')
+        traj.loadcsv(Path(__file__).parent / 'data/rose1_traj.csv')
     else:
         # Method 2: Generate the trajectory from the curve
         print("Generating Position Data")
@@ -31,8 +32,8 @@ def main():
                                                 output='pos.csv')
         print("Computing trajectory")
         traj = generate_trajectory.generate_trajectory_from_file('pos.csv',
-                                                                num_pieces=12,
-                                                                approx=False)
+                                                                 num_pieces=12,
+                                                                 approx=False)
         traj.savecsv('traj.csv')
 
 

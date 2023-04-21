@@ -4,7 +4,7 @@ import argparse
 
 import numpy as np
 import scipy.optimize
-from crazyflie_py import uav_trajectory
+import uav_trajectory
 
 
 # computes the difference between current interpolation and desired values

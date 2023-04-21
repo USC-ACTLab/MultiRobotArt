@@ -1,12 +1,8 @@
 #!/usr/bin/env python
-
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.gridspec as gridspec
-import argparse
-
-from crazyflie_py import uav_trajectory
 
 
 def plot(traj):

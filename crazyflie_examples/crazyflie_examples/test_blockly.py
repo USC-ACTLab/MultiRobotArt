@@ -105,8 +105,8 @@ def main():
     traj = generate_trajectory_from_file('test.csv', num_pieces=10,
                                          approx=False)
     # traj = Trajectory()
-    # traj.loadcsv('traj.csv')
-    # traj.savecsv('traj.csv')
+    # traj.loadcsv('traj_helix1.csv')
+    # traj.savecsv('traj_helix1.csv')
     plot_trajectory.plot(traj)
     print("Beginning CF execution")
     for cf in allcfs.crazyflies:

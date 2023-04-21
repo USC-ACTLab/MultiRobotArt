@@ -307,32 +307,41 @@ class PositionHlCommander:
 
 from enum import Enum
 
+
 class direction(Enum):
     left = 1
     right = 2
     forward = 3
     backward = 4
 
+
 class coordinates(Enum):
     x = 1
     y = 2
     z = 3
 
+
 class which(Enum):
     CURRENT = 1
     DEFAULT = 2
 
-class blocklyPosition:
-    def set_default_height(self, height:float):
+
+def go_to_xyz(x: float, y: float, z=PositionHlCommander.DEFAULT, speed=PositionHlCommander.DEFAULT):
+    PositionHlCommander.go_to(x, y, z, speed)
+
+
+def land(number_height=0.04, number_speed=PositionHlCommander.DEFAULT):
+    PositionHlCommander.land(number_height, number_speed)
+
+
+class BlocklyPosition:
+    def set_default_height(self, height: float):
         PositionHlCommander._default_height = height
 
-    def go_to_xyz(self, x:float, y:float, z=PositionHlCommander.DEFAULT, speed=PositionHlCommander.DEFAULT):
+    def go_to(self, x: float, y: float, z: float, speed: float):
         PositionHlCommander.go_to(x, y, z, speed)
 
-    def go_to(self, x:float, y:float, z:float, speed: float):
-        PositionHlCommander.go_to(x, y, z, speed)
-
-    def get_a_position(self, which:which, name: coordinates):
+    def get_a_position(self, which: which, name: coordinates):
         if which == which.CURRENT:
             if name == coordinates.x:
                 return PositionHlCommander._x
@@ -348,7 +357,7 @@ class blocklyPosition:
             else:
                 print("Error: only z coordinate has a default value")
 
-    def move(self, direction:direction, distance:float, speed=PositionHlCommander.DEFAULT):
+    def move(self, direction: direction, distance: float, speed=PositionHlCommander.DEFAULT):
         if direction == direction.left:
             PositionHlCommander.left(distance, speed)
         elif direction == direction.right:
@@ -360,7 +369,7 @@ class blocklyPosition:
         else:
             print("Error: unknown direction")
 
-    def move_xyz(self, x:float, y:float, z:float, speed=PositionHlCommander.DEFAULT):
+    def move_xyz(self, x: float, y: float, z: float, speed=PositionHlCommander.DEFAULT):
         PositionHlCommander.move_distance(x, y, z, speed)
 
     def move_by_angles(self, angle_horizontal_angle, angle_vertical_angle, number_distance, number_name):
@@ -373,10 +382,10 @@ class blocklyPosition:
         z = number_distance * math.cos(angle_vertical_angle)
         PositionHlCommander.move_distance(x, y, z, number_name)
 
-    def set_default_speed(self, speed:float):
+    def set_default_speed(self, speed: float):
         PositionHlCommander._default_velocity = speed
 
-    def set_default_xy(self, dropdown_xy:coordinates, number_name):
+    def set_default_xy(self, dropdown_xy: coordinates, number_name):
         if dropdown_xy == coordinates.x:
             PositionHlCommander._x = number_name
         elif dropdown_xy == coordinates.y:
@@ -387,14 +396,5 @@ class blocklyPosition:
     def takeoff(self, number_height=PositionHlCommander.DEFAULT, number_speed=PositionHlCommander.DEFAULT):
         PositionHlCommander.take_off(number_height, number_speed)
 
-    def land(self, number_height=0.04, number_speed=PositionHlCommander.DEFAULT):
-        PositionHlCommander.land(number_height, number_speed)
-
     def get_position(self):
         return PositionHlCommander.get_position()  # (x, y, z)
-
-    
-
-    
-    
-
