@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
-
 import numpy as np
 import scipy.optimize
-from crazyflie_py import uav_trajectory
+from .uav_trajectory import Polynomial4D, Trajectory
 
 
 # computes the difference between current interpolation and desired values
@@ -126,8 +125,8 @@ def generate_trajectory(data, num_pieces, approx=False):
                                      constraints=constraints
                                      )
 
-    traj = uav_trajectory.Trajectory()
-    traj.polynomials = [uav_trajectory.Polynomial4D(
+    traj = Trajectory()
+    traj.polynomials = [Polynomial4D(
         piece_length,
         np.array(resX.x[i * 8:(i + 1) * 8][::-1]),
         np.array(resY.x[i * 8:(i + 1) * 8][::-1]),
@@ -143,7 +142,7 @@ def constant_traj(t):
 
 
 def generate_position_data(fx=constant_traj, fy=constant_traj, fz=constant_traj,
-    fyaw=constant_traj, domain=(0, 1), output='test.csv'):
+                           fyaw=constant_traj, domain=(0, 1), output='test.csv'):
     t = np.linspace(*domain, int(
         domain[1] - domain[0]) * 20)  # 20 points per second to fit
     data = []
@@ -151,7 +150,7 @@ def generate_position_data(fx=constant_traj, fy=constant_traj, fz=constant_traj,
         f.write("t,x,y,z,yaw\n")
 
         for i in t:
-            step = (i, fx(i) - fx(domain[0]), fy(i)-fy(domain[0]), fz(i) - fz(domain[0]), fyaw(i) - fyaw(domain[0]))
+            step = (i, fx(i) - fx(domain[0]), fy(i) - fy(domain[0]), fz(i) - fz(domain[0]), fyaw(i) - fyaw(domain[0]))
             f.write("{},{},{},{},{}\n".format(*step))
             data.append(step)
     return data

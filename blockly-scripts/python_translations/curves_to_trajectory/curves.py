@@ -75,6 +75,7 @@ def sine(amplitude, flight_time, distance, cycles=1):
     velocity = distance / flight_time
     return x_fun, y_fun
 
+
 # a defines the radius of the rose.
 # https://en.wikipedia.org/wiki/Rose_(mathematics)
 # Make rose return a var called Domain to adjust the time

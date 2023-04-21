@@ -3,6 +3,7 @@
 import numpy as np
 from crazyflie_py import Crazyswarm
 
+
 def main():
     Z = 1.0
 
@@ -20,6 +21,7 @@ def main():
 
     allcfs.land(targetHeight=0.04, duration=2.0)
     timeHelper.sleep(2.0)
+
 
 if __name__ == "__main__":
     main()

@@ -15,5 +15,6 @@ def generate_test_data():
     print("Plotting")
     plot(traj)
 
+
 if __name__ == '__main__':
     generate_test_data()

@@ -20,8 +20,9 @@ def visualize_trajectory(trajectory):
     ax.legend()
     plt.show()
 
+
 def get_values_of_functions(f_x=None, f_y=None, f_z=None, f_yaw=None, domain=(0, 1)):
-    t_vals = np.linspace(*domain, int(1000*(domain[1] - domain[0])))
+    t_vals = np.linspace(*domain, int(1000 * (domain[1] - domain[0])))
     # Get the ground truth values
     if not (f_x is None):
         x_vals = f_x(t_vals)
@@ -61,7 +62,7 @@ def find_breakpoints(fx=None, fy=None, fz=None, fyaw=None, domain=(0, 1)):
     else:
         f_yaw = lambda yaw: fyaw(yaw) - fyaw(domain[0])
     x, y, z, yaw, t = get_values_of_functions(f_x=f_x, f_y=f_y, f_z=f_z, f_yaw=f_yaw, domain=domain)
-    n_breakpoints = 16 # n segments = n_breakpoints + 1
+    n_breakpoints = 16  # n segments = n_breakpoints + 1
     best_error = 1e10
     # trials for uniform guesses, take the best outcome
     for i in range(100):
@@ -72,8 +73,8 @@ def find_breakpoints(fx=None, fy=None, fz=None, fyaw=None, domain=(0, 1)):
         tp_x, tp_y, tp_z, tp_yaw = [], [], [], []
         error = 0
         for i in range(1, len(breaks)):
-            midpoint = breaks[i - 1] + (breaks[i] - breaks[i-1]) / 2
-            segment = np.where(np.logical_and(t > breaks[i-1], t < breaks[i]))[0]
+            midpoint = breaks[i - 1] + (breaks[i] - breaks[i - 1]) / 2
+            segment = np.where(np.logical_and(t > breaks[i - 1], t < breaks[i]))[0]
             if len(segment) <= 8:
                 continue
             approx_x = np.polynomial.polynomial.Polynomial.fit(t[segment], x[segment], deg=7).convert()
@@ -100,7 +101,6 @@ def find_breakpoints(fx=None, fy=None, fz=None, fyaw=None, domain=(0, 1)):
         if best_error == 0:
             break
     return best_x, best_y, best_z, best_yaw, breakpoints
-
 
 
 def auto_trajectory(f_x=None, f_y=None, f_z=None, f_yaw=None, domain=(0, 1)):
@@ -135,14 +135,15 @@ def auto_trajectory(f_x=None, f_y=None, f_z=None, f_yaw=None, domain=(0, 1)):
             z = np.append(z, 0)
         while len(yaw) < 8:
             yaw = np.append(yaw, 0)
-        poly = Polynomial4D(breaks[i+1] - breaks[i], x, y, z, yaw)
-        print("duration", breaks[i+1] - breaks[i])
+        poly = Polynomial4D(breaks[i + 1] - breaks[i], x, y, z, yaw)
+        print("duration", breaks[i + 1] - breaks[i])
         trajectory.polynomials.append(poly)
 
     trajectory.duration = domain[1] - domain[0]
     print(domain[1] - domain[0])
     visualize_trajectory(trajectory)
     return trajectory
+
 
 def normalize(v):
     norm = np.linalg.norm(v)
@@ -164,16 +165,16 @@ class Polynomial:
 
     # compute and return derivative
     def derivative(self):
-        return Polynomial([(i+1) * self.p[i+1] for i in range(0, len(self.p) - 1)])
+        return Polynomial([(i + 1) * self.p[i + 1] for i in range(0, len(self.p) - 1)])
 
 
 class TrajectoryOutput:
     def __init__(self):
-        self.pos = None   # position [m]
-        self.vel = None   # velocity [m/s]
-        self.acc = None   # acceleration [m/s^2]
-        self.omega = None # angular velocity [rad/s]
-        self.yaw = None   # yaw angle [rad]
+        self.pos = None  # position [m]
+        self.vel = None  # velocity [m/s]
+        self.acc = None  # acceleration [m/s^2]
+        self.omega = None  # angular velocity [rad/s]
+        self.yaw = None  # yaw angle [rad]
 
 
 # 4d single polynomial piece for x-y-z-yaw, includes duration.
@@ -213,7 +214,7 @@ class Polynomial4D:
         derivative3 = derivative2.derivative()
         jerk = np.array([derivative3.px.eval(t), derivative3.py.eval(t), derivative3.pz.eval(t)])
 
-        thrust = result.acc + np.array([0, 0, 9.81]) # add gravity
+        thrust = result.acc + np.array([0, 0, 9.81])  # add gravity
 
         z_body = normalize(thrust)
         x_world = np.array([np.cos(result.yaw), np.sin(result.yaw), 0])
@@ -238,18 +239,18 @@ class Trajectory:
     def loadcsv(self, filename):
         data = np.loadtxt(filename, delimiter=",", skiprows=1, usecols=range(33))
         self.polynomials = [Polynomial4D(row[0], row[1:9], row[9:17], row[17:25], row[25:33]) for row in data]
-        self.duration = np.sum(data[:,0])
+        self.duration = np.sum(data[:, 0])
 
     def savecsv(self, filename):
-        data = np.empty((len(self.polynomials), 8*4+1))
+        data = np.empty((len(self.polynomials), 8 * 4 + 1))
         for i, p in enumerate(self.polynomials):
-            data[i,0] = p.duration
-            data[i,1:9] = p.px.p
-            data[i,9:17] = p.py.p
-            data[i,17:25] = p.pz.p
-            data[i,25:33] = p.pyaw.p
-        np.savetxt(filename, data, fmt="%.6f", delimiter=",", header="duration,x^0,x^1,x^2,x^3,x^4,x^5,x^6,x^7,y^0,y^1,y^2,y^3,y^4,y^5,y^6,y^7,z^0,z^1,z^2,z^3,z^4,z^5,z^6,z^7,yaw^0,yaw^1,yaw^2,yaw^3,yaw^4,yaw^5,yaw^6,yaw^7")
-
+            data[i, 0] = p.duration
+            data[i, 1:9] = p.px.p
+            data[i, 9:17] = p.py.p
+            data[i, 17:25] = p.pz.p
+            data[i, 25:33] = p.pyaw.p
+        np.savetxt(filename, data, fmt="%.6f", delimiter=",",
+                   header="duration,x^0,x^1,x^2,x^3,x^4,x^5,x^6,x^7,y^0,y^1,y^2,y^3,y^4,y^5,y^6,y^7,z^0,z^1,z^2,z^3,z^4,z^5,z^6,z^7,yaw^0,yaw^1,yaw^2,yaw^3,yaw^4,yaw^5,yaw^6,yaw^7")
 
     def eval(self, t):
         assert t >= 0
@@ -260,4 +261,3 @@ class Trajectory:
             if t <= current_t + p.duration:
                 return p.eval(t - current_t)
             current_t = current_t + p.duration
-

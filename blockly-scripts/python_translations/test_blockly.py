@@ -7,13 +7,12 @@ from curves_to_trajectory.curves import *
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 # noinspection PyShadowingNames
 def main():
     swarm = Crazyswarm()
     timeHelper = swarm.timeHelper
     allcfs = swarm.allcfs
-
-
 
     load_data = False
 
@@ -29,14 +28,13 @@ def main():
         fx, fz = rose(1, 2, 1, flight_time)
         print("Generating Position Data")
         data = generate_trajectory.generate_position_data(fx=fx, fz=fz,
-                                                domain=(flight_time/8, flight_time+flight_time/8),
-                                                output='pos.csv')
+                                                          domain=(flight_time / 8, flight_time + flight_time / 8),
+                                                          output='pos.csv')
         print("Computing trajectory")
         traj = generate_trajectory.generate_trajectory_from_file('pos.csv',
                                                                  num_pieces=12,
                                                                  approx=False)
         traj.savecsv('traj.csv')
-
 
     plot_trajectory.plot(traj)
     print("Beginning CF execution")
