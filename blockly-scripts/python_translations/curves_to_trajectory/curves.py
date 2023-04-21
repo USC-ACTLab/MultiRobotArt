@@ -110,5 +110,4 @@ def helix(center, flight_time, speed_z, angle_degrees=360, clockwise=True):
 
 
 if __name__ == '__main__':
-    fx, fy = rose(1, 1, 3, 2)
-    plt.show()
+    pass

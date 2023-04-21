@@ -13,22 +13,23 @@ def main():
     timeHelper = swarm.timeHelper
     allcfs = swarm.allcfs
 
-    # TODO: Edit the following line to change the curve
-    fx, fy, fz = helix((1, 0), 10, 1)
-    flight_time = 10
 
-    load_data = False 
+
+    load_data = False
 
     if load_data:
         # Method 1: Load the trajectory from a file
         traj = Trajectory()
         print("Loading trajectory")
-        traj.loadcsv(Path(__file__).parent / 'data/rose1_traj.csv')
+        traj.loadcsv(Path(__file__).parent / 'data/traj_rose2.csv')
     else:
         # Method 2: Generate the trajectory from the curve
+        # TODO: Edit the following line to change the curve
+        flight_time = 20
+        fx, fz = rose(1, 2, 1, flight_time)
         print("Generating Position Data")
-        data = generate_trajectory.generate_position_data(fx=fz, fy=fx, fz=fy,
-                                                domain=(0, flight_time),
+        data = generate_trajectory.generate_position_data(fx=fx, fz=fz,
+                                                domain=(flight_time/8, flight_time+flight_time/8),
                                                 output='pos.csv')
         print("Computing trajectory")
         traj = generate_trajectory.generate_trajectory_from_file('pos.csv',

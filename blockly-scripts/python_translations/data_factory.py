@@ -14,3 +14,6 @@ def generate_test_data():
     traj.savecsv('traj.csv')
     print("Plotting")
     plot(traj)
+
+if __name__ == '__main__':
+    generate_test_data()
