@@ -31,10 +31,10 @@ export const block_go_to: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    var x = js.valueToCode(block, 'x', js.ORDER_ATOMIC);
-    var y = js.valueToCode(block, 'y', js.ORDER_ATOMIC);
-    var z = js.valueToCode(block, 'z', js.ORDER_ATOMIC);
-    var speed = js.valueToCode(block, 'speed', js.ORDER_ATOMIC);
+    var x = block.getFieldValue('x_pos');
+    var y = block.getFieldValue('y_pos');
+    var z = block.getFieldValue('z_pos');
+    var speed = block.getFieldValue('speed');
 
     return `simulator.go_to_xyz(group_state, ${x}, ${y}, ${z}, ${speed})`;
   }

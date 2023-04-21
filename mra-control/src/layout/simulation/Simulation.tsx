@@ -48,7 +48,7 @@ export const Simulation = () => {
           <Crazyflie />
           <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
             <meshDistanceMaterial />
-            <pointLight position={[0,0,0]} intensity={5} color="white"/>
+            <pointLight position={[0,0,0]} intensity={1} color="white"/>
           </Sphere>
           
         </group>

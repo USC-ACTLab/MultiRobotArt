@@ -5,7 +5,7 @@ import { CUSTOM_BLOCKS } from './customBlocks';
 const blockToToolbox = (block: RobartBlockDefinition) => ({
   kind: 'block',
   type: block.name,
-})
+});
 
 export const blocklyToolboxConfiguration: ToolboxDefinition = {
   kind: 'categoryToolbox',

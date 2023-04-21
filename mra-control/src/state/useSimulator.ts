@@ -192,7 +192,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         const group_state: SimulatorGroupState = {
           robotIDs: Object.keys(group.robots)
         };
-        const simulator_go_to_xyz = SIM.simulator_go_to_xyz; 
+        const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.
         // END: The need of said local variables
         Object.values(group.items).forEach(timelineItem => {
           console.log('item time', timelineItem.startTime);
@@ -203,7 +203,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
             eval(blocks[timelineItem.blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
           }, timeline.scale * offset * 1000);
           SIMULATOR_TIMEOUTS.push(timeout);
-          console.log('Set block', timelineItem.blockId, ' to execute with timeout ', offset);
         });
       })
     },
@@ -212,8 +211,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
       SIMULATOR_TIMEOUTS.map(timeout => clearInterval(timeout));
       while(SIMULATOR_TIMEOUTS.length > 0) 
         SIMULATOR_TIMEOUTS.pop();
-
-      console.log('cancelled the timeouts');
     }
   })),
 );
