@@ -5,8 +5,13 @@ export interface BlocklySettings {
   categories: string[]; // TODO: Use a stricter type from the blockly category definitions
 }
 
+export interface SimulationSettings {
+  mode: "light" | "dark";
+}
+
 export interface SettingsProperties {
   blocklySettings: BlocklySettings;
+  simulationSettings: SimulationSettings;
 }
 
 export interface SettingsActions {}
@@ -18,6 +23,9 @@ export const useSettings = create<SettingsState>()(
     (set, get) => ({
       blocklySettings: {
         categories: [],
+      },
+      simulationSettings: {
+        mode: "dark",
       },
     }),
     {

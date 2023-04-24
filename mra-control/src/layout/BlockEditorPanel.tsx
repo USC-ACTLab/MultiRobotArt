@@ -1,5 +1,6 @@
 import Blockly from 'blockly';
 import { pythonGenerator } from 'blockly/python';
+import { javascriptGenerator } from 'blockly/javascript';
 import React, { useEffect, useRef, useState } from 'react';
 import { useBlocklyWorkspace } from 'react-blockly';
 
@@ -28,7 +29,8 @@ export const BlockEditorPanel = () => {
     },
     onWorkspaceChange: (workspace) => {
       const python = pythonGenerator.workspaceToCode(workspace);
-      if (localBlockId && xml) saveBlock(localBlockId, { xml, python });
+      const javaScript = javascriptGenerator.workspaceToCode(workspace);
+      if (localBlockId && xml) saveBlock(localBlockId, { xml, python, javaScript });
     },
     ref: workspaceRef,
   });

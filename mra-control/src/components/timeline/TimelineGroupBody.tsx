@@ -10,7 +10,7 @@ interface TimelineGroupProps {
 }
 
 // 1 distance unit = 100 pixels = 1 second * scale  = scale 1
-export const PIXELS_PER_SECOND = 10;
+export const PIXELS_PER_SECOND = 25;
 
 export const blockOverlaps = (
   group: TimelineGroupState,
@@ -56,7 +56,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
     if (clientX === undefined) return;
 
     if (laneBodyRef.current) {
-      const parentOffsetX = laneBodyRef.current.offsetLeft;
+      const parentOffsetX = (laneBodyRef.current.offsetParent as HTMLDivElement)?.offsetLeft;
       const parentScrollOffsetX = laneBodyRef.current.parentElement?.scrollLeft;
       const offsetX = clientX - parentOffsetX;
 
@@ -64,7 +64,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
       if (selectedBlockId === undefined || parentScrollOffsetX === undefined) return;
 
       const startTime = (offsetX + parentScrollOffsetX) / (PIXELS_PER_SECOND * scale) - blocks[selectedBlockId].duration / 2;
-
+ 
       return startTime;
     }
   };

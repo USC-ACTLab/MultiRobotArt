@@ -2,18 +2,26 @@ import * as THREE from 'three';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import { RobotState } from './useRobartState';
+import { RobotState, TimelineState, useRobartState } from './useRobartState';
+import { SimulatorGroupState } from './simulatorCommands';
+import * as SIM from './simulatorCommands';
 
-export const FPS = 30;
+export const FPS = 60;
 
-type Trajectory = [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3] | null;
+type TrajectoryPolynomial = [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3] | null;
+
+export interface Trajectory {
+  polynomial: TrajectoryPolynomial;
+  duration: number;
+}
 
 export interface RobotSimState {
   id: string;
   pos: THREE.Vector3;
   vel: THREE.Vector3;
   acc: THREE.Vector3;
-  trajectory: Trajectory;
+  trajectories: Trajectory[];
+  trajectory: TrajectoryPolynomial;
   trajectoryDuration: number;
   timeAlongTrajectory: number;
 }
@@ -29,12 +37,15 @@ const defaultSimulatorState: SimulatorState = {
   robots: {},
   time: 0,
   timeDilation: 1,
-  status: 'RUNNING',
+  status: 'STOPPED',
 };
+
+const SIMULATOR_TIMEOUTS: NodeJS.Timeout[] = [];
 
 export interface SimulatorActions {
   play: () => void;
   pause: () => void;
+  resume: () => void;
   halt: () => void;
   step: () => void;
   /**
@@ -43,16 +54,31 @@ export interface SimulatorActions {
    * @returns
    */
   setRobots: (robots: Record<string, RobotState>) => void;
-  updateTrajectory: (robotId: string, trajectory: Trajectory, duration: number) => void;
-  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => Trajectory;
+  updateTrajectory: (robotId: string, trajectory: TrajectoryPolynomial, duration: number) => void;
+  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => TrajectoryPolynomial;
+  executeSimulation: (startTime: number) => void;
+  cancelSimulation: () => void;
 }
 
 export const useSimulator = create<SimulatorState & SimulatorActions>()(
   immer((set, get) => ({
     ...defaultSimulatorState,
-    play: () => set({ status: 'RUNNING' }),
-    pause: () => set({ status: 'PAUSED' }),
-    halt: () => set({ status: 'STOPPED' }),
+    play: () => { 
+      set({ status: 'RUNNING', time: 0 });
+      get().executeSimulation(0);
+   },
+    pause: () => {
+      set({ status: 'PAUSED' });
+      get().cancelSimulation();
+    },
+    resume: () => {
+      set({ status: 'RUNNING' });
+      get().executeSimulation(get().time);
+    },
+    halt: () => {
+      set({ status: 'STOPPED' });
+      get().cancelSimulation();
+    },
     step: () => {
       const { status, time, timeDilation, robots: currentRobots } = get();
       if (status !== 'RUNNING') return;
@@ -70,12 +96,13 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           newPos.addScaledVector(coefficient, Math.pow(trajectoryTime, i));
         });
 
+        console.log('robot', robotId, 'newpos', newPos);
+
         robots[robotId] = {
           ...robots[robotId],
           pos: newPos,
           timeAlongTrajectory: trajectoryTime,
         };
-        console.log(trajectoryTime);
 
         if (robots[robotId].timeAlongTrajectory >= 1) {
           robots[robotId].trajectory = null;
@@ -99,6 +126,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           timeAlongTrajectory: 0,
           trajectory: null,
           trajectoryDuration: 0,
+          trajectories: []
         };
       });
       set({ robots: simRobots });
@@ -153,20 +181,36 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         .addScaledVector(pos, -10)
         .multiplyScalar(2);
 
-      return [a0, a1, a2, a3, a4, a5, a6, a7];
-      // set(
-      //     (state) =>
-      //         (state.robots[robotId].trajectory = [
-      //             a0,
-      //             a1,
-      //             a2,
-      //             a3,
-      //             a4,
-      //             a5,
-      //             a6,
-      //             a7,
-      //         ])
-      // );
+      return [a0, a1, a2, a3, a4, a5, a6, a7] as any; // TODO: For some reason typescript is unhappy here...
     },
+    executeSimulation: (startTime) => {
+      const timeline = useRobartState.getState().timelineState;
+      const blocks = useRobartState.getState().blocks;
+      console.log('execute', timeline.groups);
+      Object.values(timeline.groups).forEach(group => {
+        // Need the following local variables so that the EVAL works properly.
+        const group_state: SimulatorGroupState = {
+          robotIDs: Object.keys(group.robots)
+        };
+        const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.
+        // END: The need of said local variables
+        Object.values(group.items).forEach(timelineItem => {
+          console.log('item time', timelineItem.startTime);
+          const offset = timelineItem.startTime - startTime;
+          if(offset < 0) return;
+          
+          const timeout = setTimeout(() => {
+            eval(blocks[timelineItem.blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+          }, timeline.scale * offset * 1000);
+          SIMULATOR_TIMEOUTS.push(timeout);
+        });
+      })
+    },
+    cancelSimulation: () => {
+      // Clear all of the timeouts
+      SIMULATOR_TIMEOUTS.map(timeout => clearInterval(timeout));
+      while(SIMULATOR_TIMEOUTS.length > 0) 
+        SIMULATOR_TIMEOUTS.pop();
+    }
   })),
 );

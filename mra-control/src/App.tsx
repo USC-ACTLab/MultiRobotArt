@@ -1,7 +1,7 @@
 import React from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
-import { BlockCodePanel } from './layout/BlockCodePanel';
+import { BlockPythonCodePanel } from './layout/BlockPythonCodePanel';
 import { BlockEditorPanel } from './layout/BlockEditorPanel';
 import { BlockManagerPanel } from './layout/BlockManagerPanel';
 import { NavigationBar } from './layout/NavigationBar';
@@ -17,7 +17,7 @@ function App() {
         <NavigationBar />
         <div className="flex flex-grow">
           <PanelGroup direction="vertical">
-            <Panel defaultSize={50} onResize={() => window.dispatchEvent(new Event('resize'))}>
+            <Panel defaultSize={60} onResize={() => window.dispatchEvent(new Event('resize'))}>
               <PanelGroup direction="horizontal">
                 <Panel defaultSize={50} onResize={() => window.dispatchEvent(new Event('resize'))}>
                   <BlockEditorPanel />
@@ -29,7 +29,7 @@ function App() {
               </PanelGroup>
             </Panel>
             <PanelResizeHandle className="h-2 bg-blue-50 opacity-30 shadow-lg" />
-            <Panel defaultSize={50}>
+            <Panel defaultSize={40}>
               <PanelGroup direction="horizontal">
                 <Panel defaultSize={20}>
                   <BlockManagerPanel />
