@@ -22,19 +22,19 @@ function App() {
                 <Panel defaultSize={50} onResize={() => window.dispatchEvent(new Event('resize'))}>
                   <BlockEditorPanel />
                 </Panel>
-                <PanelResizeHandle className="w-2 bg-blue-50 opacity-30 shadow-lg" />
+                <PanelResizeHandle className="w-2 bg-white opacity-30 shadow-lg" />
                 <Panel defaultSize={50}>
                   <RightPanel />
                 </Panel>
               </PanelGroup>
             </Panel>
-            <PanelResizeHandle className="h-2 bg-blue-50 opacity-30 shadow-lg" />
+            <PanelResizeHandle className="h-2 bg-white opacity-30 shadow-lg" />
             <Panel defaultSize={40}>
               <PanelGroup direction="horizontal">
                 <Panel defaultSize={20}>
                   <BlockManagerPanel />
                 </Panel>
-                <PanelResizeHandle className="w-2 bg-blue-50 opacity-30 shadow-lg" />
+                <PanelResizeHandle className="w-2 bg-white opacity-30 shadow-lg" />
                 <Panel>
                   <Timeline />
                 </Panel>

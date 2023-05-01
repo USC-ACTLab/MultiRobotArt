@@ -13,6 +13,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Motion',
+      colour: '#d5373e',
       contents: [
         blockToToolbox(CUSTOM_BLOCKS.block_go_to_xyz),
         blockToToolbox(CUSTOM_BLOCKS.block_go_to),
@@ -29,6 +30,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Curves',
+      colour: '#f2a141',
       contents: [
         blockToToolbox(CUSTOM_BLOCKS.block_circle),
         blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
@@ -39,6 +41,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Config',
+      colour: '#5fc1b6',
       contents: [
         blockToToolbox(CUSTOM_BLOCKS.block_get_a_position),
         blockToToolbox(CUSTOM_BLOCKS.block_set_default_height),
@@ -49,7 +52,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Logic',
-      colour: '#5C81A6',
+      colour: '#d5373e',
       contents: [
         {
           kind: 'block',
@@ -64,7 +67,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Math',
-      colour: '#5CA65C',
+      colour: '#f2a141',
       contents: [
         {
           kind: 'block',
@@ -79,7 +82,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Custom',
-      colour: '#5CA699',
+      colour: '#5fc1b6',
       contents: [
         {
           kind: 'block',

@@ -71,7 +71,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
 
   return (
     <div
-      className="relative h-16 rounded bg-blue-300"
+      className="relative h-12 rounded-xl bg-white"
       style={{ width: 2000 }}
       ref={laneBodyRef}
       onClick={({ clientX }) => {

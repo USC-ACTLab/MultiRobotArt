@@ -37,13 +37,13 @@ export const SettingsModal = () => {
             <Tabs.Item title="Blocks">Block Settings</Tabs.Item>
             <Tabs.Item title="Preferences">User Preferences</Tabs.Item>
             <Tabs.Item title="Utilities">
-              <Button onClick={toggleCurveEditor}>Curve Editor</Button>
+              <Button className='!bg-bl' onClick={toggleCurveEditor}>Curve Editor</Button>
             </Tabs.Item>
           </Tabs.Group>
         </Modal.Body>
         <Modal.Footer>
           <CancelButton onClick={toggleSettingsModal} />
-          <IconButton color="warning" text="Reset Project" icon={faSync} onClick={() => setConfirmOpen(true)} />
+          <IconButton className='!bg-ye' text="Reset Project" icon={faSync} onClick={() => setConfirmOpen(true)} />
         </Modal.Footer>
       </Modal>
       <ConfirmationModal

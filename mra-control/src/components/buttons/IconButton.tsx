@@ -12,7 +12,7 @@ export const IconButton = ({
 }: {
   icon: typeof faGear;
   text: string;
-  color?: 'gray' | 'warning' | 'success' | 'failure';
+  color?: 'gray' | 'warning' | 'success' | 'failure' ;
   className?: string;
   onClick?: ReactEventHandler;
 }) => {

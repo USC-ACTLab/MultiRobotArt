@@ -36,7 +36,7 @@ export const RobotGroupEditor = () => {
           .filter((group) => selectedRobotId in group.robots)
           .map((group) => {
             return (
-              <Badge color="purple" className="bg-purple-100" onClick={() => removeRobotFromGroup(group.id, selectedRobotId)} key={group.id}>
+              <Badge  className="!bg-gr" onClick={() => removeRobotFromGroup(group.id, selectedRobotId)} key={group.id}>
                 {groups[group.id].name}
               </Badge>
             );

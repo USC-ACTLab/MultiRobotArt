@@ -30,7 +30,7 @@ export const CurveEditorModal = () => {
       <Modal.Body className="h-[80vh]">
         <div className="flex h-full flex-row">
           <div className="w-1/4">
-            <IconButton icon={faPlus} text="Add Point" onClick={() => addPoint(new THREE.Vector3(1, 1, 1))} />
+            <IconButton className='!bg-bl' icon={faPlus} text="Add Point" onClick={() => addPoint(new THREE.Vector3(1, 1, 1))} />
             <VectorEditor points={points} />
             <div className="flex flex-col gap-2"></div>
           </div>

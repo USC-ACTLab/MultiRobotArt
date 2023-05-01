@@ -25,7 +25,7 @@ export const RobotSidebar = () => {
           <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">{robot.name}</span>
         </button>
       ))}
-      <IconButton icon={faPlusCircle} text="" onClick={createRobot} />
+      <IconButton className='!bg-bl' icon={faPlusCircle} text="" onClick={createRobot} />
     </div>
   );
 };

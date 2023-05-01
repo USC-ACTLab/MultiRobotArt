@@ -5,7 +5,7 @@ export const TimelineMarker = () => {
   const time = useSimulator((state) => state.time);
   return (
     <div
-      className="min-w-1 absolute z-10 h-full w-1 bg-black"
+      className="min-w-1 absolute z-10 h-full w-1 bg-re"
       style={{ left: PIXELS_PER_SECOND * time }}
     ></div>
   );

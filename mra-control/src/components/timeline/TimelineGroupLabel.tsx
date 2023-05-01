@@ -6,8 +6,8 @@ interface TimelineGroupProps {
 
 export const TimelineGroupLabel = ({ group }: TimelineGroupProps) => {
   return (
-    <div className="flex h-16 w-16 items-center justify-center rounded bg-green-400">
-      <div className="text-center font-bold">{group.name}</div>
+    <div className="flex h-12 w-24 items-center justify-center rounded-xl bg-bl">
+      <div className="text-center text-white">{group.name}</div>
     </div>
   );
 };

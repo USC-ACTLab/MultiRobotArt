@@ -25,7 +25,7 @@ export const TimelineBlock = ({ item, scale }: { item: TimelineItem; scale: numb
   return (
     <div
       className={clsx(
-        'absolute top-1/2 flex h-5/6 -translate-y-1/2 items-center justify-center rounded-xl bg-purple-400 touch-none select-none',
+        'absolute top-1/2 flex h-5/6 -translate-y-1/2 items-center justify-center rounded-xl bg-ye touch-none select-none',
         selectedBlock === undefined ? 'cursor-move' : '',
       )}
       style={{

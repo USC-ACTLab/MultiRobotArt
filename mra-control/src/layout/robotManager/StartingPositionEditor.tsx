@@ -52,7 +52,7 @@ export const StartingPositionEditor = ({ robotId }: { robotId: string }) => {
 
           <input className="hidden" type="submit" />
         </form>
-        <IconButton icon={faArrowsRotate} text="Update Position" onClick={handleSubmit} />
+        <IconButton className='!bg-bl' icon={faArrowsRotate} text="Update Position" onClick={handleSubmit} />
       </div>
     </div>
   );

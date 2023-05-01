@@ -29,9 +29,9 @@ export const NavigationBar = () => {
           }}
         />
         <div className="flex flex-grow justify-end gap-3">
-          <IconButton icon={faDownload} text="Save Project" onClick={() => saveToFile()} />
-          <IconButton icon={faUpload} text="Load Project" onClick={() => setLoadModalOpen(true)} />
-          <IconButton icon={faGear} text="Settings" onClick={() => toggleSettingsModal()} />
+          <IconButton className='!bg-bl' icon={faDownload} text="Save Project" onClick={() => saveToFile()} />
+          <IconButton className='!bg-bl' icon={faUpload} text="Load Project" onClick={() => setLoadModalOpen(true)} />
+          <IconButton className='!bg-bl' icon={faGear} text="Settings" onClick={() => toggleSettingsModal()} />
         </div>
       </div>
       <UploadFileModal header="Load Project" open={loadModalOpen} onClose={() => setLoadModalOpen(false)} onFileUpload={loadFile} />

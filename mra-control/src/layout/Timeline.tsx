@@ -20,23 +20,23 @@ export const Timeline = () => {
   const resume = useSimulator(state => state.resume);
 
   return (
-    <div className="flex h-full w-full flex-col gap-2 rounded bg-blue-100">
+    <div className="flex h-full w-full flex-col gap-2 rounded bg-gr">
       <div className="flex justify-end gap-3 pt-2 pr-3">
-        <IconButton icon={faRobot} onClick={toggleRobotManagerModal} text="Manage Robots" />
-        <RobotManagerModal />
-
-        {simulationStatus === 'RUNNING' && (
+      {simulationStatus === 'RUNNING' && (
           <IconButton icon={faPause} onClick={pause} text="Pause Sim" color="gray" />
         )}
         {simulationStatus === 'PAUSED' && (
           <IconButton icon={faPlay} onClick={resume} text="Resume Sim" color="success" />
         )}
         {simulationStatus === 'STOPPED' && (
-          <IconButton icon={faPlay} onClick={play} text="Run Sim" color="success" />
+          <IconButton className='!bg-bl' icon={faPlay} onClick={play} text="Run Sim" color="success" />
         )}
         {simulationStatus !== 'STOPPED' && (
-          <IconButton icon={faSquare} onClick={halt} text="Stop Sim" color="failure" />
+          <IconButton className='!bg-re' icon={faSquare} onClick={halt} text="Stop Sim" />
         )}
+        
+        <IconButton className='!bg-ye' icon={faRobot} onClick={toggleRobotManagerModal} text="Manage Robots" />
+        <RobotManagerModal />
       </div>
       <div className="overflow-y-auto">
         <div className="flex flex-shrink-0 gap-2">
