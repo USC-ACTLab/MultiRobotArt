@@ -1,19 +1,19 @@
-from generate_trajectory.generate_trajectory import *
-from generate_trajectory.plot_trajectory import *
-from curves_to_trajectory import curves
+import matplotlib.pyplot as plt
 
+from generate_trajectory.generate_trajectory import *
+from generate_trajectory.plot_utils import *
+from curves_to_trajectory.curves import *
 
 def generate_test_data():
-    fx, fy = curves.circle_facing_constant((1, 0), 10)
+    fx, fy, domain = circle_facing_constant((0, 1), 10)
     print("Generating position data")
-    generate_position_data(fx=fx, fy=fy,
-                           domain=(0, 10),
-                           output='pos.csv')
-    print("Generating trajectory")
-    traj = generate_trajectory_from_file('pos.csv')
-    traj.savecsv('traj.csv')
-    print("Plotting")
-    plot(traj)
+    data = generate_position_data(fx=fx, fy=fy, domain=domain, output='pos.csv')
+    plot_pos(data)
+    # print("Generating trajectory")
+    # traj = generate_trajectory_from_file('pos.csv', num_pieces=12, approx=False)
+    # traj.savecsv('traj.csv')
+    # print("Plotting")
+    # plot_traj(traj)
 
 
 if __name__ == '__main__':

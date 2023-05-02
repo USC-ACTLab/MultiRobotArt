@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from crazyflie_py import Crazyswarm
-from generate_trajectory import generate_trajectory, plot_trajectory
+from generate_trajectory import generate_trajectory, plot_utils
 from generate_trajectory.uav_trajectory import Trajectory
 from curves_to_trajectory.curves import *
 import matplotlib.pyplot as plt

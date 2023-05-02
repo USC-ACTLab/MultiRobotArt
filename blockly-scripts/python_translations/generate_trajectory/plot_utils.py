@@ -4,8 +4,24 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.gridspec as gridspec
 
+def plot_pos(data, title=None):
+    x = [d[1] for d in data]
+    y = [d[2] for d in data]
+    z = [d[3] for d in data]
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_title(title)
+    ax.scatter(x[0], y[0], z[0], c='b', s=100)
+    ax.scatter(0, 0, 0, c='r', s=100, marker='*')
+    ax.plot(x, y, z)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
 
-def plot(traj):
+    plt.show()
+
+
+def plot_traj(traj):
     ts = np.arange(0, traj.duration, 0.01)
     evals = np.empty((len(ts), 15))
     for t, i in zip(ts, range(0, len(ts))):
