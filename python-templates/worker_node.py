@@ -1,0 +1,77 @@
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import int32
+
+Hz = 1 / 1000
+
+class worker_node(Node):
+
+    def __init__(self, crazyflies, id=0, num_nodes=1):
+        """
+        id: a unique int 0<=id<=num_nodes corresponding to the thread number of this worker
+        num_nodes: number of nodes (threads) in total
+        """
+        self.id = id
+        self.num_nodes = num_nodes
+        self.crazyflies = crazyflies
+
+        self.execution_ready_subscription(
+            int32,
+            'ready',
+            self.ready_callback,
+            num_nodes + 1
+        )
+        self.execution_ready_publisher(
+            int32,
+            'ready',
+            num_nodes + 1
+        )
+        self.timer = self.create_timer(Hz, self.timer_callback)
+        self.ready_ids = set()
+
+        self.running = False
+    
+    def compute_trajectories():
+        """
+        Inject Trajectory computation code here...
+        """
+        trajectories = []
+        # TRAJECTORIES
+
+        return trajectories
+
+    def upload_trajectories(crazyflies, trajectories):
+        '''
+            Upload trajectories to crazyflies one by one
+        '''
+
+        # TODO: Currently doesn't support overlapping crazyflies as we will overwrite trajectories...
+        for i, traj in enumerate(trajectories):
+            for cf in crazyflies:
+                cf.uploadTrajectory(traj, i, 0)
+
+    def begin(self):
+        """
+            Prepare for execution. Pre-compute trajectories and upload them to crazyflies
+        """
+        trajectories = self.compute_trajectories()
+        self.upload_trajectories(trajectories)
+        self.execution_ready_publisher.publish(self.id)
+
+    def execute_blocks(self):
+        """
+        Must be overwritten...
+        """
+        # BLOCKS...
+        pass
+
+    def ready_callback(self, msg):
+        self.ready_ids.add(msg)
+    
+    def timer_callback(self):
+        if not self.running:
+            self.begin()
+            self.running = True
+        if len(self.ready_ids) == self.num_nodes:
+            self.execute_blocks()
+            self.destory_node()
