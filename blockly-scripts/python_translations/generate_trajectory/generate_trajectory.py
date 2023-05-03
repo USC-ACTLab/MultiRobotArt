@@ -144,7 +144,7 @@ def constant_traj(t):
 def generate_position_data(fx=constant_traj, fy=constant_traj, fz=constant_traj,
                            fyaw=constant_traj, domain=(0, 1), output='test.csv'):
     t = np.linspace(*domain, int(
-        domain[1] - domain[0]) * 20)  # 20 points per second to fit
+        domain[1] - domain[0]) * 20 + 1)  # 20 points per second to fit
     data = []
     with open(output, 'w') as f:
         f.write("t,x,y,z,yaw\n")

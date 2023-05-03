@@ -31,9 +31,31 @@ def plot_curve_3d(fx, fy, fz, flight_time):
     plt.show()
 
 
+def circle(radius, velocity, flight_time, clockwise=True):
+    if flight_time <= 0:
+        raise ValueError("flight_time must be positive")
+    if radius <= 0:
+        raise ValueError("radius must be positive")
+    if velocity <= 0:
+        raise ValueError("velocity must be positive")
+
+    angle = velocity / radius * flight_time
+    sign = 1 if clockwise else -1
+    x_fun = lambda t: np.sin(t / flight_time * angle + np.pi) * radius * sign
+    y_fun = lambda t: np.cos(t / flight_time * angle + np.pi) * radius
+    plot_curve(x_fun, y_fun, flight_time)
+
+    domain = (0, flight_time)
+
+    return x_fun, y_fun, domain
+
+
+
 # Circle that change velocities in two directions
-# TODO: what happens if angle_degrees is not a multiple of 360?
-# This implementation doesn't start at (0, 0), but at (x0, y0 - r)
+# Center is the center of the circle
+# Flight_time is the time it takes to complete the circle
+# Angle_degrees is the angle of the circle
+# Clockwise indicates if the circle is clockwise or not
 def circle_facing_constant(center, flight_time, angle_degrees=360.0,
     clockwise=True):
     if flight_time <= 0:
@@ -43,10 +65,14 @@ def circle_facing_constant(center, flight_time, angle_degrees=360.0,
 
     angle_radians = angle_degrees / 360.0 * 2 * np.pi
     sign = 1 if clockwise else -1
+    delta_theta = np.arctan2(x0, y0) + np.pi
 
-    x_fun = lambda t: np.sin(t / flight_time * angle_radians) * r + x0
-    y_fun = lambda t: np.cos(t / flight_time * angle_radians) * r + sign * y0
-
+    x_fun = lambda t: sign * np.sin(
+        t / flight_time * angle_radians + sign * delta_theta) * r + x0
+    y_fun = lambda t: np.cos(
+        t / flight_time * angle_radians + sign * delta_theta) * r + y0
+    print("x_fun(0): ", x_fun(0))  # should be 0
+    print("y_fun(0): ", y_fun(0))  # should be 0
     # Display the curve:
     # plt.scatter(x0, y0, c='r', s=100)
     plot_curve(x_fun, y_fun, flight_time)
@@ -111,15 +137,35 @@ def spiral(b, r_max, flight_time, clockwise=False):
     return x_fun, y_fun, domain
 
 
+def helix_alt(radius, velocity_xy, speed_z, flight_time, clockwise=True):
+    x_fun, y_fun, domain = circle(radius, velocity_xy, flight_time, clockwise)
+    z_fun = lambda t: speed_z * t
+    # plot_curve_3d(x_fun, y_fun, z_fun, flight_time)
+    return x_fun, y_fun, z_fun, domain
+
 def helix(center, flight_time, speed_z, angle_degrees=360, clockwise=True):
-    x_fun, y_fun = circle_facing_constant(center, flight_time,
-                                          angle_degrees=angle_degrees,
-                                          clockwise=clockwise)
+    x_fun, y_fun, _ = circle_facing_constant(center, flight_time,
+                                             angle_degrees=angle_degrees,
+                                             clockwise=clockwise)
     z_fun = lambda t: speed_z * t
 
     plot_curve_3d(x_fun, y_fun, z_fun, flight_time)
-    return x_fun, y_fun, z_fun
+    domain = (0, flight_time)
+    return x_fun, y_fun, z_fun, domain
 
+# Having multiple drones flying in a helix
+# Flight_time is the time it takes to complete the circle
+# Speed_z is the speed in the z direction
+# Num_drones is the number of drones in the helix
+# Num_circles is the number of circles the drones will fly
+def multiple_helix(radius, flight_time, speed_z, num_drones, num_circles, clockwise=True):
+    funs = []
+    angle_degrees = 360.0 * num_circles
+    dtheta = 2 * np.pi / num_drones
+    for i in range(num_drones):
+        center = (radius * np.cos(i * dtheta), radius * np.sin(i * dtheta))
+        funs.append(helix(center, flight_time, speed_z, angle_degrees, clockwise))
+    return funs
 
 if __name__ == '__main__':
     pass

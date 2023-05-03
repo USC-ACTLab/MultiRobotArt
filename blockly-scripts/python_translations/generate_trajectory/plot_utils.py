@@ -12,7 +12,6 @@ def plot_pos(data, title=None):
     ax = fig.add_subplot(111, projection='3d')
     ax.set_title(title)
     ax.scatter(x[0], y[0], z[0], c='b', s=100)
-    ax.scatter(0, 0, 0, c='r', s=100, marker='*')
     ax.plot(x, y, z)
     ax.set_xlabel('x')
     ax.set_ylabel('y')
