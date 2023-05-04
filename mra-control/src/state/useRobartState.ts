@@ -54,8 +54,10 @@ export interface TimelineGroupState {
   robots: Record<string, RobotState>;
 }
 
+export type TimelineModes = 'ADD' | 'ERASE' | 'MOVE';
 export interface TimelineState {
   groups: Record<string, TimelineGroupState>;
+  mode: TimelineModes;
   scale: number;
 }
 
@@ -100,10 +102,12 @@ export interface TimelineActions {
    * @param startTime The start time of the block's execution
    */
   addBlockToTimeline: (groupId: string, blockId: string, startTime: number) => void;
+  removeTimelineItem: (groupId: string, itemId: string) => void;
 
   addRobotToGroup: (groupId: string, robotId: string) => void;
   removeRobotFromGroup: (groupId: string, robotId: string) => void;
   updateBlockInTimeline: (groupId: string, itemId: string, startTime: number) => void;
+  setTimelineMode: (mode: TimelineModes) => void;
 }
 
 export interface BlockActions {
@@ -113,6 +117,10 @@ export interface BlockActions {
    * @param block A partial containing the fields of the block that we want to update.
    */
   saveBlock: (blockId: string, block: Partial<CodeBlock>) => void;
+  /**
+   * Removes a block
+   * @param blockId the id of the block to remove
+   */
   removeBlock: (blockId: string) => void;
   /**
    * Renames the current editing block to have the current name.
@@ -125,6 +133,12 @@ export interface BlockActions {
    * @returns The ID of the newly created block.
    */
   createBlock: (blockName: string) => string;
+  /**
+   * Copies a block, and returns the new ID.
+   * @param blockId the id of the block to copy.
+   * @returns The ID of the newly created block.
+   */
+  copyBlock: (blockId: string) => string;
   /**
    * Sets the currently selected block.
    * @param blockId The ID of the block to select in the block editor for editing.
@@ -151,6 +165,7 @@ const defaultRobartState: MRAState = {
   projectName: 'New Robart Project',
   timelineState: {
     scale: 1,
+    mode: 'ADD',
     groups: {
       group1: {
         id: 'group1',
@@ -295,8 +310,21 @@ export const useRobartState = create<MRAState & MRAActions>()(
             });
           },
           removeBlock: (id) => {
-            set((state) => delete state.blocks[id]);
-            // TODO: Also remove all references to this block on the timeline
+            // Delete the block from the list of blocks
+            const newBlocks = { ...get().blocks };
+            delete newBlocks[id];
+
+            // Remove all references to the block in the timeline
+            const itemsToRemove = Object.values(get().timelineState.groups).map((group) =>
+              Object.values(group.items).filter((item) => item.blockId === id),
+            );
+
+            itemsToRemove.flat().forEach((item) => get().removeTimelineItem(item.groupId, item.id));
+
+            // Update the selected item
+            const selectedBlockId = Object.values(newBlocks)[Object.keys(newBlocks).length - 1]?.id;
+
+            set({ blocks: newBlocks, editingBlockId: selectedBlockId });
           },
           renameBlock: (name) =>
             set((state) => {
@@ -315,6 +343,19 @@ export const useRobartState = create<MRAState & MRAActions>()(
               state.blocks[block.id] = block;
             });
             return block.id;
+          },
+          copyBlock: (blockId) => {
+            const newBlock: CodeBlock = {
+              ...get().blocks[blockId],
+              id: uuid(),
+              name: `Copy of ${get().blocks[blockId].name}`,
+            };
+
+            set((state) => {
+              state.blocks[newBlock.id] = newBlock;
+            });
+
+            return newBlock.id;
           },
           setEditingBlock: (blockId) => {
             const oldEditingBlockId = get().editingBlockId;
@@ -357,6 +398,17 @@ export const useRobartState = create<MRAState & MRAActions>()(
             delete newRobots[id];
 
             set({ robots: newRobots });
+          },
+          setTimelineMode: (mode) => {
+            set({ timelineState: { ...get().timelineState, mode } });
+          },
+          removeTimelineItem: (groupId, itemId) => {
+            const newItems = { ...get().timelineState.groups[groupId].items };
+            delete newItems[itemId];
+
+            set((state) => {
+              state.timelineState.groups[groupId].items = newItems;
+            });
           },
         }),
         {
