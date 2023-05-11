@@ -30,7 +30,7 @@ export const NavigationBar = () => {
           }}
         />
         <div className="flex flex-grow justify-end gap-3">
-          <IconButton icon={faDownload} text="Export To ROS" onClick={() => exportToRos()} />
+          <IconButton icon={faDownload} text="Export To ROS" onClick={() => exportToRos('test.txt')} />
           <IconButton icon={faDownload} text="Save Project" onClick={() => saveToFile()} />
           <IconButton icon={faUpload} text="Load Project" onClick={() => setLoadModalOpen(true)} />
           <IconButton icon={faGear} text="Settings" onClick={() => toggleSettingsModal()} />

@@ -144,7 +144,7 @@ export interface MRAGeneralActions {
   saveProject: (fileName?: string) => void;
   resetProject: () => void;
   setProjectName: (projectName: string) => void;
-  exportToROS: (filename?: string) => void;
+  exportToROS: (filename: string) => void;
 }
 
 const defaultRobartState: MRAState = {
@@ -239,7 +239,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
             };
             saveProjectToFile(state, fileName);
           },
-          exportToROS: (fileName: string | undefined) => {
+          exportToROS: (fileName: string) => {
             const state: MRAState = {
               blocks: get().blocks,
               editingBlockId: undefined,
