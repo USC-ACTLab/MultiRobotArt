@@ -1,5 +1,6 @@
 import { MRAState } from '../state/useRobartState';
 import { saveToFile } from './saveToFile';
+import { exportToROS } from './exportToROS';
 
 export const saveProjectToFile = (projectState: MRAState, fileName: string | undefined = undefined) => {
   const projectStateJson = JSON.stringify(projectState);
@@ -12,3 +13,8 @@ export const loadProjectFromFile = (fileContents: string): MRAState => {
   // TODO: Other sanity checks to make sure it is valid. (ZOD)
   return projectState;
 };
+
+export const exportROS = (projectState: MRAState, fileName: string | undefined = undefined) => {
+  //TODO Fill in with injections...
+  
+}

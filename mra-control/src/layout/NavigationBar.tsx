@@ -13,6 +13,7 @@ import { SettingsModal } from './settings/SettingsModal';
 export const NavigationBar = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const saveToFile = useRobartState((state) => state.saveProject);
+  const exportToRos = useRobartState((state) => state.exportToRos)
   const loadFile = useRobartState((state) => state.loadProject);
   const toggleSettingsModal = useUIState((state) => state.toggleSettingsModal);
   const projectName = useRobartState((state) => state.projectName);
@@ -29,6 +30,7 @@ export const NavigationBar = () => {
           }}
         />
         <div className="flex flex-grow justify-end gap-3">
+          <IconButton icon={faDownload} text="Export To ROS" onClick={() => exportToRos()} />
           <IconButton icon={faDownload} text="Save Project" onClick={() => saveToFile()} />
           <IconButton icon={faUpload} text="Load Project" onClick={() => setLoadModalOpen(true)} />
           <IconButton icon={faGear} text="Settings" onClick={() => toggleSettingsModal()} />
