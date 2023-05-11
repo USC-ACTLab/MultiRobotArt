@@ -17,17 +17,39 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
 
     var mainNode = fs.readFileSync('./python-templates/launch_block_nodes.py').toString().split('\n');
     const numGroups = Object.keys(projectState.timelineState).length;
+    var trajCounter = 0
     for (let groupName in Object.keys(projectState.timelineState)){
         const groupState = Object.values(projectState.timelineState)[groupName];
-        
+        var pythonTrajectories = "";
+
+        var pythonBlocks = "";
+        for (let block in Object.keys(groupState.items)){
+            const blockState = groupState.items[block];
+            const startTime = blockState.startTime;
+            if (blockState.isTrajectory){
+                const block = projectState.blocks[blockState.id]
+                pythonTrajectories += '        trajectories.append(' + block.python + ')';
+                pythonBlocks += '        start_time = ${startTime}\n';
+                pythonBlocks += '        self.wait_until(start_time)\n';
+                pythonBlocks += '        for cf in self.crazyflies:\n';
+                pythonBlocks += '            cf.startTrajectory(${trajCounter}, 0, 1)\n';
+                pythonBlocks += '        self.wait_until(start_time + self.trajectories[${trajCounter}].duration\n';
+                trajCounter += 1
+            }            
+            else{
+                const duration = 1.0; //TODO figure out how to get duration
+                pythonBlocks += '        start_time = ${startTime}\n';
+                pythonBlocks += '        duration = ${duration}\n';
+                pythonBlocks += '        self.wait_until(start_time)\n';
+                pythonBlocks += '        for cf in self.crazyflies:\n';
+                pythonBlocks += '            ${block.python}\n'
+                pythonBlocks += '        self.wait_until(start_time + duration\n';
+            }
+        }
         // Read in template
         var workerNode = fs.readFileSync('./python-templates/worker_node.py').toString().split('\n');
 
-        // TODO: Get python Trajectories python code
-        var pythonTrajectories = "temp";
-        
-        // TODO: Get block exec code
-        var pythonBlocks = "temp";
+
 
         // Inject trajectories into template
         workerNode.splice(trajLine, 0, pythonTrajectories);
@@ -44,12 +66,12 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
         });
     }
     
-    const file = new Blob([contents], { type: 'text/plain' });
+    // const file = new Blob([contents], { type: 'text/plain' });
 
-    element.href = URL.createObjectURL(file);
-    element.download = fileName;
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element); // Clean up after ourselves.
+    // element.href = URL.createObjectURL(file);
+    // element.download = fileName;
+    // document.body.appendChild(element); // Required for this to work in FireFox
+    // element.click();
+    // document.body.removeChild(element); // Clean up after ourselves.
   };
   
