@@ -13,40 +13,47 @@ var launcherNodeLine = 27
  * @param filename
  */
 export const exportToROS = async (projectState: MRAState ,fileName: string) => {
-    const element = document.createElement('a');
-
     var mainNode = launcherNode.split('\n');
-    const numGroups = Object.keys(projectState.timelineState).length;
+    // TODO: fix numGroups...
+    const numGroups = Object.keys(projectState.timelineState.groups).length;
     var trajCounter = 0
-    for (let groupName in Object.keys(projectState.timelineState)){
-        const groupState = Object.values(projectState.timelineState)[groupName];
+    const groups = projectState.timelineState.groups;
+    for (let groupName in groups){
+        const groupState = projectState.timelineState.groups[groupName];
         var pythonTrajectories = "";
 
         var pythonBlocks = "";
-        if (groupState.items == undefined){
+        if (Object.keys(groupState.items).length === 0){
+            console.log("No items" + groupState)
             continue;
         }
-        for (let block in Object.keys(groupState.items)){
+        else{
+            console.log(groupState.items)
+        }
+        console.log("Items: " + groupState.items)
+        for (let block in groupState.items){
+            console.log(block)
             const blockState = groupState.items[block];
             const startTime = blockState.startTime;
+            const pythonCode = projectState.blocks[blockState.blockId].python
             if (blockState.isTrajectory){
                 const block = projectState.blocks[blockState.id]
-                pythonTrajectories += '        trajectories.append(' + block.python + ')';
+                pythonTrajectories += '        trajectories.append(' + pythonCode + ')';
                 pythonBlocks += '        start_time = ${startTime}\n';
                 pythonBlocks += '        self.wait_until(start_time)\n';
                 pythonBlocks += '        for cf in self.crazyflies:\n';
                 pythonBlocks += '            cf.startTrajectory(${trajCounter}, 0, 1)\n';
                 pythonBlocks += '        self.wait_until(start_time + self.trajectories[${trajCounter}].duration\n';
                 trajCounter += 1
-            }            
+            }
             else{
                 const duration = 1.0; //TODO figure out how to get duration
-                pythonBlocks += '        start_time = ${startTime}\n';
-                pythonBlocks += '        duration = ${duration}\n';
-                pythonBlocks += '        self.wait_until(start_time)\n';
-                pythonBlocks += '        for cf in self.crazyflies:\n';
-                pythonBlocks += '            ${block.python}\n'
-                pythonBlocks += '        self.wait_until(start_time + duration\n';
+                pythonBlocks += `        start_time = ${startTime}\n`;
+                pythonBlocks += `        duration = ${duration}\n`;
+                pythonBlocks += `        self.wait_until(start_time)\n`;
+                pythonBlocks += `        for cf in self.crazyflies:\n`;
+                pythonBlocks += `            ${pythonCode}\n`;
+                pythonBlocks += `        self.wait_until(start_time + duration)\n`;
             }
         }
         // Read in template
@@ -59,7 +66,7 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
         workerNode.splice(execBlocksLine, 0, pythonBlocks);
 
         // For each worker, save file and insert start code to main node. 
-        const launcher_text = '    import ${groupName + \'_node\'}\n    description.append(${groupName + \'_node\'}.worker_node(all_crazyflies, counter, ${numGroups}))';
+        const launcher_text = `    import ${groupName}` + `_node\n    description.append(${groupName}_node.worker_node(all_crazyflies, counter, ${numGroups}))`;
         mainNode.splice(launcherNodeLine, 0, launcher_text);
         launcherNodeLine += 2;
 
@@ -67,15 +74,21 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
         // fs.writeFile(groupName + '_node.py', workerNode.join('\n'), function (err) {
         //     if (err) return console.log(err);
         // });
+        const element = document.createElement('a');
+        const worker_node = new Blob([workerNode.join('\n')], { type: 'text/plain' });
+        element.href = URL.createObjectURL(worker_node);
+        element.download = `${groupName}_node.py`;
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
+        document.body.removeChild(element); // Clean up after ourselves.
     }
-    
-    // const file = new Blob([contents], { type: 'text/plain' });
-
-    // element.href = URL.createObjectURL(file);
-    // element.download = fileName;
-    // document.body.appendChild(element); // Required for this to work in FireFox
-    // element.click();
-    // document.body.removeChild(element); // Clean up after ourselves.
+    const element = document.createElement('a');
+    const launcherFile = new Blob([mainNode.join('\n')], { type: 'text/plain' });
+    element.href = URL.createObjectURL(launcherFile);
+    element.download = 'launch_nodes.py';
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+    document.body.removeChild(element); // Clean up after ourselves.
   };
 
 const workerNodeTemplate =  `import rclpy
