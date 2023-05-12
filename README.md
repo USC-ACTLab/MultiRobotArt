@@ -7,3 +7,4 @@
 5. Add isTrajectory boolean to blocks
 6. Save to Zip rather than individual files
 7. Allow crazyflies to be in multiple groups at a time.
+8. Setup initial positions in yaml files.
