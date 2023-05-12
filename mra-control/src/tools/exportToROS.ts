@@ -20,6 +20,16 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
     const groups = projectState.timelineState.groups;
     for (let groupName in groups){
         const groupState = projectState.timelineState.groups[groupName];
+        const robots = Object.values(groupState.robots);
+        var robotIndices: string[] = [];
+        if (robots.length === 0){
+            continue
+        }
+        for (let r in robots){
+            console.log(robots, r);
+            robotIndices.push(groupState.robots[r].id);
+            console.log(robotIndices)
+        }
         var pythonTrajectories = "";
 
         var pythonBlocks = "";
@@ -35,9 +45,8 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
             console.log(block)
             const blockState = groupState.items[block];
             const startTime = blockState.startTime;
-            const pythonCode = projectState.blocks[blockState.blockId].python
+            const pythonCode = projectState.blocks[blockState.blockId].python;
             if (blockState.isTrajectory){
-                const block = projectState.blocks[blockState.id]
                 pythonTrajectories += '        trajectories.append(' + pythonCode + ')';
                 pythonBlocks += '        start_time = ${startTime}\n';
                 pythonBlocks += '        self.wait_until(start_time)\n';
@@ -66,7 +75,8 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
         workerNode.splice(execBlocksLine, 0, pythonBlocks);
 
         // For each worker, save file and insert start code to main node. 
-        const launcher_text = `    import ${groupName}` + `_node\n    description.append(${groupName}_node.worker_node(all_crazyflies, counter, ${numGroups}))`;
+
+        const launcher_text = `    import ${groupName}` + `_node\n        #TODO: cfs=crazyflies[:]\n    description.append(${groupName}_node.worker_node(cfs, counter, ${numGroups}))`;
         mainNode.splice(launcherNodeLine, 0, launcher_text);
         launcherNodeLine += 2;
 
