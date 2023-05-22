@@ -14,7 +14,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
       kind: 'category',
       name: 'Motion',
       contents: [
-        blockToToolbox(CUSTOM_BLOCKS.block_go_to_xyz),
+        // blockToToolbox(CUSTOM_BLOCKS.block_go_to_xyz),
         blockToToolbox(CUSTOM_BLOCKS.block_go_to),
         blockToToolbox(CUSTOM_BLOCKS.block_land),
         blockToToolbox(CUSTOM_BLOCKS.block_move_angles),

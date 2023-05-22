@@ -1,6 +1,16 @@
 import numpy as np
 
 ###
+#  Landing/Takeoff commands
+###
+
+def takeoff(cf, height=1.0, duration=2.0):
+    cf.takeoff(height, duration)
+
+def land(cf, height=0.04, duration=2.0):
+    cf.land(height, duration)
+
+###
 #  Motion Primitive Commands
 ###
 

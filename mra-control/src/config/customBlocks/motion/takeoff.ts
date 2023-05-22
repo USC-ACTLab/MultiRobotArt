@@ -9,7 +9,7 @@ export const block_takeoff: RobartBlockDefinition = {
       .appendField("takeoff to")
       .appendField(new Blockly.FieldNumber(0), "height")
       .appendField("meters at")
-      .appendField(new Blockly.FieldNumber(0), "speed")
+      .appendField(new Blockly.FieldNumber(0), "duration")
       .appendField("m/s");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -20,8 +20,8 @@ export const block_takeoff: RobartBlockDefinition = {
   },
   pythonGenerator: (block, python) => {
     var number_height = block.getFieldValue('height');
-    var number_speed = block.getFieldValue('speed');
-    var code = 'takeoff(' + number_height + ',' + number_speed + ')\n';
+    var duration = block.getFieldValue('duration');
+    var code = 'takeoff(cf, ' + number_height + ' ,' + duration + ')\n';
     return code;
   },
   javascriptGenerator: (block, js) => {

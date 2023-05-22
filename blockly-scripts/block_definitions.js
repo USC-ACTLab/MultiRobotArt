@@ -262,41 +262,6 @@
   "helpUrl": ""
 },
 {
-  "type": "go_to_xyz",
-  "message0": "go to %1 ----------------X: %2 ----------------Y: %3 ----------------Z: %4 at speed (m/s) %5",
-  "args0": [
-    {
-      "type": "input_dummy"
-    },
-    {
-      "type": "input_value",
-      "name": "x",
-      "check": "Number"
-    },
-    {
-      "type": "input_value",
-      "name": "y",
-      "check": "Number"
-    },
-    {
-      "type": "input_value",
-      "name": "z",
-      "check": "Number"
-    },
-    {
-      "type": "input_value",
-      "name": "speed",
-      "check": "Number"
-    }
-  ],
-  "inputsInline": false,
-  "previousStatement": null,
-  "nextStatement": null,
-  "colour": 90,
-  "tooltip": "",
-  "helpUrl": ""
-},
-{
   "type": "go_to",
   "message0": "go to X: %1 Y: %2 Z: %3 at %4 m/s",
   "args0": [

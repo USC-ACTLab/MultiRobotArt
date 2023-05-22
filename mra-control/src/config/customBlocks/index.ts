@@ -1,7 +1,7 @@
 import { pythonGenerator } from 'blockly/python';
 import { javascriptGenerator as js } from 'blockly/javascript';
 import Blockly from 'blockly';
-import { block_go_to_xyz } from './motion/go_to_xyz';
+// import { block_go_to_xyz } from './motion/go_to_xyz';
 import { block_circle } from './curves/circle';
 import { block_start_linear_motion } from './motion/start_linear_motion';
 import { block_set_default_height } from './utility/set_default_height';
@@ -25,7 +25,7 @@ import { block_set_default_xy } from './utility/set_default_xy';
  * This is where we collect all of the custom blocks and actually update Blockly definitions.
  */
 export const CUSTOM_BLOCKS = {
-     block_go_to_xyz,
+    //  block_go_to_xyz,
      block_go_to,
      block_land,
      block_move_angles,
