@@ -12,6 +12,27 @@ def main():
 
     # disable LED (one by one)
     for cf in allcfs.crazyflies:
+<<<<<<< HEAD
+        cf.setParam("motorPowerSet.m1", 0)
+        cf.setParam("motorPowerSet.enable", 2)
+        cf.setLEDColor(1, 0, 0)
+    timeHelper.sleep(1.0)
+    
+    
+    # enable LED (broadcast)
+    for cf in allcfs.crazyflies:
+        cf.setParam("motorPowerSet.m1", 65535)
+        cf.setParam("motorPowerSet.m2", 65535)
+        cf.setParam("motorPowerSet.m3", 65535)
+        cf.setParam("motorPowerSet.m4", 65535)
+    timeHelper.sleep(5.0)
+
+    cf.setParam("motorPowerSet.m1", 0)
+    cf.setParam("motorPowerSet.m2", 0)
+    cf.setParam("motorPowerSet.m3", 0)
+    cf.setParam("motorPowerSet.m4", 0)
+
+=======
         cf.setParam("led.bitmask", 128)
         timeHelper.sleep(1.0)
 
@@ -21,6 +42,7 @@ def main():
     allcfs.setParam("led.bitmask", 0)
     timeHelper.sleep(5.0)
 
+>>>>>>> origin/main
 
 if __name__ == "__main__":
     main()

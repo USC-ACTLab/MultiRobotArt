@@ -43,6 +43,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
   const addBlockToTimeline = useRobartState((state) => state.addBlockToTimeline);
   const selectedBlockId = useRobartState((state) => state.editingBlockId);
   const blocks = useRobartState((state) => state.blocks);
+  const timelineMode = useRobartState((state) => state.timelineState.mode);
   const [hoverX, setHoverX] = useState<number | undefined>();
 
   const bind = useGesture({
@@ -64,7 +65,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
       if (selectedBlockId === undefined || parentScrollOffsetX === undefined) return;
 
       const startTime = (offsetX + parentScrollOffsetX) / (PIXELS_PER_SECOND * scale) - blocks[selectedBlockId].duration / 2;
- 
+
       return startTime;
     }
   };
@@ -75,7 +76,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
       style={{ width: 2000 }}
       ref={laneBodyRef}
       onClick={({ clientX }) => {
-        if (selectedBlockId === undefined) return;
+        if (selectedBlockId === undefined || timelineMode !== 'ADD') return;
 
         const startTime = computeTimelineBlockOffset(clientX);
 
@@ -87,11 +88,13 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
       {Object.values(group.items).map((item, idx) => (
         <TimelineBlock key={idx} scale={scale} item={item} />
       ))}
-      <HoverTimelineBlock
-        scale={scale}
-        startTime={computeTimelineBlockOffset(hoverX)}
-        isOverlapping={blockOverlaps(group, blocks, computeTimelineBlockOffset(hoverX), blocks[selectedBlockId ?? ''])}
-      />
+      {timelineMode === 'ADD' && (
+        <HoverTimelineBlock
+          scale={scale}
+          startTime={computeTimelineBlockOffset(hoverX)}
+          isOverlapping={blockOverlaps(group, blocks, computeTimelineBlockOffset(hoverX), blocks[selectedBlockId ?? ''])}
+        />
+      )}
     </div>
   );
 };

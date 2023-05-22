@@ -15,9 +15,9 @@ export const Simulation = () => {
   const setRobots = useSimulator((state) => state.setRobots);
   const step = useSimulator((state) => state.step);
 
-  useEffect(() => {
-    setRobots(useRobartState.getState().robots);
-  }, []);
+  // useEffect(() => {
+  //   setRobots(useRobartState.getState().robots);
+  // }, [robots]);
 
   useFrame(({ clock }) => {
     step();
@@ -48,7 +48,7 @@ export const Simulation = () => {
           <Crazyflie />
           <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
             <meshDistanceMaterial />
-            <pointLight position={[0,0,0]} intensity={5} color="white"/>
+            <pointLight position={[0,0,0]} intensity={1} color="white"/>
           </Sphere>
           
         </group>

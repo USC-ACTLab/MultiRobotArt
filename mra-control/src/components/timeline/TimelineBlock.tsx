@@ -6,14 +6,15 @@ import { PIXELS_PER_SECOND, blockOverlaps, convertPixelsToSeconds } from './Time
 
 export const TimelineBlock = ({ item, scale }: { item: TimelineItem; scale: number }) => {
   const blocks = useRobartState((state) => state.blocks);
-  const selectedBlock = useRobartState((state) => state.editingBlockId);
+  const removeItem = useRobartState((state) => state.removeTimelineItem);
   const groups = useRobartState((state) => state.timelineState.groups);
   const updateItem = useRobartState((state) => state.updateBlockInTimeline);
+  const timelineMode = useRobartState((state) => state.timelineState.mode);
 
   const correspondingBlock = blocks[item.blockId];
 
   const bind = useDrag(({ delta: [x, _] }) => {
-    if (selectedBlock !== undefined) return;
+    if (timelineMode !== 'MOVE') return;
 
     const seconds_delta = convertPixelsToSeconds(x, scale);
     const newStartTime = item.startTime + seconds_delta;
@@ -22,16 +23,19 @@ export const TimelineBlock = ({ item, scale }: { item: TimelineItem; scale: numb
       updateItem(item.groupId, item.id, newStartTime);
     }
   });
+
   return (
     <div
       className={clsx(
         'absolute top-1/2 flex h-5/6 -translate-y-1/2 items-center justify-center rounded-xl bg-purple-400 touch-none select-none',
-        selectedBlock === undefined ? 'cursor-move' : '',
+        timelineMode === 'MOVE' ? 'cursor-move' : '',
+        timelineMode === 'ERASE' ? 'hover:bg-red-400' : '',
       )}
       style={{
         width: PIXELS_PER_SECOND * scale * correspondingBlock.duration,
         left: PIXELS_PER_SECOND * scale * item.startTime,
       }}
+      onClick={() => timelineMode === 'ERASE' && removeItem(item.groupId, item.id)}
       {...bind()}
     >
       <span className="block overflow-hidden text-ellipsis whitespace-nowrap">{correspondingBlock.name}</span>

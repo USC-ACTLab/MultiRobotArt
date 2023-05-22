@@ -13,9 +13,11 @@ export interface SimulatorGroupState {
   robotIDs: string[];
 }
 
-export const simulator_go_to_xyz = (groupState: SimulatorGroupState, x: number, y: number, z: number, speed: number) => {
+export const go_to_xyz = (groupState: SimulatorGroupState, x: number, y: number, z: number, speed: number) => {
   groupState.robotIDs.forEach((robotId) => {
     const newTrajectory = useSimulator.getState().robotGoTo(robotId, new Vector3(x, y, z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
     useSimulator.getState().updateTrajectory(robotId, newTrajectory, speed);
   });
 };
+
+export const dummy = () => {};
