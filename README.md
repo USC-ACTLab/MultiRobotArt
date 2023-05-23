@@ -1,31 +1,10 @@
-# MultiRobotArt
+### TODO for ROS integration
 
-## Setup:
-0. Clone this directory:
-    ```
-    git clone https://github.com/USC-ACTLab/MultiRobotArt.git
-    ```
-1. Initialize git submodules (get files from other repositories):
-    ```
-    git submodule init
-    git submodule update
-    ```
-
-2. Minimum Working Example
-	Open index.html with a web-browser and see the blockly toolbox
-<!---
-2. Install Node.js and npm if you don't already have it:
-    Installation varies between distributions, but is not particularly hard
-    <https://radixweb.com/blog/installing-npm-and-nodejs-on-windows-and-mac>
-
-3. Install Blockly with npm:
-    ```
-    npm install --save blockly
-    ```
--->
-## Maintenance:
-1. Have the submodules been updated and need to be updated locally?
-    ```
-    git submodule status
-    git submodule update
-    ```
+1. Come up with templates for ROS code to inject into --- Done
+2. Inject python code into templates --- Done
+3. Correctly allocate Crazyflies
+4. Make blockly python code export to the appropriate format.
+5. Add isTrajectory boolean to blocks
+6. Save to Zip rather than individual files
+7. Allow crazyflies to be in multiple groups at a time.
+8. Setup initial positions in yaml files.

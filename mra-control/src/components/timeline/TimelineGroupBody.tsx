@@ -80,8 +80,10 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
 
         const startTime = computeTimelineBlockOffset(clientX);
 
-        if (startTime !== undefined && !blockOverlaps(group, blocks, startTime, blocks[selectedBlockId]))
-          addBlockToTimeline(group.id, selectedBlockId, startTime);
+        if (startTime !== undefined && !blockOverlaps(group, blocks, startTime, blocks[selectedBlockId])){
+          // TODO: Add isTraj appropriately (Currently hardcoded false)
+          addBlockToTimeline(group.id, selectedBlockId, startTime, false);
+        }
       }}
       {...bind()}
     >

@@ -4,7 +4,7 @@ import { createJSONStorage, persist, subscribeWithSelector } from 'zustand/middl
 import { immer } from 'zustand/middleware/immer';
 
 import { ROBART_VERSION } from '../config/Version';
-import { loadProjectFromFile, saveProjectToFile } from '../tools/projectFileConversion';
+import { loadProjectFromFile, saveProjectToFile, exportROS } from '../tools/projectFileConversion';
 import { useSimulator } from './useSimulator';
 
 export interface CodeBlock {
@@ -38,6 +38,7 @@ export interface TimelineItem {
   id: string;
   groupId: string;
   blockId: string;
+  isTrajectory: boolean;
   /**
    * Start time of the block, in seconds from the start of the program.
    */
@@ -157,7 +158,7 @@ export interface MRAGeneralActions {
   saveProject: (fileName?: string) => void;
   resetProject: () => void;
   setProjectName: (projectName: string) => void;
-  exportToPython: () => string;
+  exportToROS: (filename: string) => void;
 }
 
 const defaultRobartState: MRAState = {
@@ -253,13 +254,21 @@ export const useRobartState = create<MRAState & MRAActions>()(
             };
             saveProjectToFile(state, fileName);
           },
+          exportToROS: (fileName: string) => {
+            const state: MRAState = {
+              blocks: get().blocks,
+              editingBlockId: undefined,
+              projectName: get().projectName,
+              timelineState: get().timelineState,
+              version: ROBART_VERSION,
+              robots: get().robots,
+            };
+            exportROS(state, fileName);
+          },
           resetProject: () => {
             set(defaultRobartState);
           },
           setProjectName: (name) => set({ projectName: name }),
-          exportToPython: () => {
-            return '';
-          },
           saveGroup: (groupId, group) => {},
           createGroup: (name) => {
             const id = uuid();
@@ -274,12 +283,13 @@ export const useRobartState = create<MRAState & MRAActions>()(
             });
             return id;
           },
-          addBlockToTimeline: (groupId, blockId, startTime) => {
+          addBlockToTimeline: (groupId, blockId, startTime, isTrajectory) => {
             const newItem = {
               id: uuid(),
               groupId,
               blockId,
               startTime,
+              isTrajectory
             };
 
             const oldItems = { ...get().timelineState.groups[groupId].items };
