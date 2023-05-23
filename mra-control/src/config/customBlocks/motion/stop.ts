@@ -15,7 +15,7 @@ export const block_stop: RobartBlockDefinition = {
     }
   },
   pythonGenerator: (block, python) => {
-    return 'stop()\n';
+    return 'stop_and_hover(cf)\n';
   },
   javascriptGenerator: (block, js) => {
     return `simulator.dummy();`;

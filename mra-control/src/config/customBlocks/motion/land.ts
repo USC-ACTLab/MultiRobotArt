@@ -6,12 +6,11 @@ export const block_land: RobartBlockDefinition = {
   block:{
     init: function() {
     this.appendDummyInput()
-        .appendField("land on")
+        .appendField("land at height")
         .appendField(new Blockly.FieldNumber(0), "height")
-        .appendField("meter high object")
-        .appendField("at")
-        .appendField(new Blockly.FieldNumber(0), "speed")
-        .appendField("m/s");
+        .appendField("over")
+        .appendField(new Blockly.FieldNumber(0), "duration")
+        .appendField("seconds");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
@@ -21,8 +20,8 @@ export const block_land: RobartBlockDefinition = {
   },
   pythonGenerator: (block, python) => {
     var number_height = block.getFieldValue('height');
-    var number_speed = block.getFieldValue('speed');
-    var code = 'land(' + number_height + ',' + number_speed + ')\n';
+    var duration = block.getFieldValue('duration');
+    var code = 'land(cf, ' + number_height + ',' + duration + ')\n';
     return code;
   },
   javascriptGenerator: (block, js) => {

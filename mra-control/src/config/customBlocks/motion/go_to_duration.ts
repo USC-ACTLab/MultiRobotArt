@@ -26,8 +26,8 @@ export const block_go_to: RobartBlockDefinition = {
     var number_x_pos = block.getFieldValue('x_pos');
     var number_y_pos = block.getFieldValue('y_pos');
     var number_z_pos = block.getFieldValue('z_pos');
-    var number_speed = block.getFieldValue('speed');
-    var code = 'go_to(' + number_x_pos + ',' + number_y_pos + ',' + number_z_pos + ',' + number_speed + ')\n';
+    var duration = block.getFieldValue('duration');
+    var code = 'goto_duration(cf, ' + number_x_pos + ',' + number_y_pos + ',' + number_z_pos + ',' + duration + ')\n';
     return code;
   },
   javascriptGenerator: (block, js) => {

@@ -18,16 +18,26 @@ def goto_at_speed(cf, x, y, z, v, rel=False):
     curr_pos = cf.getPosition()
     dist = np.linalg.norm(curr_pos, np.array([x, y, z]))
     duration = dist / v
-    cf.goTo(x, y, z, duration=duration, rel=rel)
+    cf.goTo(x, y, z, 0, duration=duration, relative=rel)
 
 def goto_duration(cf, x, y, z, duration, rel=False):
-    cf.goTo(x, y, z, duration=duration, rel=rel)
+    cf.goTo(x, y, z, 0, duration=duration, relative=rel)
 
 def goto_rel_at_speed(cf, x, y, z, v):
     goto_at_speed(cf, x, y, z, v, True)
 
 def goto_rel_duration(cf, x, y, z, duration):
     goto_duration(cf, x, y, z, duration, True)
+
+def move_direction(cf, direction, distance, duration):
+    if direction == "up":
+        cf.goTo(0, 0, distance, duration, relative=True)
+    elif direction == "forward":
+        cf.goTo(distance, 0, 0, duration=duration, relative=True)
+    elif direction == "backward":
+        cf.goTo(-distance, 0, 0, duration=duration, relative=True)
+    elif direction == "down":
+        cf.goTo(0, 0, -distance, duration, relative=True)
 
 #TODO Check on cf.getPosition()
 def stop_and_hover(cf, height=None):

@@ -8,9 +8,9 @@ export const block_takeoff: RobartBlockDefinition = {
       this.appendDummyInput()
       .appendField("takeoff to")
       .appendField(new Blockly.FieldNumber(0), "height")
-      .appendField("meters at")
+      .appendField("meters over")
       .appendField(new Blockly.FieldNumber(0), "duration")
-      .appendField("m/s");
+      .appendField("seconds");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
