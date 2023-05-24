@@ -6,7 +6,8 @@ import { block_circle } from './curves/circle';
 import { block_start_linear_motion } from './motion/start_linear_motion';
 import { block_set_default_height } from './utility/set_default_height';
 import { block_stop } from './motion/stop';
-import { block_go_to } from './motion/go_to';
+import { block_go_to } from './motion/go_to_duration';
+import { block_go_to_speed } from './motion/go_to'
 import { block_land } from './motion/land';
 import { block_move_angles } from './motion/move_angles';
 import { block_move_xyz } from './motion/move_xyz';
@@ -27,6 +28,7 @@ import { block_color } from './colors/color'
  */
 export const CUSTOM_BLOCKS = {
     //  block_go_to_xyz,
+     block_go_to_speed,
      block_go_to,
      block_land,
      block_move_angles,

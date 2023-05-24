@@ -20,6 +20,7 @@ export const block_turn: RobartBlockDefinition = {
     }
   },
   pythonGenerator: (block, python) => {
+    //TODO: add python equivalent
     var dropdown_direction = block.getFieldValue('direction');
     var angle_degrees = block.getFieldValue('degrees');
     var angle_rate = block.getFieldValue('rate');

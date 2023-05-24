@@ -25,6 +25,8 @@ export const block_takeoff: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    var number_height = block.getFieldValue('height');
+    var duration = block.getFieldValue('duration');
+    return `simulator.takeoff(group_state, ${number_height}, ${duration});\n`;
   }
 }

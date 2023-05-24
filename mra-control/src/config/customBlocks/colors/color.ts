@@ -33,6 +33,7 @@ export const block_color: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    var color = block.getFieldValue('color');
+    return `simulator.setColor(group_state, ${color});`;
   }
 }
