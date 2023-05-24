@@ -6,9 +6,11 @@ import numpy as np
 
 def takeoff(cf, height=1.0, duration=2.0):
     cf.takeoff(height, duration)
+    return duration
 
 def land(cf, height=0.04, duration=2.0):
     cf.land(height, duration)
+    return duration
 
 ###
 #  Motion Primitive Commands
@@ -19,15 +21,17 @@ def goto_at_speed(cf, x, y, z, v, rel=False):
     dist = np.linalg.norm(curr_pos, np.array([x, y, z]))
     duration = dist / v
     cf.goTo(x, y, z, 0, duration=duration, relative=rel)
+    return duration
 
 def goto_duration(cf, x, y, z, duration, rel=False):
     cf.goTo(x, y, z, 0, duration=duration, relative=rel)
+    return duration
 
 def goto_rel_at_speed(cf, x, y, z, v):
-    goto_at_speed(cf, x, y, z, v, True)
+    return goto_at_speed(cf, x, y, z, v, True)
 
 def goto_rel_duration(cf, x, y, z, duration):
-    goto_duration(cf, x, y, z, duration, True)
+    return goto_duration(cf, x, y, z, duration, True)
 
 def move_direction(cf, direction, distance, duration):
     if direction == "up":
@@ -38,6 +42,7 @@ def move_direction(cf, direction, distance, duration):
         cf.goTo(-distance, 0, 0, duration=duration, relative=True)
     elif direction == "down":
         cf.goTo(0, 0, -distance, duration, relative=True)
+    return duration
 
 #TODO Check on cf.getPosition()
 def stop_and_hover(cf, height=None):
@@ -45,7 +50,13 @@ def stop_and_hover(cf, height=None):
     goal_pos = position
     if height != None:
         goal_pos[2] = height
-    cf.goTo(goal_pos, duration=2.0)
+        duration = 2.0
+    else:
+        duration = 0.1
+    cf.goTo(goal_pos, duration=duration)
+    return duration
+    
+
 
 ###
 #  Low Level Commands...
