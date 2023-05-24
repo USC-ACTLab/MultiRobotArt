@@ -19,6 +19,7 @@ import { block_start_turn } from './curves/start_turn';
 import { block_get_a_position } from './utility/get_a_position';
 import { block_set_default_speed } from './utility/set_default_speed';
 import { block_set_default_xy } from './utility/set_default_xy';
+import { block_color } from './colors/color'
 
 
 /**
@@ -42,7 +43,8 @@ export const CUSTOM_BLOCKS = {
      block_get_a_position,
      block_set_default_height,
      block_set_default_speed,
-     block_set_default_xy
+     block_set_default_xy,
+     block_color
 };
 
 Object.values(CUSTOM_BLOCKS).forEach((block) => {

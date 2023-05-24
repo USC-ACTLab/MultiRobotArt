@@ -48,6 +48,13 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     },
     {
       kind: 'category',
+      name: 'Colors',
+      contents: [
+        blockToToolbox(CUSTOM_BLOCKS.block_color)
+      ]
+    },
+    {
+      kind: 'category',
       name: 'Logic',
       colour: '#5C81A6',
       contents: [
