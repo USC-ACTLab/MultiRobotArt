@@ -102,7 +102,7 @@ export interface TimelineActions {
    * @param blockId The id of the block to add to the timeline group
    * @param startTime The start time of the block's execution
    */
-  addBlockToTimeline: (groupId: string, blockId: string, startTime: number) => void;
+  addBlockToTimeline: (groupId: string, blockId: string, startTime: number, isTrajectory: boolean) => void;
   removeTimelineItem: (groupId: string, itemId: string) => void;
 
   addRobotToGroup: (groupId: string, robotId: string) => void;
@@ -283,7 +283,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
             });
             return id;
           },
-          addBlockToTimeline: (groupId, blockId, startTime, isTrajectory) => {
+          addBlockToTimeline: (groupId: string, blockId: string, startTime: number, isTrajectory: boolean) => {
             const newItem = {
               id: uuid(),
               groupId,

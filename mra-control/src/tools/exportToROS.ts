@@ -14,8 +14,7 @@ var launcherNodeLine = 27
  */
 export const exportToROS = async (projectState: MRAState ,fileName: string) => {
     var mainNode = launcherNode.split('\n');
-    // TODO: fix numGroups...
-    const numGroups = Object.keys(projectState.timelineState.groups).length;
+    var numGroups = 0; //Object.keys(projectState.timelineState.groups).length;
     var trajCounter = 0
     const groups = projectState.timelineState.groups;
     for (let groupName in groups){
@@ -25,10 +24,14 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
         if (robots.length === 0){
             continue
         }
+        numGroups += 1;
         for (let r in robots){
             console.log(robots, r);
-            robotIndices.push(groupState.robots[r].id);
-            console.log(robotIndices)
+            if (robots[r] == undefined){
+                continue
+            }
+            robotIndices.push(r);
+            console.log("Robot Indices", robotIndices)
         }
         var pythonTrajectories = "";
 
@@ -58,25 +61,34 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
             else{
                 const duration = 1.0; //TODO figure out how to get duration
                 pythonBlocks += `        start_time = ${startTime}\n`;
-                pythonBlocks += `        duration = ${duration}\n`;
+                pythonBlocks += `        total_duration = ${duration}\n`;
                 pythonBlocks += `        self.wait_until(start_time)\n`;
-                pythonBlocks += `        for cf in self.crazyflies:\n`;
-                pythonBlocks += `            ${pythonCode}\n`;
-                pythonBlocks += `        self.wait_until(start_time + duration)\n`;
+                
+                var pythonLines = pythonCode.split('\n');
+                // TODO: Is this -1 needed or just a bug?
+                for (var i = 0; i < pythonLines.length - 1; i++){
+                    pythonBlocks += `        for cf in self.crazyflies:\n`;
+                    pythonBlocks += `            block_duration = ${pythonLines[i]}\n`;
+                    pythonBlocks += '        self.wait(block_duration)\n'
+                }
+                pythonBlocks += `        self.wait_until(start_time + total_duration)\n`;
             }
         }
         // Read in template
         var workerNode = workerNodeTemplate.split('\n');
-
-
 
         // Inject trajectories into template
         workerNode.splice(trajLine, 0, pythonTrajectories);
         workerNode.splice(execBlocksLine, 0, pythonBlocks);
 
         // For each worker, save file and insert start code to main node. 
-
-        const launcher_text = `    import ${groupName}` + `_node\n        #TODO: cfs=crazyflies[:]\n    description.append(${groupName}_node.worker_node(cfs, counter, ${numGroups}))`;
+        console.log(robotIndices);
+        var launcher_text = `    import ${groupName}` + `_node\n`;
+        launcher_text = `    cfs = []\n`
+        // TODO Assumes CFs are named with indices
+        for (let r in robotIndices) 
+            launcher_text += `    cfs.append(crazyflies[${r}])\n`;
+        launcher_text += `    description.append(${groupName}_node.worker_node(cfs, counter, ${numGroups}))\n`;
         mainNode.splice(launcherNodeLine, 0, launcher_text);
         launcherNodeLine += 2;
 
@@ -193,7 +205,16 @@ class worker_node(Node):
             self.running = True
             self.start_time = self.node.get_clock().now().time()
             self.execute_blocks()
-            self.destory_node()`
+            self.destory_node()
+
+    def wait_until(self, end_time):
+        while self.get_clock().now() < end_time:
+            rclpy.spin_once(self.node, timeout_sec=0)
+    
+    def wait(self, time):
+        end_time = self.get_clock.now() + time
+        self.wait_until(end_time)
+`
 
 const launcherNode = `import yaml
 from ament_index_python.packages import get_package_share_directory
