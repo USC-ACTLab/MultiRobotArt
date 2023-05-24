@@ -1,4 +1,5 @@
 import numpy as np
+from PIL import ImageColor
 
 ###
 #  Landing/Takeoff commands
@@ -70,6 +71,14 @@ def cmdPos(cf, pos):
 
 def enableHighLevelCommander(cf):
     cf.notifySetpointsStop()
+
+###
+# Colors
+###
+
+def setLEDFromHex(cf, hex):
+    rgb = ImageColor.getcolor(hex, "RGB")
+    cf.setLEDColor(*rgb)
 
 ### 
 #  Trajectory commands...

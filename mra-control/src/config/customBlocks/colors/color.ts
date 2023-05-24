@@ -20,12 +20,16 @@ export const block_color: RobartBlockDefinition = {
         .appendField('set LED color:')
         .appendField(new ColorWheelField("#00FF00", 150, {
             layoutDirection: 'horizontal',
-          }), "COLOR")
+          }), "color")
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
     }
+    
   },
 
   pythonGenerator: (block, python) => {
-    var code = '';
+    var color = block.getFieldValue('color');
+    var code = 'setLEDColorFromHex(cf, \"' + color + '\")\n';
     return code;
   },
   javascriptGenerator: (block, js) => {
