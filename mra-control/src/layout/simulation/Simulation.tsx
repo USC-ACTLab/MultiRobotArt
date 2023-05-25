@@ -14,7 +14,6 @@ export const Simulation = () => {
   const robotGoTo = useSimulator((state) => state.robotGoTo);
   const setRobots = useSimulator((state) => state.setRobots);
   const step = useSimulator((state) => state.step);
-
   // useEffect(() => {
   //   setRobots(useRobartState.getState().robots);
   // }, [robots]);
@@ -28,7 +27,7 @@ export const Simulation = () => {
      <color attach="background" args={['black']} />
       <OrbitControls maxPolarAngle={Math.PI * (1/2 - 1 / 20)} minPolarAngle={0} minDistance={5} maxDistance={20} />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-        <GizmoViewport axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
+        <GizmoViewport labels={['X', 'Z', 'Y']} axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
       </GizmoHelper>
       <Grid
         position={[0, -0.001, 0]}
@@ -39,8 +38,8 @@ export const Simulation = () => {
         fadeDistance={50}
         fadeStrength={1.2}
         infiniteGrid={true}
-      />
-      <Plane args={[1000, 1000]} rotation={[-Math.PI/2, 0, 0]} position={[0,-0.02, 0]}>
+      />  
+      <Plane args={[1000, 1000]} rotation={[-Math.PI/2, 0, 0]} position={[0, -0.02, 0]}>
         <meshStandardMaterial color="black" />
       </Plane>
       {Object.values(robots).map((robot) => (
