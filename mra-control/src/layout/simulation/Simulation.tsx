@@ -38,12 +38,12 @@ export const Simulation = () => {
         fadeDistance={50}
         fadeStrength={1.2}
         infiniteGrid={true}
-      />  
+      />
       <Plane args={[1000, 1000]} rotation={[-Math.PI/2, 0, 0]} position={[0, -0.02, 0]}>
         <meshStandardMaterial color="black" />
       </Plane>
       {Object.values(robots).map((robot) => (
-        <group key={robot.id} ref={marker} position={robot.pos}>
+        <group key={robot.id} ref={marker} position={robot.pos} scale={0.4}>
           <Crazyflie />
           <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
             <meshDistanceMaterial />
