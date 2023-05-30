@@ -46,8 +46,8 @@ export const Simulation = () => {
         <group key={robot.id} ref={marker} position={robot.pos} scale={0.4}>
           <Crazyflie />
           <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
-            <meshDistanceMaterial />
-            <pointLight position={[0,0,0]} intensity={1} color="white"/>
+            <meshStandardMaterial emissive={[robot.color.r/255, robot.color.g/255, robot.color.b/255]} />
+            <pointLight position={[0,0,0]} intensity={1}/>
           </Sphere>
           
         </group>
