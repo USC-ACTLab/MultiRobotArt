@@ -1,10 +1,11 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import int32
+from std_msgs.msg import Int32
 from crazyflie_py import generate_trajectory
 import numpy as np
+from blocklyTranslations import *
 
-Hz = 100
+Hz = 30
 
 class worker_node(Node):
 
@@ -13,18 +14,19 @@ class worker_node(Node):
         id: a unique id between 0 and num_nodes corresponding to the thread number of this worker
         num_nodes: number of nodes (threads) in total
         """
+        super().__init__("worker_node_{}".format(id))
         self.id = id
         self.num_nodes = num_nodes
         self.crazyflies = crazyflies
 
         self.execution_ready_subscription(
-            int32,
+            Int32,
             'ready',
             self.ready_callback,
             num_nodes + 1
         )
         self.execution_ready_publisher(
-            int32,
+            Int32,
             'ready',
             num_nodes + 1
         )
@@ -32,8 +34,9 @@ class worker_node(Node):
         self.ready_ids = set()
         self.executing = False
         self.running = False
+        self.done = False
     
-    def compute_trajectories():
+    def compute_trajectories(self):
         """
         Inject Trajectory computation code here...
         """
@@ -59,8 +62,13 @@ class worker_node(Node):
         """
         trajectories = self.compute_trajectories()
         self.upload_trajectories(trajectories)
-        self.execution_ready_publisher.publish(self.id)
+        msg = Int32()
+        msg.data = self.id
+        self.ready_publisher.publish(msg)
 
+    def time(self):
+        return self.get_clock().now().nanoseconds / 1e9
+    
     def execute_blocks(self):
         """
         Must be injected into...
@@ -80,7 +88,7 @@ class worker_node(Node):
         pass
 
     def ready_callback(self, msg):
-        self.ready_ids.add(msg)
+        self.ready_ids.add(msg.data)
     
     def timer_callback(self):
         if not self.running:
@@ -88,6 +96,15 @@ class worker_node(Node):
             self.running = True
         if len(self.ready_ids) == self.num_nodes and not self.executing:
             self.running = True
-            self.start_time = self.node.get_clock().now().time()
+            self.start_time = self.get_clock().now()
             self.execute_blocks()
-            self.destory_node()
+            self.destroy_node()
+            self.done = True
+
+    def wait_until(self, end_time):
+        while self.time() < end_time:
+            rclpy.spin_once(self, timeout_sec=0)
+
+    def wait(self, time):
+        end_time = self.time() + time
+        self.wait_until(end_time)
