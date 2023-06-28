@@ -25,6 +25,7 @@ export interface RobotSimState {
   trajectoryDuration: number;
   timeAlongTrajectory: number;
   color:  THREE.Color;
+  theme: THREE.Color;
 }
 
 export interface SimulatorState {
@@ -128,7 +129,10 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           trajectory: null,
           trajectoryDuration: 0,
           trajectories: [],
-          color: new THREE.Color()
+          color: new THREE.Color(),
+          theme: new THREE.Color( 0x000000 ) //white
+          
+          
         };
       });
       set({ robots: simRobots });

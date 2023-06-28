@@ -20,6 +20,17 @@ export const CurveEditorModal = () => {
   const selectedPoint = useCurveEditorState((state) => state.selectedControlPoint);
   const pointCount = useCurveEditorState((state) => state.bezierControlPoints.length);
 
+//  var canvas = document.getElementsByTagName("Canvas");
+//  canvas.addEventListener("webglcontextlost", function(event: { preventDefault: () => void; }) {
+//   event.preventDefault();
+// }, false);
+
+// canvas.addEventListener(
+//   "webglcontextrestored", setupWebGLStateAndResources, false);
+
+
+
+
   useEffect(() => {
     setPoints(bezierControlPoints);
   }, [selectedPoint, pointCount]);
@@ -56,3 +67,7 @@ export const CurveEditorModal = () => {
     </Modal>
   );
 };
+function setupWebGLStateAndResources(arg0: string, setupWebGLStateAndResources: any, arg2: boolean) {
+  throw new Error('Function not implemented.');
+}
+

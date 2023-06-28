@@ -6,6 +6,13 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { Group } from 'three';
 import * as THREE from 'three';
+//import "./Mode.css";
+import ReactSwitch from "react-switch";
+import { createContext, useState } from 'react';  
+import { ThemeContext } from 'flowbite-react/lib/esm/components/Flowbite/ThemeContext';
+import { globalThemeChanger, global_theme } from '@MRAControl/layout/settings/SettingsModal';
+import { count } from 'console';
+
 
 export const Simulation = () => {
   const marker = useRef<Group>(null!); 
@@ -14,17 +21,24 @@ export const Simulation = () => {
   const robotGoTo = useSimulator((state) => state.robotGoTo);
   const setRobots = useSimulator((state) => state.setRobots);
   const step = useSimulator((state) => state.step);
+  let counter = 0;
+  counter ++;
   // useEffect(() => {
   //   setRobots(useRobartState.getState().robots);
   // }, [robots]);
 
+
+
+
+
   useFrame(({ clock }) => {
     step();
+    
   });
 
   return (
     <>
-     <color attach="background" args={['black']} />
+     <color attach="background" args={['gray']} />
       <OrbitControls maxPolarAngle={Math.PI * (1/2 - 1 / 20)} minPolarAngle={0} minDistance={1} maxDistance={20} />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport labels={['X', 'Z', 'Y']} axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
@@ -34,22 +48,22 @@ export const Simulation = () => {
         args={[10.5, 10.5]}
         cellSize={1}
         cellThickness={1}
-        cellColor={'black'}
+        cellColor={'blue'} //grid color
         fadeDistance={50}
         fadeStrength={1.2}
         infiniteGrid={true}
       />
-      <Plane args={[1000, 1000]} rotation={[-Math.PI/2, 0, 0]} position={[0, -0.02, 0]}>
-        <meshStandardMaterial color="black" />
+      <Plane args={[1000, 1000]} rotation={[-Math.PI/2, 0, 0]} position={[0, -0.02, 0]}> 
+     {/* {Object.values(robots).map((robot) => (     */}
+        <meshStandardMaterial emissive={globalThemeChanger(global_theme())}/> 
+       {/* ))} */}
       </Plane>
       {Object.values(robots).map((robot) => (
         <group key={robot.id} ref={marker} position={robot.pos} scale={0.4}>
           <Crazyflie />
-          <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
+          <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}/>
             <meshStandardMaterial emissive={[robot.color.r/255, robot.color.g/255, robot.color.b/255]} />
-            <pointLight position={[0,0,0]} intensity={1}/>
-          </Sphere>
-          
+            <pointLight position={[0,0,0]} intensity={1} />
         </group>
       ))}
     </>

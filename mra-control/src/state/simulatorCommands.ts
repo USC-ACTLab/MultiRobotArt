@@ -7,7 +7,7 @@
  */
 
 import { useSimulator } from '@MRAControl/state/useSimulator';
-import { Vector3 } from 'three';
+import THREE, { Vector3 } from 'three';
 
 export interface SimulatorGroupState {
   robotIDs: string[];
@@ -98,11 +98,21 @@ export const setColor = (groupState: SimulatorGroupState, r: number, g: number, 
       const led_color = useSimulator.getState().robots[robotId].color;
       led_color.setRGB(r,g,b);
     }
-   
-
-
   })
-} 
+}
+
+// export const setLight = (groupState: SimulatorGroupState, r: number, g: number, b: number) =>{
+//   groupState.robotIDs.forEach((robotId) => {
+//      var curr_position
+//     if (useSimulator.getState().robots[robotId] == undefined){
+//       curr_position = new Vector3(0, 0, 0)
+//     }
+//     else{
+//       const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+//       //scene.add( directionalLight );
+//     }
+//   })
+// }  
 
 
 
