@@ -1,8 +1,7 @@
+import { IconButton } from '@MRAControl/components/buttons/IconButton';
+import { useRobartState } from '@MRAControl/state/useRobartState';
+import { useRobotManager } from '@MRAControl/state/useRobotManager';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-
-import { IconButton } from '../../components/buttons/IconButton';
-import { useRobartState } from '../../state/useRobartState';
-import { useRobotManager } from '../../state/useRobotManager';
 
 export const RobotSidebar = () => {
   const robots = useRobartState((state) => state.robots);
