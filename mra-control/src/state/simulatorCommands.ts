@@ -7,7 +7,7 @@
  */
 
 import { useSimulator } from '@MRAControl/state/useSimulator';
-import { Vector3 } from 'three';
+import { Vector3, Color } from 'three';
 
 export interface SimulatorGroupState {
   robotIDs: string[];
@@ -19,5 +19,10 @@ export const go_to_xyz = (groupState: SimulatorGroupState, x: number, y: number,
     useSimulator.getState().updateTrajectory(robotId, newTrajectory, speed);
   });
 };
+export const set_led_color = (groupState: SimulatorGroupState, r: number, g: number, b: number) => {
+  groupState.robotIDs.forEach((robotID) =>{
+    useSimulator.getState().robots[robotID].color = new Color(r, g, b);
+  });
+}
 
 export const dummy = () => {};
