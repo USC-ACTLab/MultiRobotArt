@@ -1,6 +1,8 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
 import {ColorWheelField} from './ColorWheel';
+import { Color } from 'three';
+import { string } from 'blockly/core/utils';
 
 // Blockly.Blocks["color_wheel_picker"] = {
 //   init: function () {
@@ -11,6 +13,14 @@ import {ColorWheelField} from './ColorWheel';
 //       }), "COLOR")
 //   }
 // };
+function hexToRgb(hex: string) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+};
 
 export const block_color: RobartBlockDefinition = {
   name: "color",
@@ -28,11 +38,21 @@ export const block_color: RobartBlockDefinition = {
   },
 
   pythonGenerator: (block, python) => {
-    var color = block.getFieldValue('color');
-    var code = 'setLEDColorFromHex(cf, \"' + color + '\")\n';
+    const color = block.getFieldValue('color');
+    const code = 'setLEDColorFromHex(cf, \"' + color + '\")\n';
     return code;
   },
+
+
+
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    const color = block.getFieldValue('color');
+    const rgb = hexToRgb(color)
+    if(rgb != null){
+      return `simulator.set_led_color(group_state, ${rgb.r}, ${rgb.g}, ${rgb.b});\n`;
+    }
+    else{
+      return `simulator.set_led_color(group_state, 0, 0, 0);\n`;
+    }
   }
 }

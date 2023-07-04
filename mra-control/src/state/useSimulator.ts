@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Color } from 'three';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
