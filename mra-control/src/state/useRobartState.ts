@@ -7,6 +7,9 @@ import { immer } from 'zustand/middleware/immer';
 import { ROBART_VERSION } from '../config/Version';
 import { loadProjectFromFile, saveProjectToFile, exportROS } from '../tools/projectFileConversion';
 import { useSimulator } from './useSimulator';
+import * as SIM from './simulatorCommands';
+import { SimulatorGroupState } from './simulatorCommands';
+
 
 export interface CodeBlock {
   /**
@@ -44,6 +47,7 @@ export interface TimelineItem {
    * Start time of the block, in seconds from the start of the program.
    */
   startTime: number;
+  duration: number;
 }
 
 export interface TimelineGroupState {
@@ -285,13 +289,24 @@ export const useRobartState = create<MRAState & MRAActions>()(
             return id;
           },
           addBlockToTimeline: (groupId: string, blockId: string, startTime: number, isTrajectory: boolean) => {
+            var duration = 0
+            // TODO: Check if this causes unintended consequences...
+            const simulator = SIM;
+            const group_state: SimulatorGroupState = {
+              robotIDs: Object.keys(get().timelineState.groups[groupId].robots)
+            };
+            // This only kind of works, doesn't work for velo commands because init position will be wrong.
+            // TODO: Run all blocks up until this point in the timeline to get position
+            eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
             const newItem = {
               id: uuid(),
               groupId,
               blockId,
               startTime,
-              isTrajectory
+              isTrajectory,
+              duration
             };
+            alert(newItem.duration);
 
             const oldItems = { ...get().timelineState.groups[groupId].items };
             oldItems[newItem.id] = newItem;
