@@ -129,7 +129,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           timeAlongTrajectory: 0,
           trajectory: null,
           trajectoryDuration: 0,
-          trajectories: []
+          trajectories: [],
         };
       });
       set({ robots: simRobots });

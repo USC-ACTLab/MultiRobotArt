@@ -1,8 +1,8 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
 
-export const block_go_to: RobartBlockDefinition = {
-  name: "go_to",
+export const block_go_to_speed: RobartBlockDefinition = {
+  name: "go_to_speed",
   block: {
     init: function () {
       this.appendDummyInput()
@@ -27,7 +27,7 @@ export const block_go_to: RobartBlockDefinition = {
     var number_y_pos = block.getFieldValue('y_pos');
     var number_z_pos = block.getFieldValue('z_pos');
     var number_speed = block.getFieldValue('speed');
-    var code = 'go_to(cf ' + number_x_pos + ',' + number_y_pos + ',' + number_z_pos + ',' + number_speed + ')\n';
+    var code = 'go_to(cf, ' + number_x_pos + ',' + number_y_pos + ',' + number_z_pos + ',' + number_speed + ')\n';
     return code;
   },
   javascriptGenerator: (block, js) => {
@@ -36,6 +36,6 @@ export const block_go_to: RobartBlockDefinition = {
     var z = block.getFieldValue('z_pos');
     var speed = block.getFieldValue('speed');
 
-    return `simulator.go_to_xyz(group_state, ${x}, ${y}, ${z}, ${speed})`;
+    return `simulator.go_to_xyz_speed(group_state, ${x}, ${y}, ${z}, ${speed});\n`;
   }
 }

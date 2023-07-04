@@ -18,6 +18,6 @@ export const block_stop: RobartBlockDefinition = {
     return 'stop_and_hover(cf)\n';
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    return `simulator.stop_and_hover(group_state);\n`;
   }
 }

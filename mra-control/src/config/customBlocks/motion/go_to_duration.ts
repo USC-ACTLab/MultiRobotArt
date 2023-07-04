@@ -34,8 +34,8 @@ export const block_go_to: RobartBlockDefinition = {
     var x = block.getFieldValue('x_pos');
     var y = block.getFieldValue('y_pos');
     var z = block.getFieldValue('z_pos');
-    var speed = block.getFieldValue('speed');
+    var duration = block.getFieldValue('duration');
 
-    return `simulator.go_to_xyz(group_state, ${x}, ${y}, ${z}, ${speed})`;
+    return `simulator.go_to_xyz_duration(group_state, ${x}, ${y}, ${z}, ${duration});\n`;
   }
 }
