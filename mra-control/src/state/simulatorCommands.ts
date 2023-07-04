@@ -20,7 +20,8 @@ export const go_to_xyz_speed = (groupState: SimulatorGroupState, x: number, y: n
       curr_position = new Vector3(0, 0, 0)
     }
     else{
-      curr_position = useSimulator.getState().robots[robotId].pos;
+      var pos = useSimulator.getState().robots[robotId].pos;
+      curr_position = new Vector3(pos.x, pos.y, pos.z);
     }
     const newTrajectory = useSimulator.getState().robotGoTo(robotId, new Vector3(x, y, z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
     const duration = curr_position.distanceTo(new Vector3(x, y, z)) / speed;
@@ -47,7 +48,8 @@ export const land = (groupState: SimulatorGroupState, height: number, duration: 
       curr_position = new Vector3(0, 0, 0)
     }
     else{
-      curr_position = useSimulator.getState().robots[robotId].pos;
+      var pos = useSimulator.getState().robots[robotId].pos;
+      curr_position = new Vector3(pos.x, pos.y, pos.z);
     }    var goal_position = curr_position
     goal_position.z = height
     const newTrajectory = useSimulator.getState().robotGoTo(robotId, goal_position, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
@@ -62,10 +64,9 @@ export const takeoff = (groupState: SimulatorGroupState, height: number, duratio
       curr_position = new Vector3(0, 0, 0)
     }
     else{
-      curr_position = useSimulator.getState().robots[robotId].pos;
+      var pos = useSimulator.getState().robots[robotId].pos;
+      curr_position = new Vector3(pos.x, pos.y, pos.z);
     }
-    console.log("Takeoff") ; 
-    console.log(robotId)  
     var goal_position = curr_position;
     goal_position.z = height;
     const newTrajectory = useSimulator.getState().robotGoTo(robotId, goal_position, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
@@ -80,8 +81,10 @@ export const move_speed = (groupState: SimulatorGroupState, x: number, y: number
       curr_position = new Vector3(0, 0, 0)
     }
     else{
-      curr_position = useSimulator.getState().robots[robotId].pos;
-    }    var goal_position = curr_position;
+      var pos = useSimulator.getState().robots[robotId].pos;
+      curr_position = new Vector3(pos.x, pos.y, pos.z);
+    }
+    var goal_position = curr_position;
     goal_position.x += x;
     goal_position.y += y;
     goal_position.z += z;
