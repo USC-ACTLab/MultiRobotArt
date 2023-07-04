@@ -21,6 +21,6 @@ export const block_set_default_speed: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    return `duration += simulator.dummy();`;
   }
 }

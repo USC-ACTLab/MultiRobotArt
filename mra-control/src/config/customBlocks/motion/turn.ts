@@ -28,6 +28,6 @@ export const block_turn: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    return `duration += simulator.dummy();`;
   }
 }
