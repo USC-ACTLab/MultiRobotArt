@@ -84,6 +84,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
       if (status !== 'RUNNING') return;
       const deltaT = 1 / (FPS * timeDilation);
       const newSimTime = time + deltaT;
+      //TODO update time text in simulation window
       const robots = { ...currentRobots };
 
       Object.keys(robots).forEach((robotId) => {

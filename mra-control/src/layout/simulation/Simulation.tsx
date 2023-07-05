@@ -8,7 +8,7 @@ import { Group } from 'three';
 import * as THREE from 'three';
 
 export const Simulation = () => {
-  const marker = useRef<Group>(null!); 
+  const marker = useRef<Group>(null!);
   const robots = useSimulator((state) => state.robots);
   const updateTrajectory = useSimulator((state) => state.updateTrajectory);
   const robotGoTo = useSimulator((state) => state.robotGoTo);
@@ -46,8 +46,8 @@ export const Simulation = () => {
         <group key={robot.id} ref={marker} position={robot.pos} scale={0.4}>
           <Crazyflie />
           <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
-            <meshDistanceMaterial />
-            <pointLight position={[0,0,0]} intensity={1} color="white"/>
+            <meshStandardMaterial emissive={"blue"}/>
+            <pointLight position={[0,0,0]} intensity={1} color="blue"/>
           </Sphere>
           
         </group>
