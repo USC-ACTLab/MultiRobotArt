@@ -33,10 +33,14 @@ this.setHelpUrl("");
     var number_y = block.getFieldValue('y');
     var number_z = block.getFieldValue('z');
     var number_speed = block.getFieldValue('speed');
-    var code = 'move_xyz(' + number_x + ',' + number_y + ',' + number_z + ',' + number_speed + ')\n';
+    var code = 'goto_rel_at_speed(cf, ' + number_x + ',' + number_y + ',' + number_z + ',' + number_speed + ')\n';
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy()`;
+    var number_x = block.getFieldValue('x');
+    var number_y = block.getFieldValue('y');
+    var number_z = block.getFieldValue('z');
+    var number_speed = block.getFieldValue('speed');
+    return `simulator.move_speed(group_state, ${number_x}, ${number_y}, ${number_z}, ${number_speed});\n`;
   }
 }

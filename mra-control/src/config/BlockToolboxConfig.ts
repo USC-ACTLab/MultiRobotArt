@@ -14,15 +14,16 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
       kind: 'category',
       name: 'Motion',
       contents: [
-        blockToToolbox(CUSTOM_BLOCKS.block_go_to_xyz),
+        // blockToToolbox(CUSTOM_BLOCKS.block_go_to_xyz),
         blockToToolbox(CUSTOM_BLOCKS.block_go_to),
+        blockToToolbox(CUSTOM_BLOCKS.block_go_to_speed),
+        blockToToolbox(CUSTOM_BLOCKS.block_takeoff),
         blockToToolbox(CUSTOM_BLOCKS.block_land),
         blockToToolbox(CUSTOM_BLOCKS.block_move_angles),
         blockToToolbox(CUSTOM_BLOCKS.block_move_xyz),
         blockToToolbox(CUSTOM_BLOCKS.block_move),
         blockToToolbox(CUSTOM_BLOCKS.block_start_linear_motion),
         blockToToolbox(CUSTOM_BLOCKS.block_stop),
-        blockToToolbox(CUSTOM_BLOCKS.block_takeoff),
         blockToToolbox(CUSTOM_BLOCKS.block_turn),
       ],
     },
@@ -45,6 +46,13 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
         blockToToolbox(CUSTOM_BLOCKS.block_set_default_speed),
         blockToToolbox(CUSTOM_BLOCKS.block_set_default_xy)
       ],
+    },
+    {
+      kind: 'category',
+      name: 'Colors',
+      contents: [
+        blockToToolbox(CUSTOM_BLOCKS.block_color)
+      ]
     },
     {
       kind: 'category',

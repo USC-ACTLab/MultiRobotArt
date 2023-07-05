@@ -1,0 +1,300 @@
+# named list of all robots
+# 21, 24, 29
+# 
+robots:
+  cf1:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E701
+    initial_position: [-1, 1.5, 0]
+    type: cf21_m1  # see robot_types
+  cf3:
+    enabled: true
+    uri: radio://1/120/2M/E7E7E7E703
+    initial_position: [0, 0, 0]
+    type: cf21_m3  # see robot_types
+  cf5:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E705
+    initial_position: [2.0, 0, 0]
+    type: cf21_m1  # see robot_types
+  cf6:
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E706
+    initial_position: [0.5, 1.5, 0]
+    type: cf21_m2 # see robot_types
+  cf9:
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E709
+    initial_position: [1, 1.5, 0]
+    type: cf21_m1 # see robot_types
+  cf11:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E70B
+    initial_position: [0.5, 0, 0]
+    type: cf21_m3 # see robot_types  
+  cf15:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E70F
+    initial_position: [1.5, 1.5, 0]
+    type: cf21_m3 # see robot_types
+  cf16:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E710
+    initial_position: [-1, 1, 0]
+    type: cf21_m4 # see robot_types   
+  cf17:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E711
+    initial_position: [-0.5, 1, 0]
+    type: cf21_m1  # see robot_types
+  cf19:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E713
+    initial_position: [0, 1, 0]
+    type: cf21_m3  # see robot_types  
+  cf20:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E714
+    initial_position: [0.5, 1, 0]
+    type: cf21_m4  # see robot_types
+  cf21:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E715
+    initial_position: [1.5, 0, 0]
+    type: cf21_m1
+  cf23:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E717
+    initial_position: [0.5, 0, 0]
+    type: cf21_m3
+  cf24:
+    enabled: true
+    uri: radio://1/120/2M/E7E7E7E718
+    initial_position: [-1, 0.5, 0]
+    type: cf21_m4  # see robot_types
+  cf25:
+    enabled: true
+    uri: radio://1/120/2M/E7E7E7E719
+    initial_position: [1, 0., 0]
+    type: cf21_m1   # see robot_types
+  cf27:
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E71B
+    initial_position: [-1, 0., 0]
+    type: cf21_m3  # see robot_types
+  cf28:
+    enabled: true
+    uri: radio://1/120/2M/E7E7E7E71C
+    initial_position: [-0.5, 0., 0]
+    type: cf21_m4  # see robot_types
+  cf30:
+    enabled: true
+    uri: radio://1/120/2M/E7E7E7E71E
+    initial_position: [0., 0., 0.]
+    type: cf21_m2  # see robot_types
+  cf31:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E71F
+    initial_position: [-1.0, 0., 0]
+    type: cf21_m3  # see robot_types
+  cf33:
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E721
+    initial_position: [-1, 0, 0]
+    type: cf21_m1
+  cf34:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E722
+    initial_position: [0, 0, 0]
+    type: cf21_m2  # see robot_types
+  cf35:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E723
+    initial_position: [-0.5, 0., 0]
+    type: cf21_m1   # see robot_types
+  cf36:
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E724
+    initial_position: [0.5, 0., 0]
+    type: cf21_m4   # see robot_types
+  cf38:
+    enabled: true
+    uri: radio://1/120/2M/E7E7E7E726
+    initial_position: [1, 0., 0]
+    type: cf21_m2   # see robot_types
+  cf40:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E728
+    initial_position: [4., .5, 0.]
+    type: cf21_m4   # see robot_types
+  cf41:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E729
+    initial_position: [0, 2., 0]
+    type: cf21_m1  # see robot_types
+  cf43:
+    enabled: false
+    uri: radio://0/100/2M/E7E7E7E72B
+    initial_position: [-0.5, -0.5, 0]
+    type: cf21_m3
+  cf44:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E72C
+    initial_position: [-0.5, -0., 0]
+    type: cf21_m4  # see robot_types
+  cf45:
+    enabled: true
+    uri: radio://0/100/2M/E7E7E7E72D
+    initial_position: [-1.5, 0., 0]
+    type: cf21_m3
+  cf47:
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E72F
+    initial_position: [1, -0.5, 0]
+    type: cf21_m3  # see robot_types
+  cf50: # Note Color Wheels don't work?
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E732
+    initial_position: [1.5, -0.5, 0]
+    type: cf21_m2  # see robot_types
+  cf8: #NOTE: Radio Issues
+    enabled: false
+    uri: radio://1/120/2M/E7E7E7E708
+    initial_position: [0.5, 0.5, 0]
+    type: cf21_m3  # see robot_types
+
+  # cf7:
+  #   enabled: false
+  #   uri: radio://0/80/2M/E7E7E7E707
+  #   initial_position: [0, 0, 0]
+  #   type: cf_big
+  # cf13:
+  #   enabled: false
+  #   uri: radio://0/100/2M/E7E7E7E70D
+  #   initial_position: [0, 0, 0]
+  #   type: cf21_single_marker
+  # cf29:
+  #   enabled: false
+  #   uri: radio://1/120/2M/E7E7E7E71D
+  #   initial_position: [0.5, -1, 0]
+  #   type: cf21_m3  # see robot_types
+
+
+
+robot_types:
+  cf21:
+    motion_capture:
+      enabled: true
+      marker: default
+      dynamics: default
+    big_quad: false
+    battery:
+      voltage_warning: 3.8  # V
+      voltage_critical: 3.7 # V
+  cf21_single_marker:
+    motion_capture:
+      enabled: true
+      marker: default_single_marker
+      dynamics: default
+    big_quad: false
+    battery:
+      voltage_warning: 3.8  # V
+      voltage_critical: 3.7 # V
+  cf21_m4:
+    motion_capture:
+      enabled: true
+      marker: m4
+      dynamics: default
+    big_quad: false
+    battery:
+      voltage_warning: 3.8  # V
+      voltage_critical: 3.7 # V
+  cf21_m3:
+    motion_capture:
+      enabled: true
+      marker: m3
+      dynamics: default
+    big_quad: false
+    battery:
+      voltage_warning: 3.8  # V
+      voltage_critical: 3.7 # V
+  cf21_m2:
+    motion_capture:
+      enabled: true
+      marker: m2
+      dynamics: default
+    big_quad: false
+    battery:
+      voltage_warning: 3.8  # V
+      voltage_critical: 3.7 # V
+  cf21_m1:
+    motion_capture:
+      enabled: true
+      marker: m1
+      dynamics: default
+    big_quad: false
+    battery:
+      voltage_warning: 3.8  # V
+      voltage_critical: 3.7 # V
+  cf21_mocap_deck:
+    motion_capture:
+      enabled: true
+      # only if enabled; see motion_capture.yaml
+      marker: mocap_deck
+      dynamics: default
+    big_quad: false
+    battery:
+      voltage_warning: 3.8  # V
+      voltage_critical: 3.7 # V
+  cf_big:
+    motion_capture:
+      enabled: true
+      marker: big_frame
+      dynamics: default
+    big_quad: true
+    # firmware_params:
+    #   kalman:
+    #     pNAcc_xy: 1.0 # default 0.5
+
+# global settings for all robots
+all:
+  # firmware logging for all drones (use robot_types/type_name to set per type, or
+  # robots/drone_name to set per drone)
+  firmware_logging:
+    enabled: false
+  #   default_topics:
+  #    # remove to disable default topic
+  #     pose:
+  #       frequency: 10 # Hz
+  #   custom_topics:
+  #    topic_name1:
+  #      frequency: 10 # Hz
+  #      vars: ["stateEstimateZ.x", "stateEstimateZ.y", "stateEstimateZ.z", "pm.vbat"]
+  #    topic_name2:
+  #      frequency: 1 # Hz
+  #      vars: ["stabilizer.roll", "stabilizer.pitch", "stabilizer.yaw"]
+  # firmware parameters for all drones (use robot_types/type_name to set per type, or
+  # robots/drone_name to set per drone)
+  firmware_params:
+    commander:
+      enHighLevel: 1
+    stabilizer:
+      estimator: 2 # 1: complementary, 2: kalman
+      controller: 1 # 1: PID, 2: mellinger
+    ring:
+      effect: 7  # 6: double spinner, 7: solid color, 16: packetRate
+      solidBlue: 255  # if set to solid color
+      solidGreen: 0  # if set to solid color
+      solidRed: 0  # if set to solid color
+    #   headlightEnable: 0
+    locSrv:
+      extPosStdDev: 1e-3
+      extQuatStdDev: 0.5e-1
+    # kalman:
+    #   resetEstimation: 1
+
+  broadcasts:
+    num_repeats: 15 # number of times broadcast commands are repeated
+    delay_between_repeats_ms: 1 # delay in milliseconds between individual repeats
+  unicasts:
+    num_repeats: 2

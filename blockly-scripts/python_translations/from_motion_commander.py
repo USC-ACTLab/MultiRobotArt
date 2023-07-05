@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 #
 #     ||          ____  _ __
@@ -479,13 +478,16 @@ class _SetPointThread(Thread):
         now = time.time()
         return self._z_base + self._z_velocity * (now - self._z_base_time)
 
+
 from enum import Enum
+
 
 class direction(Enum):
     left = 1
     right = 2
     forward = 3
     backward = 4
+
 
 class blocklyMotion:
 
@@ -496,13 +498,13 @@ class blocklyMotion:
             MotionCommander.circle_right(radius_m, velocity, angle_degrees)
         else:
             print("Error: direction must be left or right")
-        
+
     def start_linear_motion(self, velocity_x_m, velocity_y_m, velocity_z_m, rate_yaw=0.0):
         MotionCommander.start_linear_motion(velocity_x_m, velocity_y_m, velocity_z_m, rate_yaw)
 
     def stop(self):
         MotionCommander.stop()
-    
+
     # maybe add a velocity parameter
     def start_circle(radius: int, direction: direction):
         if direction == direction.left:
@@ -524,7 +526,6 @@ class blocklyMotion:
         else:
             print("Error: direction must be left or right or forward or backward")
 
-
     def start_turn(self, direction: direction, rate=MotionCommander.RATE):
         if direction == direction.left:
             MotionCommander._set_vel_setpoint(0.0, 0.0, 0.0, -rate)
@@ -533,7 +534,7 @@ class blocklyMotion:
         else:
             print("Error: direction must be left or right")
 
-    def turn(self, direction:direction, angle: float, rate=MotionCommander.RATE):
+    def turn(self, direction: direction, angle: float, rate=MotionCommander.RATE):
         if direction == direction.left:
             MotionCommander.turn_left(angle, rate)
         elif direction == direction.right:
@@ -548,7 +549,7 @@ class blocklyMotion:
         commanded otherwise it will not spin correctly
         """
         CRAZYFLIE_RADIUS = 0.02;
-        radius = CRAZYFLIE_RADIUS; #should make this a constant like CRAZYFLIE_RADIUS
+        radius = CRAZYFLIE_RADIUS;  # should make this a constant like CRAZYFLIE_RADIUS
         if direction == direction.left:
             MotionCommander.start_circle_left(radius)
         elif direction == direction.right:

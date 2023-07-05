@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Color } from 'three';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
@@ -23,6 +24,7 @@ export interface RobotSimState {
   pos: THREE.Vector3;
   vel: THREE.Vector3;
   acc: THREE.Vector3;
+  color: THREE.Color;
   trajectories: Trajectory[];
   trajectory: TrajectoryPolynomial;
   trajectoryDuration: number;
@@ -60,7 +62,7 @@ export interface SimulatorActions {
   updateRobotBoundingBox: (robotId: string, boundingBox: THREE.Box3) => void;
   checkCollisions: (robotId: string) => boolean;
   updateTrajectory: (robotId: string, trajectory: TrajectoryPolynomial, duration: number) => void;
-  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => TrajectoryPolynomial;
+  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => TrajectoryPolynomial;  
   executeSimulation: (startTime: number) => void;
   cancelSimulation: () => void;
 }
@@ -142,6 +144,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           pos: new THREE.Vector3(...robot.startingPosition),
           vel: new THREE.Vector3(),
           acc: new THREE.Vector3(),
+          color: new THREE.Color(255, 255, 255),
           timeAlongTrajectory: 0,
           trajectory: null,
           trajectoryDuration: 0,

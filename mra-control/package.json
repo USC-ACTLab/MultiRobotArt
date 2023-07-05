@@ -13,6 +13,7 @@
     "@codemirror/lang-python": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@jaames/iro": "^5.5.2",
     "@react-spring/three": "^9.7.1",
     "@react-three/drei": "^9.57.1",
     "@react-three/fiber": "^8.12.0",

@@ -9,9 +9,9 @@ export const block_move: RobartBlockDefinition = {
         .appendField("move")
         .appendField(new Blockly.FieldDropdown([["up","up"], ["down","down"], ["left","left"], ["right","right"], ["forward","forward"], ["backward","backward"]]), "direction")
         .appendField(new Blockly.FieldNumber(0), "distance")
-        .appendField("meters at")
-        .appendField(new Blockly.FieldNumber(0), "NAME")
-        .appendField("m/s");
+        .appendField("meters for")
+        .appendField(new Blockly.FieldNumber(0), "duration")
+        .appendField("seconds");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(90);
@@ -22,11 +22,14 @@ export const block_move: RobartBlockDefinition = {
   pythonGenerator: (block, python) => {
     var dropdown_direction = block.getFieldValue('direction');
     var number_distance = block.getFieldValue('distance');
-    var number_name = block.getFieldValue('NAME');
-    var code = 'move(' + dropdown_direction + ',' + number_distance + ',' + number_name + ')\n';
+    var duration = block.getFieldValue('duration');
+    var code = 'move_direction(cf, ' + dropdown_direction + ',' + number_distance + ',' + duration + ')\n';
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy()`;
+    var dropdown_direction = block.getFieldValue('direction');
+    var number_distance = block.getFieldValue('distance');
+    var duration = block.getFieldValue('duration');
+    return `simulator.move_direction(group_state, ${dropdown_direction}, ${number_distance}, ${duration});\n`;
   }
 }

@@ -3,7 +3,6 @@
 import numpy as np
 from crazyflie_py import *
 
-
 def main():
     Z = 1.0
     
