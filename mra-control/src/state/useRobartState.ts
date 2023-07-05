@@ -1,4 +1,5 @@
 import uuid from 'react-uuid';
+import * as THREE from 'three';
 import { create } from 'zustand';
 import { createJSONStorage, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -391,6 +392,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
                 name: `CF ${numRobots}`,
                 type: 'crazyflie',
                 startingPosition: [0, 0, 0],
+                
               };
             });
             return id;

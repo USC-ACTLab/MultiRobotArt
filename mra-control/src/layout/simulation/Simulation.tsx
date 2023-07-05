@@ -25,7 +25,7 @@ export const Simulation = () => {
   return (
     <>
      <color attach="background" args={['black']} />
-      <OrbitControls maxPolarAngle={Math.PI * (1/2 - 1 / 20)} minPolarAngle={0} minDistance={5} maxDistance={20} />
+      <OrbitControls maxPolarAngle={Math.PI * (1/2 - 1 / 20)} minPolarAngle={0} minDistance={1} maxDistance={20} />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport labels={['X', 'Z', 'Y']} axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
       </GizmoHelper>
@@ -46,8 +46,8 @@ export const Simulation = () => {
         <group key={robot.id} ref={marker} position={robot.pos} scale={0.4}>
           <Crazyflie />
           <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
-            <meshStandardMaterial emissive={"blue"}/>
-            <pointLight position={[0,0,0]} intensity={1} color="blue"/>
+            <meshStandardMaterial emissive={[robot.color.r/255, robot.color.g/255, robot.color.b/255]} />
+            <pointLight position={[0,0,0]} intensity={1}/>
           </Sphere>
           
         </group>

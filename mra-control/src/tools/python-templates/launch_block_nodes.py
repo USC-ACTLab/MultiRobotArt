@@ -2,33 +2,46 @@ import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from crazyflie_py import CrazySwarm
+from crazyflie_py import Crazyswarm
+import rclpy
+import threading
 
-#TODO: Inject imports to correctly import nodes
-# import test_worker
+# Inject Imports Here:
 
+def launch(nodes):
+    threads = []
+    for node in nodes:
+        thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
+        thread.start()
+        threads.append(thread)
+    while not all([n.done for n in nodes]):
+        pass
+    rclpy.shutdown()
+    [t.join() for t in threads]
 
-def generate_launch_description():
-    # TODO: Change package name to correct description
-    node_config_file = get_package_share_directory('my_package'), 'config', 'node_config.yaml'
-    with open(node_config_file, 'r') as f:
-        node_configs = yaml.load(f)
+def main():
+    # node_config_file = get_package_share_directory('crazyflie'), 'config', 'crazyflies.yaml'
     
     # Initialize swarm
-    swarm = CrazySwarm()
-    all_crazyflies = swarm.allcfs.crazyflies
-
+    swarm = Crazyswarm()
+    with open("cfs_ordering.yaml") as f:
+        ordering = yaml.load(f)
+        order = ordering['cfs']
+    # all_crazyflies = swarm.allcfs.crazyflies
+    all_crazyflies = [swarm.allcfs.crazyfliesById[k] for k in order]
     # Construct Launch Description from yaml files
     # One node per line in the timeline, linked to a worker node described in the yaml file
-    node_configs = node_configs['nodes']
     counter = 0
-    description = []
-    #TODO Inject append here...
-    
-    # description.append(test_worker.worker_node(all_crazyflies, counter, len(node_configs)))
-    counter += 1
-    
-    
+    nodes = []
+    cfs = []
 
+    # Inject append here...
+
+    # cfs.append(all_crazyflies[0])
+    # nodes.append(group1_node.worker_node(cfs, len(nodes), 1))
+    
     # Launch all nodes
-    return LaunchDescription(description)
+    return launch(nodes)
+
+if __name__ == '__main__':
+    main()
