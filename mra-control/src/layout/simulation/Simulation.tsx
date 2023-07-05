@@ -1,11 +1,10 @@
 import { Crazyflie } from '@MRAControl/components/vector/Crazyflie';
 import { useRobartState } from '@MRAControl/state/useRobartState';
 import { useSimulator } from '@MRAControl/state/useSimulator';
-import { Environment, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane, Sky, Sphere } from '@react-three/drei';
+import { GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { Group } from 'three';
-import * as THREE from 'three';
 
 export const Simulation = () => {
   const marker = useRef<Group>(null!);
@@ -15,9 +14,9 @@ export const Simulation = () => {
   const setRobots = useSimulator((state) => state.setRobots);
   const step = useSimulator((state) => state.step);
 
-  // useEffect(() => {
-  //   setRobots(useRobartState.getState().robots);
-  // }, [robots]);
+  useEffect(() => {
+    setRobots(useRobartState.getState().robots);
+  }, []);
 
   useFrame(({ clock }) => {
     step();
@@ -46,7 +45,7 @@ export const Simulation = () => {
       {Object.values(robots).map((robot) => (
         <group key={robot.id} ref={marker} position={robot.pos}>
           <pointLight position={[0, 0, 0]} intensity={1} color="white" />
-          <Crazyflie />
+          <Crazyflie robotId={robot.id} />
         </group>
       ))}
     </>
