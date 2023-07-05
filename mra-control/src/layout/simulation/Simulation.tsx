@@ -8,7 +8,7 @@ import { Group } from 'three';
 import * as THREE from 'three';
 
 export const Simulation = () => {
-  const marker = useRef<Group>(null!); 
+  const marker = useRef<Group>(null!);
   const robots = useSimulator((state) => state.robots);
   const updateTrajectory = useSimulator((state) => state.updateTrajectory);
   const robotGoTo = useSimulator((state) => state.robotGoTo);

@@ -15,6 +15,5 @@ export const loadProjectFromFile = (fileContents: string): MRAState => {
 };
 
 export const exportROS = (projectState: MRAState, fileName: string) => {
-  //TODO Fill in with injections...
   exportToROS(projectState, fileName);
 }

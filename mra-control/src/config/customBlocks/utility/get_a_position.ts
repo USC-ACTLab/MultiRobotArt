@@ -16,6 +16,7 @@ export const block_get_a_position: RobartBlockDefinition = {
     },
   },
   pythonGenerator: (block, python) => {
+    //TODO Add python equivalent
     var dropdown_which = block.getFieldValue('which');
     var dropdown_name = block.getFieldValue('NAME');
     var code = 'get_a_position(' + dropdown_which + ',' + dropdown_name + ')';
