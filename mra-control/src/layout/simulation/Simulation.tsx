@@ -1,7 +1,7 @@
 import { Crazyflie } from '@MRAControl/components/vector/Crazyflie';
 import { useRobartState } from '@MRAControl/state/useRobartState';
 import { useSimulator } from '@MRAControl/state/useSimulator';
-import { GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane } from '@react-three/drei';
+import { GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane, Sphere } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { Group } from 'three';
@@ -9,9 +9,6 @@ import { Group } from 'three';
 export const Simulation = () => {
   const marker = useRef<Group>(null!);
   const robots = useSimulator((state) => state.robots);
-  const updateTrajectory = useSimulator((state) => state.updateTrajectory);
-  const robotGoTo = useSimulator((state) => state.robotGoTo);
-  const setRobots = useSimulator((state) => state.setRobots);
   const step = useSimulator((state) => state.step);
 
   useFrame(({ clock }) => {
@@ -40,11 +37,7 @@ export const Simulation = () => {
       </Plane>
       {Object.values(robots).map((robot) => (
         <group key={robot.id} ref={marker} position={robot.pos}>
-          <Crazyflie robotId={robot.id} />
-          <Sphere position={[0,-0.05,0]} scale={0.1} castShadow={false} receiveShadow={false}>
-            <meshStandardMaterial emissive={[robot.color.r/255, robot.color.g/255, robot.color.b/255]} />
-            <pointLight position={[0,0,0]} intensity={1}/>
-          </Sphere>
+          <Crazyflie robotId={robot.id} renderBoundingBox />
         </group>
       ))}
     </>

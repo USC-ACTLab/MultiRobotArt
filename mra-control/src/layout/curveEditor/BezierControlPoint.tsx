@@ -73,6 +73,7 @@ export const BezierControlPoint = ({ id, point }: BezierControlPointProps) => {
     <a.mesh {...spring} {...bind()} castShadow>
       <Sphere scale={0.2}>
         <meshBasicMaterial color={selectedPoint === id ? '#FF00FF' : '#000000'} />
+        <pointLight color={0xffffff} intensity={1} />
       </Sphere>
     </a.mesh>
   );
