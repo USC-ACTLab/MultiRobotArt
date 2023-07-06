@@ -24,13 +24,13 @@ export const CurveEditor = () => {
 
   return (
     <>
+      <color attach="background" args={['black']} />
       <OrbitControls
         maxPolarAngle={Math.PI * (1 / 2 - 1 / 10)}
         minPolarAngle={0}
         maxDistance={20}
         enableRotate={selectedControlPoint === undefined}
       />
-      <Environment preset="warehouse" />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
       </GizmoHelper>
@@ -44,7 +44,6 @@ export const CurveEditor = () => {
         fadeStrength={1.2}
         infiniteGrid={true}
       />
-      <ambientLight intensity={0.1} />
       <directionalLight color="blue" position={[0, 5, 5]} />
       <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
       <group>
@@ -53,7 +52,7 @@ export const CurveEditor = () => {
         ))}
 
         <group ref={marker}>
-          <Crazyflie />
+          <Crazyflie robotId="" renderBoundingBox={false} />
         </group>
 
         <CatmullRomLine

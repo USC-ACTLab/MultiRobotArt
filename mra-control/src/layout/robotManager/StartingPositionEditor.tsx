@@ -27,8 +27,8 @@ export const StartingPositionEditor = ({ robotId }: { robotId: string }) => {
   return (
     <div>
       <h3 className="ml-3 mt-3 text-lg font-extrabold">Starting Position:</h3>
-      <div className="flex gap-2">
-        <form onSubmit={handleSubmit}>
+      <div className="flex">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <div className={clsx('flex flex-col items-center', isNaN(parseFloat(startingPosition[0])) ? 'border-red-500' : '')}>
             <TextInput id="x-coordinate" value={startingPosition[0]} onChange={(e) => setStartingPosition(([x, y, z]) => [e.target.value, y, z])} />
             <Label htmlFor="x-coordinate" className={isNaN(parseFloat(startingPosition[0])) ? 'text-red-500' : ''}>
@@ -50,9 +50,8 @@ export const StartingPositionEditor = ({ robotId }: { robotId: string }) => {
             </Label>
           </div>
 
-          <input className="hidden" type="submit" />
+          <IconButton className="w-full" icon={faArrowsRotate} text="Update Position" onClick={handleSubmit} type="submit" />
         </form>
-        <IconButton icon={faArrowsRotate} text="Update Position" onClick={handleSubmit} />
       </div>
     </div>
   );
