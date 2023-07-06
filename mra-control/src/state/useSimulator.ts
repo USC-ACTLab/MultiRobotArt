@@ -70,17 +70,7 @@ export interface SimulatorActions {
 export const useSimulator = create<SimulatorState & SimulatorActions>()(
   immer((set, get) => ({
     ...defaultSimulatorState,
-    play: () => {
-      Object.values(get().robots).map((robot) => {
-        const trajectory = get().robotGoTo(
-          robot.id,
-          new THREE.Vector3(Math.random() * 4, Math.random() * 4, Math.random() * 4),
-          new THREE.Vector3(),
-          new THREE.Vector3(),
-        );
-        get().updateTrajectory(robot.id, trajectory, Math.random() * 8 + 2);
-      });
-
+    play: () => { 
       set({ status: 'RUNNING', time: 0 });
       get().executeSimulation(0);
     },
