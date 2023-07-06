@@ -1,8 +1,7 @@
+import { IconButton } from '@MRAControl/components/buttons/IconButton';
+import { useRobartState } from '@MRAControl/state/useRobartState';
+import { useRobotManager } from '@MRAControl/state/useRobotManager';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-
-import { IconButton } from '../../components/buttons/IconButton';
-import { useRobartState } from '../../state/useRobartState';
-import { useRobotManager } from '../../state/useRobotManager';
 
 export const RobotSidebar = () => {
   const robots = useRobartState((state) => state.robots);
@@ -25,7 +24,14 @@ export const RobotSidebar = () => {
           <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">{robot.name}</span>
         </button>
       ))}
-      <IconButton icon={faPlusCircle} text="" onClick={createRobot} />
+      <IconButton
+        icon={faPlusCircle}
+        text=""
+        onClick={() => {
+          const newRobotId = createRobot();
+          setSelectedRobotId(newRobotId);
+        }}
+      />
     </div>
   );
 };

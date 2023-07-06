@@ -3,7 +3,7 @@ import { RenamableText } from '@MRAControl/components/utils/RenamableText';
 import { useRobartState } from '@MRAControl/state/useRobartState';
 import { useRobotManager } from '@MRAControl/state/useRobotManager';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { RobotGroupEditor } from './RobotGroupEditor';
 import { StartingPositionEditor } from './StartingPositionEditor';
@@ -40,7 +40,7 @@ export const RobotEditor = () => {
         }
       />
 
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10" key={selectedRobotId}>
         <StartingPositionEditor robotId={selectedRobotId} />
         <RobotGroupEditor />
       </div>
