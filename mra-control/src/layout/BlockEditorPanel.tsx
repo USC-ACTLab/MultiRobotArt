@@ -1,20 +1,20 @@
+import { blocklyToolboxConfiguration } from '@MRAControl/config/BlockToolboxConfig';
+import '@MRAControl/config/customBlocks';
+import { useRobartState } from '@MRAControl/state/useRobartState';
 import Blockly from 'blockly';
-import { pythonGenerator } from 'blockly/python';
 import { javascriptGenerator } from 'blockly/javascript';
-import React, { useEffect, useRef, useState } from 'react';
+import { pythonGenerator } from 'blockly/python';
+import { useEffect, useRef, useState } from 'react';
 import { useBlocklyWorkspace } from 'react-blockly';
 
-import { blocklyToolboxConfiguration } from '../config/BlockToolboxConfig';
-import '../config/customBlocks';
-import { CodeBlock, useRobartState } from '../state/useRobartState';
 import { BlockEditorHeader } from './BlockEditorHeader';
 
 export const BlockEditorPanel = () => {
-  const workspaceRef = useRef<any>(null);
-  const [localBlockId, setLocalBlockId] = useState<string | undefined>(undefined);
   const currentBlockId = useRobartState((state) => state.editingBlockId);
-
   const saveBlock = useRobartState((state) => state.saveBlock);
+
+  const workspaceRef = useRef<HTMLDivElement>(null);
+  const [localBlockId, setLocalBlockId] = useState<string>();
 
   const { workspace, xml } = useBlocklyWorkspace({
     toolboxConfiguration: blocklyToolboxConfiguration,
@@ -37,18 +37,20 @@ export const BlockEditorPanel = () => {
 
   useEffect(() => {
     window.dispatchEvent(new Event('resize'));
-
     setLocalBlockId(currentBlockId);
+
+    if (!workspace) return;
+
     if (currentBlockId) {
-      workspace?.setVisible(true);
-      const currentBlock: CodeBlock = useRobartState.getState().blocks[currentBlockId];
-      if (currentBlock.xml && workspace) {
+      workspace.setVisible(true);
+      const currentBlock = useRobartState.getState().blocks[currentBlockId];
+      if (currentBlock.xml) {
         var xmlDom = Blockly.Xml.textToDom(currentBlock.xml);
         Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom, workspace);
-      } else if (!currentBlock.xml && workspace) {
+      } else if (!currentBlock.xml) {
         workspace.clear();
       }
-    } else if (workspace) {
+    } else {
       workspace.setVisible(false);
       workspace.clear();
     }
