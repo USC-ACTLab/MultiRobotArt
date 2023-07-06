@@ -5,7 +5,7 @@ import { createJSONStorage, persist, subscribeWithSelector } from 'zustand/middl
 import { immer } from 'zustand/middleware/immer';
 
 import { ROBART_VERSION } from '../config/Version';
-import { loadProjectFromFile, saveProjectToFile, exportROS } from '../tools/projectFileConversion';
+import { exportROS, loadProjectFromFile, saveProjectToFile } from '../tools/projectFileConversion';
 import { useSimulator } from './useSimulator';
 
 export interface CodeBlock {
@@ -290,7 +290,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
               groupId,
               blockId,
               startTime,
-              isTrajectory
+              isTrajectory,
             };
 
             const oldItems = { ...get().timelineState.groups[groupId].items };
@@ -313,6 +313,8 @@ export const useRobartState = create<MRAState & MRAActions>()(
             });
           },
           saveBlock: (blockId: string, block: Partial<CodeBlock>) => {
+            if (get().blocks[blockId] === undefined) return;
+
             set((state) => {
               state.blocks[blockId] = {
                 ...state.blocks[blockId],
@@ -322,8 +324,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
           },
           removeBlock: (id) => {
             // Delete the block from the list of blocks
-            const newBlocks = { ...get().blocks };
-            delete newBlocks[id];
+            const newBlocks = Object.fromEntries(Object.entries(get().blocks).filter(([key, _]) => key !== id));
 
             // Remove all references to the block in the timeline
             const itemsToRemove = Object.values(get().timelineState.groups).map((group) =>
@@ -333,7 +334,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
             itemsToRemove.flat().forEach((item) => get().removeTimelineItem(item.groupId, item.id));
 
             // Update the selected item
-            const selectedBlockId = Object.values(newBlocks)[Object.keys(newBlocks).length - 1]?.id;
+            const selectedBlockId = Object.values(newBlocks).at(-1)?.id;
 
             set({ blocks: newBlocks, editingBlockId: selectedBlockId });
           },
@@ -392,7 +393,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
                 name: `CF ${numRobots}`,
                 type: 'crazyflie',
                 startingPosition: [0, 0, 0],
-                
               };
             });
             return id;

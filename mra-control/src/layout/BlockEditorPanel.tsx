@@ -37,10 +37,9 @@ export const BlockEditorPanel = () => {
 
   useEffect(() => {
     window.dispatchEvent(new Event('resize'));
-    setLocalBlockId(currentBlockId);
-
     if (!workspace) return;
 
+    setLocalBlockId(currentBlockId);
     if (currentBlockId) {
       workspace.setVisible(true);
       const currentBlock = useRobartState.getState().blocks[currentBlockId];
