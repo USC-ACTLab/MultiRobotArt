@@ -18,7 +18,6 @@ export const convertPixelsToSeconds = (distance: number, scale: number) => {
 };
 
 export const convertSecondsToPixels = (duration: number, scale: number) => {
-  console.log(duration);
   return duration * PIXELS_PER_SECOND * scale;
 };
 
