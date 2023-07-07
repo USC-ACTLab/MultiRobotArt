@@ -1,16 +1,26 @@
 import { useGesture } from '@use-gesture/react';
-import React, { useRef, useState } from 'react';
+import { MouseEventHandler, useRef, useState } from 'react';
 
-import { CodeBlock, TimelineGroupState, TimelineState, useRobartState } from '../../state/useRobartState';
+import { CodeBlock, TimelineGroupState, useRobartState } from '../../state/useRobartState';
 import { HoverTimelineBlock } from './HoverTimelineBlock';
+import { TickMark } from './TickMark';
 import { TimelineBlock } from './TimelineBlock';
 
 interface TimelineGroupProps {
   group: TimelineGroupState;
 }
 
-// 1 distance unit = 100 pixels = 1 second * scale  = scale 1
-export const PIXELS_PER_SECOND = 25;
+export const PIXELS_PER_SECOND = 100;
+export const SUBDIVISIONS_PER_SECOND = 8;
+
+export const convertPixelsToSeconds = (distance: number, scale: number) => {
+  return distance / (PIXELS_PER_SECOND * scale);
+};
+
+export const convertSecondsToPixels = (duration: number, scale: number) => {
+  console.log(duration);
+  return duration * PIXELS_PER_SECOND * scale;
+};
 
 export const blockOverlaps = (
   group: TimelineGroupState,
@@ -32,19 +42,16 @@ export const blockOverlaps = (
     return !(currItemEnd < newBlockStart || newBlockEnd < currItemStart);
   });
 
-export const convertPixelsToSeconds = (distance: number, scale: number) => {
-  return distance / (PIXELS_PER_SECOND * scale);
-};
-
 export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
-  // Assume the outer is in a vertical flex-col
-  const laneBodyRef = useRef<HTMLDivElement>(null);
-  const scale = useRobartState((state) => state.timelineState.scale);
   const addBlockToTimeline = useRobartState((state) => state.addBlockToTimeline);
   const selectedBlockId = useRobartState((state) => state.editingBlockId);
   const blocks = useRobartState((state) => state.blocks);
   const timelineMode = useRobartState((state) => state.timelineState.mode);
+  const scale = useRobartState((state) => state.timelineState.scale);
+
   const [hoverX, setHoverX] = useState<number | undefined>();
+
+  const laneBodyRef = useRef<HTMLDivElement>(null);
 
   const bind = useGesture({
     onMouseOut: () => setHoverX(undefined),
@@ -57,7 +64,7 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
     if (clientX === undefined) return;
 
     if (laneBodyRef.current) {
-      const parentOffsetX = (laneBodyRef.current.offsetParent as HTMLDivElement)?.offsetLeft;
+      const parentOffsetX = (laneBodyRef.current.offsetParent as HTMLElement)?.offsetLeft;
       const parentScrollOffsetX = laneBodyRef.current.parentElement?.scrollLeft;
       const offsetX = clientX - parentOffsetX;
 
@@ -70,23 +77,28 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
     }
   };
 
+  const handleBodyClick: MouseEventHandler = ({ clientX }) => {
+    if (selectedBlockId === undefined || timelineMode !== 'ADD') return;
+
+    const startTime = computeTimelineBlockOffset(clientX);
+
+    if (startTime !== undefined && !blockOverlaps(group, blocks, startTime, blocks[selectedBlockId])) {
+      // TODO: Add isTraj appropriately (Currently hardcoded false)
+      addBlockToTimeline(group.id, selectedBlockId, startTime, false);
+    }
+  };
+
   return (
     <div
       className="relative h-16 rounded bg-blue-300"
-      style={{ width: 2000 }}
       ref={laneBodyRef}
-      onClick={({ clientX }) => {
-        if (selectedBlockId === undefined || timelineMode !== 'ADD') return;
-
-        const startTime = computeTimelineBlockOffset(clientX);
-
-        if (startTime !== undefined && !blockOverlaps(group, blocks, startTime, blocks[selectedBlockId])){
-          // TODO: Add isTraj appropriately (Currently hardcoded false)
-          addBlockToTimeline(group.id, selectedBlockId, startTime, false);
-        }
-      }}
+      onClick={handleBodyClick}
       {...bind()}
+      style={{ width: `${convertSecondsToPixels(group.duration, scale)}px` }}
     >
+      {[...new Array(group.duration * SUBDIVISIONS_PER_SECOND)].map((_, tickNumber) => (
+        <TickMark tickNumber={tickNumber} key={tickNumber} scale={scale} subdivisionsPerSecond={SUBDIVISIONS_PER_SECOND} />
+      ))}
       {Object.values(group.items).map((item, idx) => (
         <TimelineBlock key={idx} scale={scale} item={item} />
       ))}

@@ -1,11 +1,10 @@
 import uuid from 'react-uuid';
-import * as THREE from 'three';
 import { create } from 'zustand';
 import { createJSONStorage, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
 import { ROBART_VERSION } from '../config/Version';
-import { loadProjectFromFile, saveProjectToFile, exportROS } from '../tools/projectFileConversion';
+import { exportROS, loadProjectFromFile, saveProjectToFile } from '../tools/projectFileConversion';
 import { useSimulator } from './useSimulator';
 
 export interface CodeBlock {
@@ -54,6 +53,8 @@ export interface TimelineGroupState {
    * List of robot ids assigned to this group
    */
   robots: Record<string, RobotState>;
+  // Length of time line in milliseconds
+  duration: number;
 }
 
 export type TimelineModes = 'ADD' | 'ERASE' | 'MOVE';
@@ -174,54 +175,63 @@ const defaultRobartState: MRAState = {
         name: 'Group 1',
         items: {},
         robots: {},
+        duration: 60,
       },
       group2: {
         id: 'group2',
         name: 'Group 2',
         items: {},
         robots: {},
+        duration: 60,
       },
       group3: {
         id: 'group3',
         name: 'Group 3',
         items: {},
         robots: {},
+        duration: 60,
       },
       group4: {
         id: 'group4',
         name: 'Group 4',
         items: {},
         robots: {},
+        duration: 60,
       },
       group5: {
         id: 'group5',
         name: 'Group 5',
         items: {},
         robots: {},
+        duration: 60,
       },
       group6: {
         id: 'group6',
         name: 'Group 6',
         items: {},
         robots: {},
+        duration: 60,
       },
       group7: {
         id: 'group7',
         name: 'Group 7',
         items: {},
         robots: {},
+        duration: 60,
       },
       group8: {
         id: 'group8',
         name: 'Group 8',
         items: {},
         robots: {},
+        duration: 60,
       },
       group9: {
         id: 'group9',
         name: 'Group 9',
         items: {},
         robots: {},
+        duration: 60,
       },
     },
   },
@@ -278,6 +288,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
               name,
               items: {},
               robots: {},
+              duration: 60,
             };
             set((state) => {
               state.timelineState.groups[id] = group;
@@ -290,7 +301,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
               groupId,
               blockId,
               startTime,
-              isTrajectory
+              isTrajectory,
             };
 
             const oldItems = { ...get().timelineState.groups[groupId].items };
@@ -392,7 +403,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
                 name: `CF ${numRobots}`,
                 type: 'crazyflie',
                 startingPosition: [0, 0, 0],
-                
               };
             });
             return id;
