@@ -289,12 +289,40 @@ export const useRobartState = create<MRAState & MRAActions>()(
             return id;
           },
           addBlockToTimeline: (groupId: string, blockId: string, startTime: number, isTrajectory: boolean) => {
-            var duration = 0
             // TODO: Check if this causes unintended consequences...
             const simulator = SIM;
             const group_state: SimulatorGroupState = {
               robotIDs: Object.keys(get().timelineState.groups[groupId].robots)
             };
+            const state: MRAState = {
+              blocks: get().blocks,
+              editingBlockId: undefined,
+              projectName: get().projectName,
+              timelineState: get().timelineState,
+              version: ROBART_VERSION,
+              robots: get().robots,
+            };
+            const blocks = Object.keys(get().timelineState.groups[groupId].items)
+            const items = state.timelineState.groups[groupId].items;
+ 
+            // Sort by start time, eval all blocks in order to accumulate duration
+            // var items_list = Object.keys(items). map(function(key){
+            //   return [key, items[key].startTime];
+            // });
+            // items_list.sort(function(a, b) {
+            //   return (b[1] as number) - (a[1] as number);
+            // });
+
+            // for(var i = 0; i < items_list.length; i++){
+            //   const timeLineItem = items_list[i][0];
+            //   const block = get().blocks[items[timeLineItem].blockId];
+            //   if (items[timeLineItem].startTime > startTime){
+            //     break;
+            //   }
+            //   eval(block.javaScript);
+            // }
+            var duration = 0
+            
             // This only kind of works, doesn't work for velo commands because init position will be wrong.
             // TODO: Run all blocks up until this point in the timeline to get position
             eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
@@ -306,7 +334,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
               isTrajectory,
               duration
             };
-            alert(newItem.duration);
 
             const oldItems = { ...get().timelineState.groups[groupId].items };
             oldItems[newItem.id] = newItem;
