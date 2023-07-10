@@ -37,6 +37,6 @@ export const block_start_linear_motion: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    return `duration += simulator.dummy();`;
   }
 }

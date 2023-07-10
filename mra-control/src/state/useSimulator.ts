@@ -240,7 +240,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         };
         const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.
         // END: The need of said local variables
-        Object.values(group.items).forEach((timelineItem) => {
+        
+        var duration = 0; // Duration is modified by each block
+        Object.values(group.items).forEach(timelineItem => {
           console.log('item time', timelineItem.startTime);
           const offset = timelineItem.startTime - startTime;
           if (offset < 0) return;

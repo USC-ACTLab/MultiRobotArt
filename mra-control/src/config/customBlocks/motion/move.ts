@@ -30,6 +30,6 @@ export const block_move: RobartBlockDefinition = {
     var dropdown_direction = block.getFieldValue('direction');
     var number_distance = block.getFieldValue('distance');
     var duration = block.getFieldValue('duration');
-    return `simulator.move_direction(group_state, ${dropdown_direction}, ${number_distance}, ${duration});\n`;
+    return `duration += simulator.move_direction(group_state, ${dropdown_direction}, ${number_distance}, ${duration});\n`;
   }
 }

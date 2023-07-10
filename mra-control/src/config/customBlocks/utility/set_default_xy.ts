@@ -24,6 +24,6 @@ export const block_set_default_xy: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy();`;
+    return `duration += simulator.dummy();`;
   }
 }

@@ -48,7 +48,7 @@ export const block_color: RobartBlockDefinition = {
   javascriptGenerator: (block, js) => {
     var color = block.getFieldValue('color');
     var rgbCol = hexToRgb(color);
-    return `simulator.setColor(group_state, ${rgbCol?.r},${rgbCol?.g},${rgbCol?.b});`;
+    return `duration += simulator.setColor(group_state, ${rgbCol?.r},${rgbCol?.g},${rgbCol?.b});`;
 
   }
 }

@@ -19,11 +19,11 @@ export const TimelineBlock = ({ item, scale }: { item: TimelineItem; scale: numb
     const seconds_delta = convertPixelsToSeconds(x, scale);
     const newStartTime = item.startTime + seconds_delta;
 
-    if (!blockOverlaps(groups[item.groupId], blocks, newStartTime, correspondingBlock, item.id)) {
+    if (!blockOverlaps(groups[item.groupId], blocks, newStartTime, correspondingBlock, )) {
       updateItem(item.groupId, item.id, newStartTime);
     }
   });
-
+  const duration = item.duration;
   return (
     <div
       className={clsx(
@@ -32,7 +32,7 @@ export const TimelineBlock = ({ item, scale }: { item: TimelineItem; scale: numb
         timelineMode === 'ERASE' ? 'hover:bg-red-400' : '',
       )}
       style={{
-        width: PIXELS_PER_SECOND * scale * correspondingBlock.duration,
+        width: PIXELS_PER_SECOND * scale * duration,
         left: PIXELS_PER_SECOND * scale * item.startTime,
       }}
       onClick={() => timelineMode === 'ERASE' && removeItem(item.groupId, item.id)}

@@ -34,6 +34,6 @@ this.setHelpUrl("");
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `simulator.dummy()`;
+    return `duration += simulator.dummy()`;
   }
 }

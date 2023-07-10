@@ -41,6 +41,6 @@ this.setHelpUrl("");
     var number_y = block.getFieldValue('y');
     var number_z = block.getFieldValue('z');
     var number_speed = block.getFieldValue('speed');
-    return `simulator.move_speed(group_state, ${number_x}, ${number_y}, ${number_z}, ${number_speed});\n`;
+    return `duration += simulator.move_speed(group_state, ${number_x}, ${number_y}, ${number_z}, ${number_speed});\n`;
   }
 }
