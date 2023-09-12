@@ -147,6 +147,12 @@ export interface BlockActions {
    */
   copyBlock: (blockId: string) => string;
   /**
+   * Used to modify duration of block for placing on timeline
+   * @param blockId the id of the block to set duration of
+   * @param duration the duration of the block
+   */
+  setDuration: (blockId: string, duration: number) => void;
+  /**
    * Sets the currently selected block.
    * @param blockId The ID of the block to select in the block editor for editing.
    */
@@ -420,6 +426,11 @@ export const useRobartState = create<MRAState & MRAActions>()(
             });
 
             return newBlock.id;
+          },
+          setDuration: (blockId, duration) => {
+            set((state) => {
+              state.blocks[blockId].duration = duration;
+            })
           },
           setEditingBlock: (blockId) => {
             const oldEditingBlockId = get().editingBlockId;

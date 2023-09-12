@@ -12,6 +12,7 @@ export const BlockManagerPanel = () => {
   const copyBlock = useRobartState((state) => state.copyBlock);
   const selectedBlockID = useRobartState((state) => state.editingBlockId);
   const setEditingBlock = useRobartState((state) => state.setEditingBlock);
+  const setDuration = useRobartState((state) => state.setDuration);
 
   return (
     <div>
