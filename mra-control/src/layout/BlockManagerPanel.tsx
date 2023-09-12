@@ -1,12 +1,12 @@
 import { IconButton } from '@MRAControl/components/buttons/IconButton';
 import { faCopy, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'flowbite-react';
+import { useEffect } from 'react';
 
 import { useRobartState } from '../state/useRobartState';
 
 export const BlockManagerPanel = () => {
-  const blocksMap = useRobartState((state) => state.blocks);
-  const blocks = Object.values(blocksMap);
+  const blocks = useRobartState((state) => Object.values(state.blocks));
   const removeBlock = useRobartState((state) => state.removeBlock);
   const createBlock = useRobartState((state) => state.createBlock);
   const copyBlock = useRobartState((state) => state.copyBlock);

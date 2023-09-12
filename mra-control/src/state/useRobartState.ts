@@ -349,7 +349,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
               blockId,
               startTime,
               isTrajectory,
-              duration
+              duration,
             };
 
             const oldItems = { ...get().timelineState.groups[groupId].items };
@@ -372,6 +372,8 @@ export const useRobartState = create<MRAState & MRAActions>()(
             });
           },
           saveBlock: (blockId: string, block: Partial<CodeBlock>) => {
+            if (get().blocks[blockId] === undefined) return;
+
             set((state) => {
               state.blocks[blockId] = {
                 ...state.blocks[blockId],
@@ -381,8 +383,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
           },
           removeBlock: (id) => {
             // Delete the block from the list of blocks
-            const newBlocks = { ...get().blocks };
-            delete newBlocks[id];
+            const newBlocks = Object.fromEntries(Object.entries(get().blocks).filter(([key, _]) => key !== id));
 
             // Remove all references to the block in the timeline
             const itemsToRemove = Object.values(get().timelineState.groups).map((group) =>
@@ -392,7 +393,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
             itemsToRemove.flat().forEach((item) => get().removeTimelineItem(item.groupId, item.id));
 
             // Update the selected item
-            const selectedBlockId = Object.values(newBlocks)[Object.keys(newBlocks).length - 1]?.id;
+            const selectedBlockId = Object.values(newBlocks).at(-1)?.id;
 
             set({ blocks: newBlocks, editingBlockId: selectedBlockId });
           },
