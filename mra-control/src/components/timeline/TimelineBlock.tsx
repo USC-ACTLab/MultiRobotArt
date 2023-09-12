@@ -15,11 +15,10 @@ export const TimelineBlock = ({ item, scale }: { item: TimelineItem; scale: numb
 
   const bind = useDrag(({ delta: [x, _] }) => {
     if (timelineMode !== 'MOVE') return;
-
     const seconds_delta = convertPixelsToSeconds(x, scale);
     const newStartTime = item.startTime + seconds_delta;
 
-    if (!blockOverlaps(groups[item.groupId], blocks, newStartTime, correspondingBlock, )) {
+    if (!blockOverlaps(groups[item.groupId], blocks, newStartTime, correspondingBlock, item.id)) {
       updateItem(item.groupId, item.id, newStartTime);
     }
   });
