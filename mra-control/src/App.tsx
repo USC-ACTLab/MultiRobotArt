@@ -1,13 +1,13 @@
 import React from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
-import { BlockPythonCodePanel } from './layout/BlockPythonCodePanel';
 import { BlockEditorPanel } from './layout/BlockEditorPanel';
 import { BlockManagerPanel } from './layout/BlockManagerPanel';
+import { BlockPythonCodePanel } from './layout/BlockPythonCodePanel';
 import { NavigationBar } from './layout/NavigationBar';
 import { RightPanel } from './layout/RightPanel';
-import { Timeline } from './layout/Timeline';
 import { SettingsModal } from './layout/settings/SettingsModal';
+import { Timeline } from './layout/timeline/Timeline';
 import { useRobartState } from './state/useRobartState';
 
 function App() {
