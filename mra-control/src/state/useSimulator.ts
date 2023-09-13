@@ -18,6 +18,8 @@ export interface Trajectory {
   duration: number;
 }
 
+
+
 export interface RobotSimState {
   id: string;
   boundingBox?: THREE.Box3;
@@ -128,6 +130,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
     },
     setRobots: (robots) => {
       const simRobots: Record<string, RobotSimState> = {};
+      console.log(robots)
       Object.values(robots).forEach((robot) => {
         simRobots[robot.id] = {
           id: robot.id,
@@ -141,6 +144,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           trajectoryDuration: 0,
           trajectories: [],
         };
+        console.log(robot.startingPosition);
       });
       set({ robots: simRobots });
     },

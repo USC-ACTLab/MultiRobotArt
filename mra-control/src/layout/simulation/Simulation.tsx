@@ -5,15 +5,33 @@ import { GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane, Sphere } from '
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { Group } from 'three';
+import * as THREE from 'three'
 
 export const Simulation = () => {
   const marker = useRef<Group>(null!);
   const robots = useSimulator((state) => state.robots);
+  const robartRobots = useRobartState((state) => state.robots)
   const step = useSimulator((state) => state.step);
-
+  const setRobots = useSimulator((state) => state.setRobots);
+  const robartState = useRobartState();
   useFrame(({ clock }) => {
     step();
   });
+ 
+  if (Object.keys(robots).length !== 0){
+    console.log(robots)
+    Object.values(robots).forEach((robot) => {
+      robot.pos.set(...robartState.robots[robot.id].startingPosition);
+    });
+    console.log("Valid")
+  }
+  else{
+    console.log("Robartrobots", robartRobots)
+    if (Object.keys(robartRobots).length !== 0){
+      setRobots(robartRobots);
+    }
+  }
+
 
   return (
     <>
