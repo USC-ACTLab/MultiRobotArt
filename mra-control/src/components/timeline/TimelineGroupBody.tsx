@@ -32,7 +32,7 @@ export const blockOverlaps = (
   startTime < 0 ||
   Object.values(group.items).some((items) => {
     const currItemStart = items.startTime;
-    const currItemEnd = items.startTime + blocks[items.blockId].duration;
+    const currItemEnd = items.startTime + items.duration;
     const newBlockStart = startTime;
     const newBlockEnd = startTime + selectedBlock.duration;
 
@@ -68,7 +68,6 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
 
       // Add the block to the timeline
       if (selectedBlockId === undefined || parentScrollOffsetX === undefined) return;
-
       const startTime = (offsetX + parentScrollOffsetX) / (PIXELS_PER_SECOND * scale) - blocks[selectedBlockId].duration / 2;
 
       return startTime;
