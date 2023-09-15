@@ -68,11 +68,11 @@ export interface SimulatorActions {
   executeSimulation: (startTime: number) => void;
   cancelSimulation: () => void;
 }
-
 export const useSimulator = create<SimulatorState & SimulatorActions>()(
   immer((set, get) => ({
     ...defaultSimulatorState,
-    play: () => { 
+    play: () => {
+      // Set robots to initial positions...
       set({ status: 'RUNNING', time: 0 });
       get().executeSimulation(0);
     },
@@ -130,7 +130,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
     },
     setRobots: (robots) => {
       const simRobots: Record<string, RobotSimState> = {};
-      console.log(robots)
       Object.values(robots).forEach((robot) => {
         simRobots[robot.id] = {
           id: robot.id,
@@ -144,7 +143,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           trajectoryDuration: 0,
           trajectories: [],
         };
-        console.log(robot.startingPosition);
       });
       set({ robots: simRobots });
     },
@@ -172,8 +170,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           thisRobot.boundingBox &&
           thisRobot.boundingBox.intersectsBox(otherRobot.boundingBox)
         ) {
-          console.log('collision between', robotId, 'and', otherRobotId);
-          console.log('robotId position', thisRobot.pos, 'and other robot position', otherRobot.pos);
         }
 
         return (
@@ -234,9 +230,16 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
       return [a0, a1, a2, a3, a4, a5, a6, a7];
     },
     executeSimulation: (startTime) => {
+      // if(startTime === 0){
+      //   const robartRobots = useRobartState().robots;
+      //   get().setRobots(robartRobots);
+      // }
       const timeline = useRobartState.getState().timelineState;
       const blocks = useRobartState.getState().blocks;
-      console.log('execute', timeline.groups);
+      const robartRobots = useRobartState.getState().robots;
+      if (startTime === 0){
+        get().setRobots(robartRobots);
+      }
       Object.values(timeline.groups).forEach((group) => {
         // Need the following local variables so that the EVAL works properly.
         const group_state: SimulatorGroupState = {
@@ -247,7 +250,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         
         var duration = 0; // Duration is modified by each block
         Object.values(group.items).forEach(timelineItem => {
-          console.log('item time', timelineItem.startTime);
           const offset = timelineItem.startTime - startTime;
           if (offset < 0) return;
 

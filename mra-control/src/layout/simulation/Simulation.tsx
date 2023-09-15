@@ -14,19 +14,27 @@ export const Simulation = () => {
   const step = useSimulator((state) => state.step);
   const setRobots = useSimulator((state) => state.setRobots);
   const robartState = useRobartState();
+  const simulatorState = useSimulator();
+ 
   useFrame(({ clock }) => {
     step();
   });
  
   if (Object.keys(robots).length !== 0){
-    console.log(robots)
-    Object.values(robots).forEach((robot) => {
-      robot.pos.set(...robartState.robots[robot.id].startingPosition);
-    });
-    console.log("Valid")
+    if (simulatorState.time === 0){
+      Object.values(robots).forEach((robot) => {
+        robot.pos.set(...robartState.robots[robot.id].startingPosition);
+        console.log(robot.pos);
+      });
+    }
+    else{
+      Object.values(robots).forEach((robot) => {
+        console.log(robot.pos);
+      })
+    }
+
   }
   else{
-    console.log("Robartrobots", robartRobots)
     if (Object.keys(robartRobots).length !== 0){
       setRobots(robartRobots);
     }
