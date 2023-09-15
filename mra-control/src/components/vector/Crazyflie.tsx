@@ -27,20 +27,29 @@ export function Crazyflie({ robotId, renderBoundingBox }: CrazyflieProps) {
   const group = useRef<THREE.Group>(null);
   const { nodes, materials, animations } = useGLTF('/crazyflie.glb') as any;
   const { actions } = useAnimations(animations, group);
+  const [isLoadingCFs, setIsLoadingCFs] = useState(true);
+  const [isLoadingWireframes, setIsLoadingWireframes] = useState(true);
 
   useEffect(() => {
-    Object.values(actions).map((a) => a?.play());
+    Object.values(actions).map((a) => a?.play())
+    setIsLoadingCFs(false);
   }, []);
 
   useEffect(() => {
-    if (!group.current) return;
+    if (!group.current) {
+      setIsLoadingWireframes(false);
+      return;
+    }
     if (renderBoundingBox) {
       const crazyflieBoundingBox = new Box3();
       crazyflieBoundingBox.setFromObject(group.current);
       updateRobotBoundingBox(robotId, crazyflieBoundingBox);
     }
+    setIsLoadingWireframes(false);
   }, [group.current]);
-
+  if(isLoadingCFs || isLoadingWireframes){
+    return <Text fontSize={1}>Loading...</Text>;
+  }
   return (
     <>
       {showText ? (
