@@ -37,7 +37,6 @@ export const blockOverlaps = (
     const newBlockEnd = startTime + selectedBlock.duration;
 
     if (id !== undefined && id === items.id) return false;
-
     return !(currItemEnd < newBlockStart || newBlockEnd < currItemStart);
   });
 
