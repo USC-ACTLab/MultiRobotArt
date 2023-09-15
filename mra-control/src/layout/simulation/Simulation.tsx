@@ -24,13 +24,9 @@ export const Simulation = () => {
     if (simulatorState.time === 0){
       Object.values(robots).forEach((robot) => {
         robot.pos.set(...robartState.robots[robot.id].startingPosition);
-        console.log(robot.pos);
       });
     }
     else{
-      Object.values(robots).forEach((robot) => {
-        console.log(robot.pos);
-      })
     }
 
   }

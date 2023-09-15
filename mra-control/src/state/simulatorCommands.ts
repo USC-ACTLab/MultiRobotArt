@@ -58,6 +58,7 @@ export const land = (groupState: SimulatorGroupState, height: number, duration: 
       curr_position = new Vector3(pos.x, pos.y, pos.z);
     }    var goal_position = curr_position
     goal_position.z = height
+
     const newTrajectory = useSimulator.getState().robotGoTo(robotId, goal_position, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
     useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration)
   });
