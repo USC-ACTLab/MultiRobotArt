@@ -67,7 +67,7 @@ export interface SimulatorActions {
   updateRobotBoundingBox: (robotId: string, boundingBox: THREE.Box3) => void;
   checkCollisions: (robotId: string) => boolean;
   updateTrajectory: (robotId: string, trajectory: traj.Trajectory, duration: number) => void;
-  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => Trajectory;  
+  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => traj.Trajectory;  
   executeSimulation: (startTime: number) => void;
   cancelSimulation: () => void;
 }
