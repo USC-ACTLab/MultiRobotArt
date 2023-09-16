@@ -32,9 +32,11 @@ export const go_to_xyz_speed = (groupState: SimulatorGroupState, x: number, y: n
   return duration;
 };
 
-export const set_led_color = (groupState: SimulatorGroupState, r: number, g: number, b: number) => {
+export const setColor = (groupState: SimulatorGroupState, r: number, g: number, b: number) => {
   groupState.robotIDs.forEach((robotID) =>{
-    useSimulator.getState().robots[robotID].color = new Color(r, g, b);
+    const robot = {...useSimulator.getState().robots[robotID]}
+    robot.color = new Color(r, g, b);
+    useSimulator.getState().robots[robotID] = robot;
   });
   return 0.1; // There is actually a cost to switching LEDs
 };
