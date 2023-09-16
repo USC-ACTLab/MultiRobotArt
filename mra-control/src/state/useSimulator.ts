@@ -9,15 +9,39 @@ import { RobotState, TimelineState, useRobartState } from './useRobartState';
 
 export const FPS = 60;
 
-type TrajectoryPolynomial =
-  | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
-  | null;
+// type TrajectoryPolynomial =
+//   | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
+//   | null;
 
-export interface Trajectory {
-  polynomial: TrajectoryPolynomial;
+// export interface Trajectory {
+//   polynomial: TrajectoryPolynomial;
+//   duration: number;
+// }
+
+abstract class Trajectory {
   duration: number;
+  constructor(duration: number){
+    this.duration = duration;
+  }
+
+  abstract evaluate(t: number): THREE.Vector3;
 }
 
+class PolynomialTrajectory extends Trajectory {
+  coefs: THREE.Vector3[];
+  constructor(duration: number, coeficients: THREE.Vector3[]){
+    super(duration);
+    this.coefs = coeficients;
+  }
+
+  evaluate(t: number): THREE.Vector3 { 
+    const newPos = new THREE.Vector3();
+    this.coefs.map((coefficient, i) => {
+      newPos.addScaledVector(coefficient, Math.pow(t, i));
+    });
+    return newPos;
+  }
+}
 
 
 export interface RobotSimState {
@@ -28,7 +52,7 @@ export interface RobotSimState {
   acc: THREE.Vector3;
   color: THREE.Color;
   trajectories: Trajectory[];
-  trajectory: TrajectoryPolynomial;
+  trajectory: Trajectory;
   trajectoryDuration: number;
   timeAlongTrajectory: number;
 }
@@ -47,6 +71,8 @@ const defaultSimulatorState: SimulatorState = {
   status: 'STOPPED',
 };
 
+const nullTrajectory = new PolynomialTrajectory(-1, []) as Trajectory;
+
 const SIMULATOR_TIMEOUTS: NodeJS.Timeout[] = [];
 
 export interface SimulatorActions {
@@ -63,8 +89,8 @@ export interface SimulatorActions {
   setRobots: (robots: Record<string, RobotState>) => void;
   updateRobotBoundingBox: (robotId: string, boundingBox: THREE.Box3) => void;
   checkCollisions: (robotId: string) => boolean;
-  updateTrajectory: (robotId: string, trajectory: TrajectoryPolynomial, duration: number) => void;
-  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => TrajectoryPolynomial;  
+  updateTrajectory: (robotId: string, trajectory: Trajectory, duration: number) => void;
+  robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => Trajectory;  
   executeSimulation: (startTime: number) => void;
   cancelSimulation: () => void;
 }
@@ -98,13 +124,10 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 
       Object.keys(robots).forEach((robotId) => {
         const robot = robots[robotId];
-        if (robot.trajectory === null) return;
+        if (robot.trajectory === null || robot.trajectory.duration < 0) return;
 
-        const newPos = new THREE.Vector3();
         const trajectoryTime = robot.timeAlongTrajectory + deltaT / robot.trajectoryDuration;
-        robot.trajectory.map((coefficient, i) => {
-          newPos.addScaledVector(coefficient, Math.pow(trajectoryTime, i));
-        });
+        const newPos = robot.trajectory.evaluate(trajectoryTime);
 
         const offset = newPos.clone().sub(robot.pos);
 
@@ -118,7 +141,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         };
 
         if (robots[robotId].timeAlongTrajectory >= 1) {
-          robots[robotId].trajectory = null;
+          robots[robotId].trajectory = nullTrajectory;
           robots[robotId].timeAlongTrajectory = 0;
         }
       });
@@ -139,7 +162,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           acc: new THREE.Vector3(),
           color: new THREE.Color(255, 255, 255),
           timeAlongTrajectory: 0,
-          trajectory: null,
+          trajectory: nullTrajectory,
           trajectoryDuration: 0,
           trajectories: [],
         };
@@ -227,7 +250,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         .addScaledVector(pos, -10)
         .multiplyScalar(2);
 
-      return [a0, a1, a2, a3, a4, a5, a6, a7];
+      return (new PolynomialTrajectory(0, [a0, a1, a2, a3, a4, a5, a6, a7])) as Trajectory;
     },
     executeSimulation: (startTime) => {
       // if(startTime === 0){
