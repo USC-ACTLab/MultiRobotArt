@@ -59,7 +59,7 @@ export function Crazyflie({ robotId, renderBoundingBox }: CrazyflieProps) {
       ) : null}
       <group>
         <group ref={group}>
-          <group scale={0.3}>
+          <group scale={0.3} rotation={[Math.PI / 2, -Math.PI / 2, 0]}>
             <mesh
               name="pcb_Default_sldprt"
               castShadow
@@ -155,11 +155,12 @@ export function Crazyflie({ robotId, renderBoundingBox }: CrazyflieProps) {
                 scale={-1}
               />
             </mesh>
-          </group>
           <Sphere position={[0, -0.05, 0]} scale={0.033} castShadow={false} receiveShadow={false}>
             <meshStandardMaterial emissive={simRobot ? [simRobot.color.r / 255, simRobot.color.g / 255, simRobot.color.b / 255] : [1, 1, 1]} />
             <pointLight position={[0, 0, 0]} intensity={0.5} />
           </Sphere>
+          </group>
+
         </group>
       </group>
       {renderBoundingBox && boundingBoxDims ? (
