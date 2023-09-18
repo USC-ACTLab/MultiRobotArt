@@ -53,7 +53,7 @@ export function Crazyflie({ robotId, renderBoundingBox }: CrazyflieProps) {
   return (
     <>
       {showText ? (
-        <Text quaternion={camera.quaternion.clone()} position={[0, 1, 0]} fontSize={0.25}>
+        <Text quaternion={camera.quaternion.clone()} position={[0, 0, 1]} fontSize={0.25}>
           {`${robot.name}, Position: (${simRobot.pos.x.toFixed(1)}, ${simRobot.pos.y.toFixed(1)}, ${simRobot.pos.z.toFixed(1)})`}
         </Text>
       ) : null}
@@ -155,12 +155,15 @@ export function Crazyflie({ robotId, renderBoundingBox }: CrazyflieProps) {
                 scale={-1}
               />
             </mesh>
-          <Sphere position={[0, -0.05, 0]} scale={0.033} castShadow={false} receiveShadow={false}>
+          {/* <Sphere position={[0, 0, -0.05]} scale={0.033} castShadow={false} receiveShadow={false}>
+            <meshStandardMaterial emissive={simRobot ? [simRobot.color.r / 255, simRobot.color.g / 255, simRobot.color.b / 255] : [1, 1, 1]} />
+            <pointLight position={[0, 0, 0]} intensity={0.5} />
+          </Sphere> */}
+          </group>
+          <Sphere position={[0, 0, -0.05]} scale={0.033} castShadow={false} receiveShadow={false}>
             <meshStandardMaterial emissive={simRobot ? [simRobot.color.r / 255, simRobot.color.g / 255, simRobot.color.b / 255] : [1, 1, 1]} />
             <pointLight position={[0, 0, 0]} intensity={0.5} />
           </Sphere>
-          </group>
-
         </group>
       </group>
       {renderBoundingBox && boundingBoxDims ? (

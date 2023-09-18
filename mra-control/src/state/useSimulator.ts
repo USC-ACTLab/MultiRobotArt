@@ -68,6 +68,7 @@ export interface SimulatorActions {
   checkCollisions: (robotId: string) => boolean;
   updateTrajectory: (robotId: string, trajectory: traj.Trajectory, duration: number) => void;
   robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => traj.Trajectory;  
+  robotCircle: (robotId: string, radius: number, axes?: string[], radians?: number, clockwise?: boolean) => traj.Trajectory; 
   executeSimulation: (startTime: number) => void;
   cancelSimulation: () => void;
 }
@@ -228,7 +229,12 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
         .addScaledVector(pos, -10)
         .multiplyScalar(2);
 
-      return (new traj.PolynomialTrajectory(0, [a0, a1, a2, a3, a4, a5, a6, a7])) as traj.Trajectory;
+      return (new traj.PolynomialTrajectory(1, [a0, a1, a2, a3, a4, a5, a6, a7])) as traj.Trajectory;
+    },
+    robotCircle: (robotId: string, radius=1, axes=['Y', 'Z'], radians=2*Math.PI, clockwise=false): traj.Trajectory => {
+      const robot = get().robots[robotId];
+      const trajectory = new traj.CircleTrajectory(1, robot.pos, radius, axes, radians, clockwise);
+      return trajectory as traj.Trajectory;
     },
     executeSimulation: (startTime) => {
       // if(startTime === 0){

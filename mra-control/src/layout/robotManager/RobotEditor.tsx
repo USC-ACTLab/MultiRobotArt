@@ -25,7 +25,7 @@ export const RobotEditor = () => {
   if (selectedRobotId === undefined) return <></>;
 
   const selectedRobot = robots[selectedRobotId];
-
+  if (selectedRobot === undefined) return <></>
   return (
     <div className="relative flex basis-4/5 flex-col p-4">
       <RenamableText
