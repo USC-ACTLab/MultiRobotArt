@@ -35,6 +35,16 @@ export const block_circle: RobartBlockDefinition = {
     return code;
   },
   javascriptGenerator: (block, js) => {
-    return `duration += simulator.dummy();`;
+    const number_radius_m = block.getFieldValue('radius_m');
+    const number_velocity = block.getFieldValue('velocity');
+    const angle_degrees = block.getFieldValue('angle_degrees');
+    const direction = block.getFieldValue('direction');
+    var clockwise = true;
+    if (direction == `ccw`){
+      clockwise=false;
+    }
+
+    return `duration += simulator.move_circle_vel(group_state, ${number_radius_m}, ${number_velocity}, ${angle_degrees}, ${clockwise});`;
+
   }
 }

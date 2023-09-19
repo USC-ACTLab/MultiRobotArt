@@ -6,11 +6,16 @@
  * Note: Due to scope issues, they _may_ have to be specifically defined locally in the context of the `eval` function.
  */
 
+import { RobotSidebar } from '@MRAControl/layout/robotManager/RobotSidebar';
 import { useSimulator } from '@MRAControl/state/useSimulator';
 import { Vector3, Color } from 'three';
 
 export interface SimulatorGroupState {
   robotIDs: string[];
+}
+
+export const toRadians = (degrees: number): number => {
+  return degrees / 180 * Math.PI;
 }
 
 export const go_to_xyz_speed = (groupState: SimulatorGroupState, x: number, y: number, z: number, speed: number) => {
@@ -105,6 +110,31 @@ export const move_speed = (groupState: SimulatorGroupState, x: number, y: number
     duration = Math.max(curr_duration, duration);
     useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration)
   });
+  return duration;
+};
+
+export const move_circle_vel = (groupState: SimulatorGroupState, radius: number, velocity: number, degrees: number, direction: any) =>{
+  var duration = 0;
+  groupState.robotIDs.forEach((robotId) =>{
+    var curr_position;
+    if (useSimulator.getState().robots[robotId] == undefined){
+      curr_position = new Vector3(0, 0, 0)
+    }
+    else{
+      var pos = useSimulator.getState().robots[robotId].pos;
+      curr_position = new Vector3(pos.x, pos.y, pos.z);
+    }
+    const axes = ['X', 'Z'];
+    const radians = toRadians(degrees);
+    const clockwise = false;
+    // TODO: duration calculation...
+    const arclength = 2*radius * Math.PI / (radians * (2*Math.PI));
+    duration = arclength / velocity;
+    console.log(duration);
+    const circle_traj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise);
+    useSimulator.getState().updateTrajectory(robotId, circle_traj, duration);
+  });
+  console.log("Duration", duration);
   return duration;
 };
 
