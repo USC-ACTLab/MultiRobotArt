@@ -42,14 +42,13 @@ export class CircleTrajectory extends Trajectory{
     evaluate(t: number): THREE.Vector3{
         // As t varies from 0 to 1, complete the desired arclength rotation for a given radius on a given axes
         // subtract 1 from v1 to start at 0, 0
-        const v1 = this.radius * Math.cos(t*Math.PI / (this.radians / 2*Math.PI)) - 1;
-        const v2 = this.radius * Math.sin(t*Math.PI / (this.radians / 2*Math.PI));
-        var x = 0, y = 0, z = 0;
+        const v1 = this.radius * Math.cos(t*(this.radians)) - 1;
+        const v2 = this.radius * Math.sin(t*(this.radians));
+        var x = this.pos.x, y = this.pos.y, z = this.pos.z;
         if(this.axes.some(x => x === 'X')){
             x = v1 + this.pos.x;
         }
         else{
-            x = 0
             y = v1 + this.pos.y;
         }
         if(this.axes.some(x => x === 'Z')){
@@ -57,9 +56,7 @@ export class CircleTrajectory extends Trajectory{
         }
         else{
             y = v2 + this.pos.y;
-            z = 0;
         }
-        console.log(this.radians)
         return new THREE.Vector3(x, y, z);
     }
 }

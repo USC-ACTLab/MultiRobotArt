@@ -128,7 +128,7 @@ export const move_circle_vel = (groupState: SimulatorGroupState, radius: number,
     const radians = toRadians(degrees);
     const clockwise = false;
     // TODO: duration calculation...
-    const arclength = 2*radius * Math.PI / (radians * (2*Math.PI));
+    const arclength = radius *(radians);
     duration = arclength / velocity;
     const circle_traj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise);
     useSimulator.getState().updateTrajectory(robotId, circle_traj, duration);
