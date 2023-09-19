@@ -9,7 +9,6 @@ import { useSimulator } from './useSimulator';
 import * as SIM from './simulatorCommands';
 import { SimulatorGroupState } from './simulatorCommands';
 
-
 export interface CodeBlock {
   /**
    * Code Block uuid
@@ -343,6 +342,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
             // This only kind of works, doesn't work for velo commands because init position will be wrong.
             // TODO: Run all blocks up until this point in the timeline to get position
             eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+            duration = Math.max(0.1, duration)
             const newItem = {
               id: uuid(),
               groupId,
@@ -351,7 +351,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
               isTrajectory,
               duration,
             };
-
+            
             const oldItems = { ...get().timelineState.groups[groupId].items };
             oldItems[newItem.id] = newItem;
 

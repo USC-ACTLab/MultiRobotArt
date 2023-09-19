@@ -68,7 +68,7 @@ export interface SimulatorActions {
   checkCollisions: (robotId: string) => boolean;
   updateTrajectory: (robotId: string, trajectory: traj.Trajectory, duration: number) => void;
   robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => traj.Trajectory;  
-  robotCircle: (robotId: string, radius: number, axes?: string[], radians?: number, clockwise?: boolean) => traj.Trajectory; 
+  robotCircle: (robotId: string, radius?: number, axes?: string[], radians?: number, clockwise?: boolean) => traj.Trajectory; 
   executeSimulation: (startTime: number) => void;
   cancelSimulation: () => void;
 }
@@ -266,6 +266,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           }, timeline.scale * offset * 1000);
           SIMULATOR_TIMEOUTS.push(timeout);
         });
+        duration = Math.max(0.1, duration);
       });
     },
     cancelSimulation: () => {
