@@ -1,8 +1,8 @@
 import { Crazyflie } from '@MRAControl/components/vector/Crazyflie';
 import { useRobartState } from '@MRAControl/state/useRobartState';
 import { useSimulator } from '@MRAControl/state/useSimulator';
-import { GizmoHelper, GizmoViewport, Grid, OrbitControls, PerspectiveCamera, Plane, Sphere } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { GizmoHelper, GizmoViewport, Grid, OrbitControls, PerspectiveCamera, Plane, Sphere, TrackballControls } from '@react-three/drei';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Theme } from 'blockly';
 import { useEffect, useRef } from 'react';
 import { Group } from 'three';
@@ -37,13 +37,16 @@ export const Simulation = () => {
     }
   }
 
-  const camera = new THREE.PerspectiveCamera(10, 1, 0.1, 10);
+  const { size, viewport, camera } = useThree();
+  camera.position.set(-5, 0, 2);
   camera.up.set(0, 0, 1)
+  // console.log(camera.position)
 
   return (
     <>
       <color attach="background" args={['black']} />
-      <OrbitControls maxPolarAngle={Math.PI * (1 / 2 - 1 / 20)} minPolarAngle={0} minDistance={.5} maxDistance={5} object={camera}/>
+      <OrbitControls  maxPolarAngle={Math.PI * (1 / 2 - 1 / 20)} minPolarAngle={0} minAzimuthAngle={-Math.PI/2} maxAzimuthAngle={Math.PI / 2} minDistance={.5} maxDistance={5} object={camera}/>
+      {/* <FlyControls></FlyControls> */}
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport labels={['X', 'Y', 'Z']} axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
       </GizmoHelper>

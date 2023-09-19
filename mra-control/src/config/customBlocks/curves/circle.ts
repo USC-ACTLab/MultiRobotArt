@@ -31,7 +31,7 @@ export const block_circle: RobartBlockDefinition = {
     var number_velocity = block.getFieldValue('velocity');
     var angle_angle_degrees = block.getFieldValue('angle_degrees');
     var dropdown_direction = block.getFieldValue('direction');
-    var code = 'circle(' + number_radius_m + ',' + number_velocity + ',' + angle_angle_degrees + ',' + dropdown_direction + ')\n';
+    var code = 'circle(' + number_radius_m + ',' + number_velocity + ',' + angle_angle_degrees + ',\'' + dropdown_direction + '\')';
     return code;
   },
   javascriptGenerator: (block, js) => {
@@ -45,6 +45,5 @@ export const block_circle: RobartBlockDefinition = {
     }
 
     return `duration += simulator.move_circle_vel(group_state, ${number_radius_m}, ${number_velocity}, ${angle_degrees}, ${clockwise});`;
-
   }
 }

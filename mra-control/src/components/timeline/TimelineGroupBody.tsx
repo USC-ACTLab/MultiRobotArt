@@ -80,8 +80,12 @@ export const TimelineGroupBody = ({ group }: TimelineGroupProps) => {
     const startTime = computeTimelineBlockOffset(clientX);
 
     if (startTime !== undefined && !blockOverlaps(group, blocks, startTime, blocks[selectedBlockId])) {
-      // TODO: Add isTraj appropriately (Currently hardcoded false)
-      addBlockToTimeline(group.id, selectedBlockId, startTime, false);
+      // TODO: Add isTraj appropriately (Currently hardcoded false), find better way to do it...
+      var isTraj = false;
+      if ( blocks[selectedBlockId].javaScript.includes(`circle`)){
+        isTraj = true;
+      }
+      addBlockToTimeline(group.id, selectedBlockId, startTime, isTraj);
     }
   };
 
