@@ -12,17 +12,17 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
   contents: [
     {
       kind: 'category',
-      name: 'Motion',
+      name: 'Straight Motion',
       contents: [
         // blockToToolbox(CUSTOM_BLOCKS.block_go_to_xyz),
-        blockToToolbox(CUSTOM_BLOCKS.block_go_to),
-        blockToToolbox(CUSTOM_BLOCKS.block_go_to_speed),
         blockToToolbox(CUSTOM_BLOCKS.block_takeoff),
         blockToToolbox(CUSTOM_BLOCKS.block_land),
+        blockToToolbox(CUSTOM_BLOCKS.block_go_to),
+        blockToToolbox(CUSTOM_BLOCKS.block_go_to_speed),
         blockToToolbox(CUSTOM_BLOCKS.block_move_angles),
         blockToToolbox(CUSTOM_BLOCKS.block_move_xyz),
         blockToToolbox(CUSTOM_BLOCKS.block_move),
-        blockToToolbox(CUSTOM_BLOCKS.block_start_linear_motion),
+        //blockToToolbox(CUSTOM_BLOCKS.block_start_linear_motion),
         blockToToolbox(CUSTOM_BLOCKS.block_stop),
         blockToToolbox(CUSTOM_BLOCKS.block_turn),
       ],
@@ -32,7 +32,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
       name: 'Curves',
       contents: [
         blockToToolbox(CUSTOM_BLOCKS.block_circle),
-        blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
+        //blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
         blockToToolbox(CUSTOM_BLOCKS.block_start_move),
         blockToToolbox(CUSTOM_BLOCKS.block_start_turn),
       ],
@@ -57,7 +57,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Logic',
-      colour: '#5C81A6',
+      // colour: '#5C81A6',
       contents: [
         {
           kind: 'block',
@@ -72,7 +72,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     {
       kind: 'category',
       name: 'Math',
-      colour: '#5CA65C',
+      // colour: '#5CA65C',
       contents: [
         {
           kind: 'block',
@@ -86,18 +86,8 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
     },
     {
       kind: 'category',
-      name: 'Custom',
-      colour: '#5CA699',
-      contents: [
-        {
-          kind: 'block',
-          type: 'new_boundary_function',
-        },
-        {
-          kind: 'block',
-          type: 'return',
-        },
-      ],
+      name: 'Rotation and Translation',
+      // colour: '#5CA699',
     },
   ],
 };
