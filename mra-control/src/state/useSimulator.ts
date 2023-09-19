@@ -99,7 +99,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
       const newSimTime = time + deltaT;
       //TODO update time text in simulation window
       const robots = { ...currentRobots };
-      console.log(robots);
 
       Object.keys(robots).forEach((robotId) => {
         const robot = robots[robotId];

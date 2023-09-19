@@ -127,15 +127,13 @@ export const move_circle_vel = (groupState: SimulatorGroupState, radius: number,
     const axes = ['X', 'Z'];
     const radians = toRadians(degrees);
     const clockwise = false;
-    // TODO: duration calculation...
     const arclength = radius *(radians);
     duration = arclength / velocity;
     const circle_traj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise);
     useSimulator.getState().updateTrajectory(robotId, circle_traj, duration);
   });
-  console.log("Duration", duration);
   return duration;
 };
 
 
-export const dummy = () => {return 0.1};
+export const dummy = () => {return 0.1}; // non-zero duration so it's not hidden
