@@ -7,6 +7,7 @@ import { SimulatorGroupState } from './simulatorCommands';
 import * as SIM from './simulatorCommands';
 import { RobotState, TimelineState, useRobartState } from './useRobartState';
 import * as traj from './trajectories';
+import { useRobotManager } from './useRobotManager';
 export const FPS = 60;
 
 // type TrajectoryPolynomial =

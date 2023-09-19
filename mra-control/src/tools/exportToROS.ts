@@ -3,8 +3,8 @@ import { open } from 'node:fs/promises';
 // import * as fs from 'fs';
 import fs from 'fs';
 import { config } from 'node:process';
-import * as JsZip from 'jszip';
-import * as FileSaver from 'file-saver';
+import JsZip from 'jszip';
+import FileSaver from 'file-saver';
 
 // TODO: Make these not hard coded...
 const trajLine = 45;

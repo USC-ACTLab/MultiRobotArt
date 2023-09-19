@@ -28,3 +28,18 @@ Some other notes on things that I propose to use (and have done so in scaffoldin
 3.  `zustand` - Simple/lightweight/accessible state management framework. Preferred to larger frameworks that require more boilerplate (such as
     `redux`). Allows for state to be shared between otherwise unrelated components.
 4.  `react-blockly` - Blockly integration into `react` (really just a lightweight wrapper).
+
+## Main TODOs before launch:
+    5. Wireframe rendering...
+    6. Flight Demo...
+    7. flickering hovering?
+    8. Make Deployable...
+
+
+for the future:
+    Rotations
+    paths to visualization
+    hide groups and add more groups
+    real world execution - trajectories
+    default with one robot beginning at the origin.
+    Nicer robot manager
