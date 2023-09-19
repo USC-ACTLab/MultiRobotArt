@@ -3,6 +3,9 @@ import { open } from 'node:fs/promises';
 // import * as fs from 'fs';
 import fs from 'fs';
 import { config } from 'node:process';
+import * as JsZip from 'jszip';
+import * as FileSaver from 'file-saver';
+
 // TODO: Make these not hard coded...
 const trajLine = 45;
 const execBlocksLine = 88;
@@ -17,6 +20,7 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
     var mainNode = launcherNode.split('\n');
     var numGroups = 0; //Object.keys(projectState.timelineState.groups).length;
     var trajCounter = 0
+    const zip = JsZip();
     const groups = projectState.timelineState.groups;
     for (let groupName in groups){
         const groupState = projectState.timelineState.groups[groupName];
@@ -97,29 +101,30 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
         // fs.writeFile(groupName + '_node.py', workerNode.join('\n'), function (err) {
         //     if (err) return console.log(err);
         // });
-        const element = document.createElement('a');
+        //const element = document.createElement('a');
         const worker_node = new Blob([workerNode.join('\n')], { type: 'text/plain' });
-        element.href = URL.createObjectURL(worker_node);
-        element.download = `${groupName}_node.py`;
-        document.body.appendChild(element); // Required for this to work in FireFox
-        element.click();
-        document.body.removeChild(element); // Clean up after ourselves.
+        //element.href = URL.createObjectURL(worker_node);
+        //element.download = `${groupName}_node.py`;
+        //document.body.appendChild(element); // Required for this to work in FireFox
+        //element.click();
+        //document.body.removeChild(element); // Clean up after ourselves.
+        zip.file(`${groupName}_node.py`, worker_node)
     }
-    const element = document.createElement('a');
+    //const element = document.createElement('a');
     const launcherFile = new Blob([mainNode.join('\n')], { type: 'text/plain' });
-    element.href = URL.createObjectURL(launcherFile);
-    element.download = 'launch_nodes.py';
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element); // Clean up after ourselves.
+    //element.href = URL.createObjectURL(launcherFile);
+    //element.download = 'launch_nodes.py';
+    //document.body.appendChild(element); // Required for this to work in FireFox
+    //element.click();
+    //document.body.removeChild(element); // Clean up after ourselves.
 
     // Configuration file
     const configureFile = new Blob([configure], { type: 'text/plain' });
-    element.href = URL.createObjectURL(configureFile);
-    element.download = 'configure.py';
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element); // Clean up after ourselves.
+    //element.href = URL.createObjectURL(configureFile);
+    //element.download = 'configure.py';
+    //document.body.appendChild(element); // Required for this to work in FireFox
+    //element.click();
+    //document.body.removeChild(element); // Clean up after ourselves.
 
     // Starting positions yaml
     var startingPositions = `positions:\n`;
@@ -132,11 +137,19 @@ export const exportToROS = async (projectState: MRAState ,fileName: string) => {
     }
 
     const startingPosFile = new Blob([startingPositions], { type: 'text/plain' });
-    element.href = URL.createObjectURL(startingPosFile);
-    element.download = 'starting_positions.yaml';
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element); // Clean up after ourselves.
+    //element.href = URL.createObjectURL(startingPosFile);
+    //element.download = 'starting_positions.yaml';
+    //document.body.appendChild(element); // Required for this to work in FireFox
+    //element.click();
+    //document.body.removeChild(element); // Clean up after ourselves.
+
+
+    zip.file('starting_positions.yaml', startingPosFile);
+    zip.file('configure.py', configureFile);
+    zip.file('launch_nodes.py', launcherFile);
+    zip.generateAsync({type: 'blob'}).then((zipFile: any) => {
+        return FileSaver.saveAs(zipFile, `${projectState.projectName}.zip`);
+    })
   };
 
 const workerNodeTemplate =  
