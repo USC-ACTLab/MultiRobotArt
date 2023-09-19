@@ -74,7 +74,7 @@ export const land = (groupState: SimulatorGroupState, height: number, duration: 
 
 export const takeoff = (groupState: SimulatorGroupState, height: number, duration: number) => {
   groupState.robotIDs.forEach((robotId) => {
-    var curr_position
+    var curr_position;
     if (useSimulator.getState().robots[robotId] == undefined){
       curr_position = new Vector3(0, 0, 0)
     }
@@ -118,7 +118,7 @@ export const move_circle_vel = (groupState: SimulatorGroupState, radius: number,
   groupState.robotIDs.forEach((robotId) =>{
     var curr_position;
     if (useSimulator.getState().robots[robotId] == undefined){
-      curr_position = new Vector3(0, 0, 0)
+      curr_position = new Vector3(0, 0, 0);
     }
     else{
       var pos = useSimulator.getState().robots[robotId].pos;
@@ -130,7 +130,6 @@ export const move_circle_vel = (groupState: SimulatorGroupState, radius: number,
     // TODO: duration calculation...
     const arclength = 2*radius * Math.PI / (radians * (2*Math.PI));
     duration = arclength / velocity;
-    console.log(duration);
     const circle_traj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise);
     useSimulator.getState().updateTrajectory(robotId, circle_traj, duration);
   });
