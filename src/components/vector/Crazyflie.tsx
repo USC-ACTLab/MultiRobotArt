@@ -25,7 +25,7 @@ export function Crazyflie({ robotId, renderBoundingBox }: CrazyflieProps) {
   const { camera } = useThree();
 
   const group = useRef<THREE.Group>(null);
-  const { nodes, materials, animations } = useGLTF('/crazyflie.glb') as any;
+  const { nodes, materials, animations } = useGLTF('./crazyflie.glb') as any;
   const { actions } = useAnimations(animations, group);
   const [isLoadingCFs, setIsLoadingCFs] = useState(true);
   const [isLoadingWireframes, setIsLoadingWireframes] = useState(true);
@@ -184,4 +184,4 @@ export function Crazyflie({ robotId, renderBoundingBox }: CrazyflieProps) {
   );
 }
 
-useGLTF.preload('/crazyflie.glb');
+useGLTF.preload('./crazyflie.glb');

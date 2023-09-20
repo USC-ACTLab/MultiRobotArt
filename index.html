@@ -1,35 +1,13 @@
-<!doctype html>
-
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Blockly for the Web Codelab</title>
-
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robart - Control Panel</title>
   </head>
-
-  <main>
-    <div>
-      <div id="blocklyDiv" style="height: 600px; width: 1000px;"></div>
-    </div>
-  </main>
-  <script src="https://unpkg.com/blockly"></script>
-  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-    <block type="set_default_height"></block>
-    <block type="go_to_xyz"></block>
-    <block type="go_to"></block>
-    <block type="get_a_position"></block>
-    <block type="move"></block>
-    <block type="move_xyz"></block>
-    <block type="set_default_speed"></block>
-    <block type="set_default_xy"></block>
-    <block type="takeoff"></block>
-    <block type="land"></block>
-    <block type="get_position"></block>
-  </xml>
-  <script src="scripts/main.js"></script>
-  <script src="blockly-translations/workspace.js"></script>
+  <body>
+    <div id="root" class="h-screen w-screen"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
