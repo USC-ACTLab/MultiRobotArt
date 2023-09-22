@@ -42,9 +42,6 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
       name: 'Config',
       contents: [
         blockToToolbox(CUSTOM_BLOCKS.block_get_a_position),
-        blockToToolbox(CUSTOM_BLOCKS.block_set_default_height),
-        blockToToolbox(CUSTOM_BLOCKS.block_set_default_speed),
-        blockToToolbox(CUSTOM_BLOCKS.block_set_default_xy)
       ],
     },
     {
