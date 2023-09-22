@@ -10,5 +10,8 @@ export default defineConfig({
     alias: {
       '@MRAControl': path.resolve(__dirname, './src'),
     },
+
   },
-});
+  build: {
+    minify: false
+  }});
