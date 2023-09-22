@@ -9,6 +9,7 @@ import { useSimulator } from './useSimulator';
 import * as SIM from './simulatorCommands';
 import { SimulatorGroupState } from './simulatorCommands';
 
+const simulator = SIM;
 export interface CodeBlock {
   /**
    * Code Block uuid
@@ -278,7 +279,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
           },
           addBlockToTimeline: (groupId: string, blockId: string, startTime: number, isTrajectory: boolean) => {
             // TODO: Check if this causes unintended consequences...
-            const simulator = SIM;
             const group_state: SimulatorGroupState = {
               robotIDs: Object.keys(get().timelineState.groups[groupId].robots)
             };

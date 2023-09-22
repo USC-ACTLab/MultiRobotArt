@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import { Group } from 'three';
 import * as THREE from 'three'
 
+let init = true
 export const Simulation = () => {
   const marker = useRef<Group>(null!);
   const robots = useSimulator((state) => state.robots);
@@ -38,11 +39,13 @@ export const Simulation = () => {
   }
 
   const { size, viewport, camera } = useThree();
-  camera.position.set(-5, 0, 2);
-  camera.up.set(0, 0, 1)
-  // console.log(camera.position)
-
-  return (
+    // console.log(camera.position)
+  if(init){
+    camera.position.set(-5, 0, 2);
+    camera.up.set(0, 0, 1)
+    init = false
+  }
+    return (
     <>
       <color attach="background" args={['black']} />
       <OrbitControls  maxPolarAngle={Math.PI * (1 / 2 - 1 / 20)} minPolarAngle={0} minAzimuthAngle={-Math.PI/2} maxAzimuthAngle={Math.PI / 2} minDistance={.5} maxDistance={5} object={camera}/>

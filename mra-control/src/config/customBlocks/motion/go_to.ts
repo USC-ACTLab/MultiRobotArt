@@ -1,5 +1,6 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 export const block_go_to_speed: RobartBlockDefinition = {
   name: "go_to_speed",
@@ -37,5 +38,15 @@ export const block_go_to_speed: RobartBlockDefinition = {
     var speed = block.getFieldValue('speed');
 
     return `duration += simulator.go_to_xyz_speed(group_state, ${x}, ${y}, ${z}, ${speed});\n`;
+  },
+  execute: (block, groupState) => {
+    const simulator = SIM
+    var x = block.getFieldValue('x_pos');
+    var y = block.getFieldValue('y_pos');
+    var z = block.getFieldValue('z_pos');
+    var speed = block.getFieldValue('speed');
+
+    return simulator.go_to_xyz_speed(groupState, x, y, z, speed)
+ 
   }
 }

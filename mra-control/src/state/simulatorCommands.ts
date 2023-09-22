@@ -37,7 +37,7 @@ export const go_to_xyz_speed = (groupState: SimulatorGroupState, x: number, y: n
   return duration;
 };
 
-export const setColor = (groupState: SimulatorGroupState, r: number, g: number, b: number) => {
+export const setColor = (groupState: SimulatorGroupState, r=0, g=0, b=0) => {
   groupState.robotIDs.forEach((robotID) =>{
     const robot = {...useSimulator.getState().robots[robotID]}
     robot.color = new Color(r, g, b);

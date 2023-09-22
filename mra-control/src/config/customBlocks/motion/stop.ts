@@ -1,5 +1,6 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 export const block_stop: RobartBlockDefinition = {
   name: "stop",
@@ -19,5 +20,10 @@ export const block_stop: RobartBlockDefinition = {
   },
   javascriptGenerator: (block, js) => {
     return `duration += simulator.stop_and_hover(group_state);\n`;
+  },
+  execute: (block, groupState) => {
+    const simulator = SIM
+    return 0.1
+    // TODO return simulator.stop_and_hover(groupState)
   }
 }

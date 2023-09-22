@@ -1,5 +1,6 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 export const block_turn: RobartBlockDefinition = {
   name: "turn",
@@ -29,5 +30,9 @@ export const block_turn: RobartBlockDefinition = {
   },
   javascriptGenerator: (block, js) => {
     return `duration += simulator.dummy();`;
+  },
+  execute: (block, groupState) => {
+    const simulator = SIM
+    return simulator.dummy()
   }
 }

@@ -1,5 +1,6 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 export const block_land: RobartBlockDefinition = {
   name: "land",
@@ -28,5 +29,11 @@ export const block_land: RobartBlockDefinition = {
     var number_height = block.getFieldValue('height');
     var duration = block.getFieldValue('duration');
     return `duration += simulator.land(group_state, ${number_height}, ${duration});\n`;
+  },
+  execute: (block, groupState) => {
+    const simulator = SIM
+    var number_height = block.getFieldValue('height');
+    var duration = block.getFieldValue('duration');
+    return simulator.land(groupState, number_height, duration)
   }
 }

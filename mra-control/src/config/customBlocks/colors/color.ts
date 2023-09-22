@@ -3,6 +3,7 @@ import Blockly from 'blockly';
 import {ColorWheelField} from './ColorWheel';
 import { Color } from 'three';
 import { string } from 'blockly/core/utils';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 // Blockly.Blocks["color_wheel_picker"] = {
 //   init: function () {
@@ -20,7 +21,7 @@ function hexToRgb(hex: string) {
     g: parseInt(result[2], 16),
     b: parseInt(result[3], 16)
   } : null;
-};
+}
 
 export const block_color: RobartBlockDefinition = {
   name: "color",
@@ -50,5 +51,12 @@ export const block_color: RobartBlockDefinition = {
     var rgbCol = hexToRgb(color);
     return `duration += simulator.setColor(group_state, ${rgbCol?.r},${rgbCol?.g},${rgbCol?.b});`;
 
+  },
+
+  execute: (block, groupState) => {
+    const sim = SIM
+    var color = block.getFieldValue('color')
+    var rgbCol = hexToRgb(color)
+    return sim.setColor(groupState, rgbCol?.r, rgbCol?.g, rgbCol?.b)
   }
 }

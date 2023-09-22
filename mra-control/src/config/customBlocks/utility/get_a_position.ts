@@ -25,5 +25,8 @@ export const block_get_a_position: RobartBlockDefinition = {
   },
   javascriptGenerator: (block, js) => {
     return `duration += simulator.dummy()`;
-  }
+  },
+  execute: (block, groupState) => {
+    return 0.1
+  },
 }

@@ -1,5 +1,6 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 export const block_move: RobartBlockDefinition = {
   name: "move",
@@ -31,5 +32,14 @@ export const block_move: RobartBlockDefinition = {
     var number_distance = block.getFieldValue('distance');
     var duration = block.getFieldValue('duration');
     return `duration += simulator.move_direction(group_state, ${dropdown_direction}, ${number_distance}, ${duration});\n`;
+  },
+  execute: (block, groupState) => {
+    //TODO...
+    const simulator = SIM
+    var dropdown_direction = block.getFieldValue('direction');
+    var number_distance = block.getFieldValue('distance');
+    var duration = block.getFieldValue('duration');
+    return 0.1 // TODO
+    //return simulator.move_direction(groupState, dropdown_direction, number_distance, duration)
   }
 }

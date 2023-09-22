@@ -1,5 +1,6 @@
 import { RobartBlockDefinition } from '../BlockDefinition';
 import Blockly from 'blockly';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 export const block_circle: RobartBlockDefinition = {
   name: "circle",
@@ -45,5 +46,18 @@ export const block_circle: RobartBlockDefinition = {
     }
 
     return `duration += simulator.move_circle_vel(group_state, ${number_radius_m}, ${number_velocity}, ${angle_degrees}, ${clockwise});`;
-  }
+  },
+  execute: (block, groupState) => {
+    const simulator = SIM
+    const number_radius_m = block.getFieldValue('radius_m');
+    const number_velocity = block.getFieldValue('velocity');
+    const angle_degrees = block.getFieldValue('angle_degrees');
+    const direction = block.getFieldValue('direction');
+    var clockwise = true;
+    if (direction == `ccw`){
+      clockwise=false;
+    }
+
+    return simulator.move_circle_vel(groupState, number_radius_m, number_velocity, angle_degrees, clockwise);
+    }
 }

@@ -1,5 +1,9 @@
 
+import { SimulatorGroupState } from '@MRAControl/state/simulatorCommands';
+import { Trajectory } from '@MRAControl/state/trajectories';
+import { SimulatorState } from '@MRAControl/state/useSimulator';
 import Blockly from 'blockly';
+import * as SIM from '@MRAControl/state/simulatorCommands'
 
 export type BlocklyOrder = 'ORDER_ATOMIC';
 
@@ -36,4 +40,6 @@ export interface RobartBlockDefinition {
      * @returns A string of JavaScript code.
      */
     javascriptGenerator: (block: Blockly.Block, js: BlocklyGenerator) => string;
+
+    execute: (block: Blockly.Block, groupState: SimulatorGroupState) => number;
 }
