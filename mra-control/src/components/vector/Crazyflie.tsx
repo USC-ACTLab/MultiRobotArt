@@ -33,7 +33,6 @@ export function Crazyflie({robotId, renderBoundingBox}: CrazyflieProps) {
 	const {actions} = useAnimations(animations, group);
 	const [isLoadingCFs, setIsLoadingCFs] = useState(true);
 	const [isLoadingWireframes, setIsLoadingWireframes] = useState(true);
-
 	useEffect(() => {
 		Object.values(actions).map((a) => a?.play());
 		setIsLoadingCFs(false);
@@ -52,10 +51,21 @@ export function Crazyflie({robotId, renderBoundingBox}: CrazyflieProps) {
 		}
 
 		setIsLoadingWireframes(false);
-	}, [group.current]);
+	}, [group.current, boundingBox === undefined]);
 	if (isLoadingCFs || isLoadingWireframes) {
 		return <Text fontSize={1}>Loading...</Text>;
 	}
+
+	// if (!loading && renderBoundingBox && boundingBox === undefined) {
+	// 	if (group.current && renderBoundingBox) {
+	// 		const crazyflieBoundingBox = new Box3();
+	// 		crazyflieBoundingBox.setFromObject(group.current);
+	// 		updateRobotBoundingBox(robotId, crazyflieBoundingBox);
+	// 	}
+	// }
+	
+	
+
 
 	return (
 		<>

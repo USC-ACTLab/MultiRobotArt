@@ -7,7 +7,7 @@ import {type SimulatorGroupState} from './simulatorCommands';
 import * as SIM from './simulatorCommands';
 import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
-export const fps = 30;
+export const fps = 60;
 
 // type TrajectoryPolynomial =
 //   | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
@@ -134,7 +134,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			Object.values(robots).forEach((robot) => {
 				simRobots[robot.id] = {
 					id: robot.id,
-					boundingBox: undefined,
+					// boundingBox: new THREE.Box3(),
 					pos: new THREE.Vector3(...robot.startingPosition),
 					vel: new THREE.Vector3(),
 					acc: new THREE.Vector3(),
@@ -144,6 +144,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					trajectoryDuration: 0,
 					trajectories: [],
 				};
+				// simRobots[robot.id].boundingBox?.setFromObject()
+				// get().updateRobotBoundingBox(robot.id, new THREE.Box3());
 			});
 			set({robots: simRobots});
 		},
