@@ -1,156 +1,161 @@
-import { MRAState } from '@MRAControl/state/useRobartState';
-import { open } from 'node:fs/promises';
+import {type MRAState} from '@MRAControl/state/useRobartState';
+import {open} from 'node:fs/promises';
 // import * as fs from 'fs';
 import fs from 'fs';
-import { config } from 'node:process';
+import {config} from 'node:process';
 import JsZip from 'jszip';
 import FileSaver from 'file-saver';
 
 // TODO: Make these not hard coded...
 const trajLine = 45;
 const execBlocksLine = 88;
-var launcherNodeLine = 39
+var launcherNodeLine = 39;
 
 /**
  * Export project to ROS code
  * @param projectState The name of the file to download
  * @param filename
  */
-export const exportToROS = async (projectState: MRAState ,fileName: string) => {
-    var mainNode = launcherNode.split('\n');
-    var numGroups = 0; //Object.keys(projectState.timelineState.groups).length;
-    var trajCounter = 0
-    const zip = JsZip();
-    const groups = projectState.timelineState.groups;
-    for (let groupName in groups){
-        const groupState = projectState.timelineState.groups[groupName];
-        const robots = Object.values(groupState.robots);
-        var robotIndices: string[] = [];
-        if (robots.length === 0){
-            continue
-        }
-        numGroups += 1;
-        for (let r in robots){
-            console.log(robots, r);
-            if (robots[r] == undefined){
-                continue
-            }
-            robotIndices.push(r);
-            console.log("Robot Indices", robotIndices)
-        }
-        var pythonTrajectories = "";
+export const exportToROS = async (projectState: MRAState, fileName: string) => {
+	var mainNode = launcherNode.split('\n');
+	var numGroups = 0; //Object.keys(projectState.timelineState.groups).length;
+	var trajCounter = 0;
+	const zip = JsZip();
+	const groups = projectState.timelineState.groups;
+	for (let groupName in groups) {
+		const groupState = projectState.timelineState.groups[groupName];
+		const robots = Object.values(groupState.robots);
+		var robotIndices: string[] = [];
+		if (robots.length === 0) {
+			continue;
+		}
 
-        var pythonBlocks = "";
-        if (Object.keys(groupState.items).length === 0){
-            console.log("No items" + groupState)
-            continue;
-        }
-        else{
-            console.log(groupState.items)
-        }
-        console.log("Items: " + groupState.items)
-        for (let block in groupState.items){
-            console.log(block)
-            const blockState = groupState.items[block];
-            const startTime = blockState.startTime;
-            const pythonCode = projectState.blocks[blockState.blockId].python;
-            if (blockState.isTrajectory){
-                pythonTrajectories += '        trajectories.append(' + pythonCode + ')';
-                pythonBlocks += '        start_time = ${startTime}\n';
-                pythonBlocks += '        self.wait_until(start_time)\n';
-                pythonBlocks += '        for cf in self.crazyflies:\n';
-                pythonBlocks += '            cf.startTrajectory(${trajCounter}, 0, 1)\n';
-                pythonBlocks += '        self.wait_until(start_time + self.trajectories[${trajCounter}].duration\n';
-                trajCounter += 1
-            }
-            else{
-                const duration = 1.0; //TODO figure out how to get duration
-                pythonBlocks += `        start_time = ${startTime}\n`;
-                pythonBlocks += `        total_duration = ${duration}\n`;
-                pythonBlocks += `        self.wait_until(start_time)\n`;
+		numGroups += 1;
+		for (let r in robots) {
+			console.log(robots, r);
+			if (robots[r] == undefined) {
+				continue;
+			}
+
+			robotIndices.push(r);
+			console.log('Robot Indices', robotIndices);
+		}
+
+		var pythonTrajectories = '';
+
+		var pythonBlocks = '';
+		if (Object.keys(groupState.items).length === 0) {
+			console.log('No items' + groupState);
+			continue;
+		} else {
+			console.log(groupState.items);
+		}
+
+		console.log('Items: ' + groupState.items);
+		for (let block in groupState.items) {
+			console.log(block);
+			const blockState = groupState.items[block];
+			const startTime = blockState.startTime;
+			const pythonCode = projectState.blocks[blockState.blockId].python;
+			if (blockState.isTrajectory) {
+				pythonTrajectories += '        trajectories.append(' + pythonCode + ')';
+				pythonBlocks += '        start_time = ${startTime}\n';
+				pythonBlocks += '        self.wait_until(start_time)\n';
+				pythonBlocks += '        for cf in self.crazyflies:\n';
+				pythonBlocks += '            cf.startTrajectory(${trajCounter}, 0, 1)\n';
+				pythonBlocks += '        self.wait_until(start_time + self.trajectories[${trajCounter}].duration\n';
+				trajCounter += 1;
+			} else {
+				const duration = 1.0; //TODO figure out how to get duration
+				pythonBlocks += `        start_time = ${startTime}\n`;
+				pythonBlocks += `        total_duration = ${duration}\n`;
+				pythonBlocks += '        self.wait_until(start_time)\n';
                 
-                var pythonLines = pythonCode.split('\n');
-                // TODO: Is this -1 needed or just a bug?
-                for (var i = 0; i < pythonLines.length - 1; i++){
-                    pythonBlocks += `        for cf in self.crazyflies:\n`;
-                    pythonBlocks += `            block_duration = ${pythonLines[i]}\n`;
-                    pythonBlocks += '        self.wait(block_duration)\n'
-                }
-                pythonBlocks += `        self.wait_until(start_time + total_duration)\n`;
-            }
-        }
-        // Read in template
-        var workerNode = workerNodeTemplate.split('\n');
+				var pythonLines = pythonCode.split('\n');
+				// TODO: Is this -1 needed or just a bug?
+				for (var i = 0; i < pythonLines.length - 1; i++) {
+					pythonBlocks += '        for cf in self.crazyflies:\n';
+					pythonBlocks += `            block_duration = ${pythonLines[i]}\n`;
+					pythonBlocks += '        self.wait(block_duration)\n';
+				}
 
-        // Inject trajectories into template
-        workerNode.splice(trajLine, 0, pythonTrajectories);
-        workerNode.splice(execBlocksLine, 0, pythonBlocks);
+				pythonBlocks += '        self.wait_until(start_time + total_duration)\n';
+			}
+		}
 
-        // For each worker, save file and insert start code to main node. 
-        console.log(robotIndices);
-        var launcher_text = `    import ${groupName}` + `_node\n`;
-        launcher_text = `    cfs = []\n`
+		// Read in template
+		var workerNode = workerNodeTemplate.split('\n');
 
-        for (let r in robotIndices) 
-            launcher_text += `    cfs.append(crazyflies[${r}])\n`;
-        launcher_text += `    nodes.append(${groupName}_node.worker_node(cfs, len(nodes)-1, ${numGroups}))\n`;
-        mainNode.splice(launcherNodeLine, 0, launcher_text);
-        launcherNodeLine += 2;
+		// Inject trajectories into template
+		workerNode.splice(trajLine, 0, pythonTrajectories);
+		workerNode.splice(execBlocksLine, 0, pythonBlocks);
 
-        // Save worker node
-        // fs.writeFile(groupName + '_node.py', workerNode.join('\n'), function (err) {
-        //     if (err) return console.log(err);
-        // });
-        //const element = document.createElement('a');
-        const worker_node = new Blob([workerNode.join('\n')], { type: 'text/plain' });
-        //element.href = URL.createObjectURL(worker_node);
-        //element.download = `${groupName}_node.py`;
-        //document.body.appendChild(element); // Required for this to work in FireFox
-        //element.click();
-        //document.body.removeChild(element); // Clean up after ourselves.
-        zip.file(`${groupName}_node.py`, worker_node)
-    }
-    //const element = document.createElement('a');
-    const launcherFile = new Blob([mainNode.join('\n')], { type: 'text/plain' });
-    //element.href = URL.createObjectURL(launcherFile);
-    //element.download = 'launch_nodes.py';
-    //document.body.appendChild(element); // Required for this to work in FireFox
-    //element.click();
-    //document.body.removeChild(element); // Clean up after ourselves.
+		// For each worker, save file and insert start code to main node. 
+		console.log(robotIndices);
+		var launcher_text = `    import ${groupName}` + '_node\n';
+		launcher_text = '    cfs = []\n';
 
-    // Configuration file
-    const configureFile = new Blob([configure], { type: 'text/plain' });
-    //element.href = URL.createObjectURL(configureFile);
-    //element.download = 'configure.py';
-    //document.body.appendChild(element); // Required for this to work in FireFox
-    //element.click();
-    //document.body.removeChild(element); // Clean up after ourselves.
+		for (let r in robotIndices) 
+			launcher_text += `    cfs.append(crazyflies[${r}])\n`;
+		launcher_text += `    nodes.append(${groupName}_node.worker_node(cfs, len(nodes)-1, ${numGroups}))\n`;
+		mainNode.splice(launcherNodeLine, 0, launcher_text);
+		launcherNodeLine += 2;
 
-    // Starting positions yaml
-    var startingPositions = `positions:\n`;
-    for(let robot in Object.values(projectState.robots)){
-        var pos = [0, 0, 0]
-        if(projectState.robots[robot] != undefined)
-            pos = projectState.robots[robot].startingPosition;
-            // TODO All 0s?
-            startingPositions += `    - [${pos[0]}, ${pos[1]}, ${pos[2]}]\n`;
-    }
+		// Save worker node
+		// fs.writeFile(groupName + '_node.py', workerNode.join('\n'), function (err) {
+		//     if (err) return console.log(err);
+		// });
+		//const element = document.createElement('a');
+		const worker_node = new Blob([workerNode.join('\n')], {type: 'text/plain'});
+		//element.href = URL.createObjectURL(worker_node);
+		//element.download = `${groupName}_node.py`;
+		//document.body.appendChild(element); // Required for this to work in FireFox
+		//element.click();
+		//document.body.removeChild(element); // Clean up after ourselves.
+		zip.file(`${groupName}_node.py`, worker_node);
+	}
 
-    const startingPosFile = new Blob([startingPositions], { type: 'text/plain' });
-    //element.href = URL.createObjectURL(startingPosFile);
-    //element.download = 'starting_positions.yaml';
-    //document.body.appendChild(element); // Required for this to work in FireFox
-    //element.click();
-    //document.body.removeChild(element); // Clean up after ourselves.
+	//const element = document.createElement('a');
+	const launcherFile = new Blob([mainNode.join('\n')], {type: 'text/plain'});
+	//element.href = URL.createObjectURL(launcherFile);
+	//element.download = 'launch_nodes.py';
+	//document.body.appendChild(element); // Required for this to work in FireFox
+	//element.click();
+	//document.body.removeChild(element); // Clean up after ourselves.
+
+	// Configuration file
+	const configureFile = new Blob([configure], {type: 'text/plain'});
+	//element.href = URL.createObjectURL(configureFile);
+	//element.download = 'configure.py';
+	//document.body.appendChild(element); // Required for this to work in FireFox
+	//element.click();
+	//document.body.removeChild(element); // Clean up after ourselves.
+
+	// Starting positions yaml
+	var startingPositions = 'positions:\n';
+	for (let robot in Object.values(projectState.robots)) {
+		var pos = [0, 0, 0];
+		if (projectState.robots[robot] != undefined)
+			pos = projectState.robots[robot].startingPosition;
+		// TODO All 0s?
+		startingPositions += `    - [${pos[0]}, ${pos[1]}, ${pos[2]}]\n`;
+	}
+
+	const startingPosFile = new Blob([startingPositions], {type: 'text/plain'});
+	//element.href = URL.createObjectURL(startingPosFile);
+	//element.download = 'starting_positions.yaml';
+	//document.body.appendChild(element); // Required for this to work in FireFox
+	//element.click();
+	//document.body.removeChild(element); // Clean up after ourselves.
 
 
-    zip.file('starting_positions.yaml', startingPosFile);
-    zip.file('configure.py', configureFile);
-    zip.file('launch_nodes.py', launcherFile);
-    zip.generateAsync({type: 'blob'}).then((zipFile: any) => {
-        return FileSaver.saveAs(zipFile, `${projectState.projectName}.zip`);
-    })
-  };
+	zip.file('starting_positions.yaml', startingPosFile);
+	zip.file('configure.py', configureFile);
+	zip.file('launch_nodes.py', launcherFile);
+	zip.generateAsync({type: 'blob'}).then((zipFile: any) => {
+		FileSaver.saveAs(zipFile, `${projectState.projectName}.zip`);
+	});
+};
 
 const workerNodeTemplate =  
 `import rclpy
@@ -366,7 +371,7 @@ with open('sim.sh', 'w') as f:
 with open('run.sh', 'w') as f:
     f.write('ros2 launch launch.py config:=my_crazyflies.yaml')
     os.chmod('run.sh', stat.S_IRWXU)
-`
+`;
 
 const translations = 
 `import numpy as np
