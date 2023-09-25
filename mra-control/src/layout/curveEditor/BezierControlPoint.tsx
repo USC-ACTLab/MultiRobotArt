@@ -1,9 +1,11 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import {a, useSpring} from '@react-spring/three';
 import {Sphere} from '@react-three/drei';
 import {useThree} from '@react-three/fiber';
 import {useGesture} from '@use-gesture/react';
 import {useState} from 'react';
 import * as THREE from 'three';
+import React from 'react';
 
 import {useCurveEditorState} from '../../state/useCurveEditorState';
 
@@ -22,7 +24,6 @@ export const BezierControlPoint = ({id, point}: BezierControlPointProps) => {
 
 	const {size, viewport, camera} = useThree();
 
-	const aspect = viewport.aspect;
 
 	const [spring, set] = useSpring(() => ({
 		scale: [1, 1, 1],
@@ -67,7 +68,7 @@ export const BezierControlPoint = ({id, point}: BezierControlPointProps) => {
 			setDragBase(undefined);
 			setSelectedControlPoint(undefined);
 		},
-	}) as any;
+	});
 
 	return (
 		<a.mesh {...spring} {...bind()} castShadow>

@@ -1,7 +1,10 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {OrbitControls, Sky} from '@react-three/drei';
-import {CatmullRomLine, Environment, GizmoHelper, GizmoViewport, Grid, Sphere} from '@react-three/drei/core';
+import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid} from '@react-three/drei/core';
 import {useFrame} from '@react-three/fiber';
-import {useEffect, useRef} from 'react';
+import {useRef} from 'react';
+import React from 'react';
 
 import {Crazyflie} from '../../components/vector/Crazyflie';
 import {useCurveEditorState} from '../../state/useCurveEditorState';

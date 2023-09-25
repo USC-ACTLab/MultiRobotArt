@@ -47,6 +47,7 @@ export function Crazyflie({robotId, renderBoundingBox}: CrazyflieProps) {
 		if (renderBoundingBox) {
 			const crazyflieBoundingBox = new Box3();
 			crazyflieBoundingBox.setFromObject(group.current);
+			crazyflieBoundingBox.expandByVector(new Vector3(0, 0, 0.5));
 			updateRobotBoundingBox(robotId, crazyflieBoundingBox);
 		}
 
