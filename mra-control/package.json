@@ -3,11 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://robot-art-webapp.github.io/MultiRobotArt/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build"
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.6",
@@ -43,6 +45,7 @@
     "zustand": "^4.3.4"
   },
   "devDependencies": {
+    "gh-pages": "^5.0.0",
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/file-saver": "^2.0.5",
     "@types/lodash": "^4.14.191",
