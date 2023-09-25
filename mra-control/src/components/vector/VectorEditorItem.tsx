@@ -1,11 +1,11 @@
 import {faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {Button, TextInput} from 'flowbite-react';
+import {TextInput} from 'flowbite-react';
 import {useEffect, useState} from 'react';
 import * as THREE from 'three';
+import React from 'react';
 
 import {useCurveEditorState} from '../../state/useCurveEditorState';
-import {IconButton} from '../buttons/IconButton';
 
 export const VectorEditorItem = ({id, point}: {id: number; point: THREE.Vector3}) => {
 	const updatePoint = useCurveEditorState((state) => state.updateBezierControlPoint);

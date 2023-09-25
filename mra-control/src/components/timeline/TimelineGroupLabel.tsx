@@ -1,5 +1,5 @@
 import {type TimelineGroupState} from '../../state/useRobartState';
-
+import React from 'react';
 type TimelineGroupProps = {
 	group: TimelineGroupState;
 };

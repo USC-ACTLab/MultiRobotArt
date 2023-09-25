@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {create} from 'zustand';
 
 export type UIState = {

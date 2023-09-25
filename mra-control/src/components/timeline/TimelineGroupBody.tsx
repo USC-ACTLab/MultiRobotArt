@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable import/no-extraneous-dependencies */
 import {useGesture} from '@use-gesture/react';
 import {type MouseEventHandler, useRef, useState} from 'react';
 
@@ -5,20 +9,21 @@ import {type CodeBlock, type TimelineGroupState, useRobartState} from '../../sta
 import {HoverTimelineBlock} from './HoverTimelineBlock';
 import {TickMark} from './TickMark';
 import {TimelineBlock} from './TimelineBlock';
+import React from 'react';
 
 type TimelineGroupProps = {
 	group: TimelineGroupState;
 };
 
-export const PIXELS_PER_SECOND = 100;
+export const pixelsPerSecond = 100;
 export const SUBDIVISIONS_PER_SECOND = 8;
 
 export const convertPixelsToSeconds = (distance: number, scale: number) => {
-	return distance / (PIXELS_PER_SECOND * scale);
+	return distance / (pixelsPerSecond * scale);
 };
 
 export const convertSecondsToPixels = (duration: number, scale: number) => {
-	return duration * PIXELS_PER_SECOND * scale;
+	return duration * pixelsPerSecond * scale;
 };
 
 export const blockOverlaps = (
@@ -70,7 +75,7 @@ export const TimelineGroupBody = ({group}: TimelineGroupProps) => {
 
 			// Add the block to the timeline
 			if (selectedBlockId === undefined || parentScrollOffsetX === undefined) return;
-			const startTime = (offsetX + parentScrollOffsetX) / (PIXELS_PER_SECOND * scale) - blocks[selectedBlockId].duration / 2;
+			const startTime = (offsetX + parentScrollOffsetX) / (pixelsPerSecond * scale) - blocks[selectedBlockId].duration / 2;
 
 			return startTime;
 		}

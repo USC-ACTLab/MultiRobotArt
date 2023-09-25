@@ -1,9 +1,10 @@
 import {faPlusCircle, faXmarkCircle} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
+import React from 'react';
 
-import {TimelineItem, useRobartState} from '../../state/useRobartState';
-import {PIXELS_PER_SECOND} from './TimelineGroupBody';
+import {useRobartState} from '../../state/useRobartState';
+import {pixelsPerSecond} from './TimelineGroupBody';
 
 export const HoverTimelineBlock = ({scale, startTime, isOverlapping}: {scale: number; startTime: number | undefined; isOverlapping: boolean}) => {
 	const selectedBlockId = useRobartState((state) => state.editingBlockId);
@@ -18,8 +19,8 @@ export const HoverTimelineBlock = ({scale, startTime, isOverlapping}: {scale: nu
 				isOverlapping ? 'border-red-500/50 bg-red-300/50 text-red-500/50' : 'border-green-500/50 bg-green-300/50 text-green-500/50',
 			)}
 			style={{
-				width: PIXELS_PER_SECOND * scale * selectedBlock.duration,
-				left: PIXELS_PER_SECOND * scale * startTime,
+				width: pixelsPerSecond * scale * selectedBlock.duration,
+				left: pixelsPerSecond * scale * startTime,
 			}}
 		>
 			{isOverlapping ? <FontAwesomeIcon icon={faXmarkCircle} /> : <FontAwesomeIcon icon={faPlusCircle} />}

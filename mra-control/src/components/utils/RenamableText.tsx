@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import {useEffect, useRef, useState} from 'react';
-
+import React from 'react';
 type RenamableTextProps = {
 	text: string;
 	className?: string;

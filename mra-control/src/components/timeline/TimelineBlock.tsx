@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import {type TimelineItem, useRobartState} from '@MRAControl/state/useRobartState';
 import {useDrag} from '@use-gesture/react';
 import clsx from 'clsx';
+import React from 'react';
 
-import {PIXELS_PER_SECOND, blockOverlaps, convertPixelsToSeconds} from './TimelineGroupBody';
+import {pixelsPerSecond, blockOverlaps, convertPixelsToSeconds} from './TimelineGroupBody';
 
 export const TimelineBlock = ({item, scale}: {item: TimelineItem; scale: number}) => {
 	const blocks = useRobartState((state) => state.blocks);
@@ -15,8 +19,8 @@ export const TimelineBlock = ({item, scale}: {item: TimelineItem; scale: number}
 
 	const bind = useDrag(({delta: [x, _]}) => {
 		if (timelineMode !== 'MOVE') return;
-		const seconds_delta = convertPixelsToSeconds(x, scale);
-		const newStartTime = item.startTime + seconds_delta;
+		const secondsDelta = convertPixelsToSeconds(x, scale);
+		const newStartTime = item.startTime + secondsDelta;
 
 		if (!blockOverlaps(groups[item.groupId], blocks, newStartTime, correspondingBlock, item.id)) {
 			updateItem(item.groupId, item.id, newStartTime);
@@ -31,8 +35,8 @@ export const TimelineBlock = ({item, scale}: {item: TimelineItem; scale: number}
 				timelineMode === 'ERASE' ? 'hover:bg-red-400' : '',
 			)}
 			style={{
-				width: PIXELS_PER_SECOND * scale * duration,
-				left: PIXELS_PER_SECOND * scale * item.startTime,
+				width: pixelsPerSecond * scale * duration,
+				left: pixelsPerSecond * scale * item.startTime,
 			}}
 			onClick={() => {
 				timelineMode === 'ERASE' && removeItem(item.groupId, item.id); 

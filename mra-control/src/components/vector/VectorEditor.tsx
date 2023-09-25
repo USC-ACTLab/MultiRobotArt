@@ -1,5 +1,5 @@
 import {VectorEditorItem} from './VectorEditorItem';
-
+import React from 'react';
 export const VectorEditor = ({points}: {points: THREE.Vector3[]}) => {
 	return (
 		<div>
