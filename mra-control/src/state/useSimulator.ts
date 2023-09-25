@@ -8,7 +8,7 @@ import * as SIM from './simulatorCommands';
 import { RobotState, TimelineState, useRobartState } from './useRobartState';
 import * as traj from './trajectories';
 import { useRobotManager } from './useRobotManager';
-export const FPS = 60;
+export const FPS = 30;
 
 // type TrajectoryPolynomial =
 //   | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
@@ -264,6 +264,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
             // TODO: Totally safe, no security flaws whatsoever.
             eval(blocks[timelineItem.blockId].javaScript);
           }, timeline.scale * offset * 1000);
+          console.log(duration)
+          console.log(group_state)
+          console.log(simulator.dummy())
           SIMULATOR_TIMEOUTS.push(timeout);
         });
         duration = Math.max(0.1, duration);

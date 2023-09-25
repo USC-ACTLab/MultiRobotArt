@@ -35,6 +35,8 @@ export interface CodeBlock {
    * The user-defined duration of a block (in seconds).
    */
   duration: number;
+
+  // block exec function
 }
 
 export interface TimelineItem {
@@ -310,10 +312,15 @@ export const useRobartState = create<MRAState & MRAActions>()(
             //   eval(block.javaScript);
             // }
             var duration = 0
-            
+            console.log(group_state)
+            console.log(simulator.dummy()) //Compiler will auto remove unused variables...
             // This only kind of works, doesn't work for velo commands because init position will be wrong.
             // TODO: Run all blocks up until this point in the timeline to get position
             eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+            //const currBlock = get().blocks[blockId]
+            //const execute = simulator.dummy //getSimCommand(currBlock)
+            //duration = execute(currBlock, groupState)
+
             duration = Math.max(0.1, duration)
             const newItem = {
               id: uuid(),

@@ -30,7 +30,8 @@ export const BlockEditorPanel = () => {
     onWorkspaceChange: (workspace) => {
       const python = pythonGenerator.workspaceToCode(workspace);
       const javaScript = javascriptGenerator.workspaceToCode(workspace);
-      if (localBlockId && xml) saveBlock(localBlockId, { xml, python, javaScript });
+      const execute = currentBlockId
+      if (localBlockId && xml) saveBlock(localBlockId, { xml, python, javaScript});
     },
     ref: workspaceRef,
   });
