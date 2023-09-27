@@ -45,7 +45,7 @@ export const block_circle: RobartBlockDefinition = {
 			clockwise = false;
 		}
 
-		return `duration += simulator.moveCircleVel(groupState, ${number_radius_m}, ${number_velocity}, ${angle_degrees}, ${clockwise});`;
+		return `simulator.moveCircleVel(groupState, ${number_radius_m}, ${number_velocity}, ${angle_degrees}, ${clockwise});\n`;
 	},
 	execute: (block, groupState) => {
 		const simulator = SIM;

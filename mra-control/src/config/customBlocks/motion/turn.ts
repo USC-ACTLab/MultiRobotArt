@@ -29,7 +29,7 @@ export const block_turn: RobartBlockDefinition = {
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
-		return 'duration += simulator.dummy();';
+		return 'simulator.dummy();';
 	},
 	execute: (block, groupState) => {
 		const simulator = SIM;

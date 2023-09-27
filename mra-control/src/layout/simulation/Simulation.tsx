@@ -3,7 +3,7 @@
 import {Crazyflie} from '@MRAControl/components/vector/Crazyflie';
 import {useRobartState} from '@MRAControl/state/useRobartState';
 import {useSimulator} from '@MRAControl/state/useSimulator';
-import {GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane} from '@react-three/drei';
+import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane} from '@react-three/drei';
 import {useFrame, useThree} from '@react-three/fiber';
 import {useRef} from 'react';
 import React from 'react';
@@ -71,6 +71,7 @@ export const Simulation = () => {
 					<Crazyflie robotId={robot.id} renderBoundingBox />
 				</group>
 			))}
+
 			<primitive object={camera}></primitive>
 		</>
 	);

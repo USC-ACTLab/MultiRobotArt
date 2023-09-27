@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -12,6 +13,7 @@ import {exportROS, loadProjectFromFile, saveProjectToFile} from '../tools/projec
 import {useSimulator} from './useSimulator';
 import * as SIM from './simulatorCommands';
 import {type SimulatorGroupState} from './simulatorCommands';
+import {type Trajectory} from './trajectories';
 
 const simulator = SIM;
 export type CodeBlock = {
@@ -316,11 +318,21 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						//   eval(block.javaScript);
 						// }
 						var duration = 0;
-						console.log(groupState);
+						console.log(groupState); // Do not Remove!
 						console.log(simulator.dummy()); //Compiler will auto remove unused variables...
+						
 						// This only kind of works, doesn't work for velo commands because init position will be wrong.
 						// TODO: Run all blocks up until this point in the timeline to get position
-						eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+
+						// Loop through every line in the given block, accumulate duration
+						let lines = get().blocks[blockId].javaScript.split('\n'); // Need to return a Record<robotId, Trajectory>...
+						lines.forEach((line) => {
+							if (line.length !== 0) {
+								let [dur, trajectoryRecord]: [number, Record<string, Trajectory>] = eval(line);
+								duration += dur;
+							}
+						});
+						// eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
 						//const currBlock = get().blocks[blockId]
 						//const execute = simulator.dummy //getSimCommand(currBlock)
 						//duration = execute(currBlock, groupState)

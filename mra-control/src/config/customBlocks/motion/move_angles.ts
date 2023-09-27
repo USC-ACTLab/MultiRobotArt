@@ -41,7 +41,7 @@ export const block_move_angles: RobartBlockDefinition = {
 		var angle_vertical_angle = block.getFieldValue('vertical angle');
 		var number_distance = block.getFieldValue('distance');
 		var number_speed = block.getFieldValue('speed');
-		return `duration += simulator.move_by_angles(groupState, ${angle_horizontal_angle}, ${angle_vertical_angle}, ${number_distance}, ${number_speed})`;
+		return `simulator.move_by_angles(groupState, ${angle_horizontal_angle}, ${angle_vertical_angle}, ${number_distance}, ${number_speed})\n`;
 	},
 	execute: (block, groupState) => {
 		//TODO...

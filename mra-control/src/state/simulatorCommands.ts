@@ -8,6 +8,7 @@
 
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {Vector3, Color} from 'three';
+import {NullTrajectory, type Trajectory} from './trajectories';
 
 export type SimulatorGroupState = {
 	robotIDs: string[];
@@ -19,6 +20,7 @@ export const toRadians = (degrees: number): number => {
 
 export const goToXyzSpeed = (groupState: SimulatorGroupState, x: number, y: number, z: number, speed: number) => {
 	var duration = 0;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) => {
 		var currPosition;
 		if (useSimulator.getState().robots[robotId] == undefined) {
@@ -28,12 +30,13 @@ export const goToXyzSpeed = (groupState: SimulatorGroupState, x: number, y: numb
 			currPosition = new Vector3(pos.x, pos.y, pos.z);
 		}
 
-		const newTrajectory = useSimulator.getState().robotGoTo(robotId, new Vector3(x, y, z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
 		var currDuration = currPosition.distanceTo(new Vector3(x, y, z)) / speed;
 		duration = Math.max(currDuration, duration);
-		useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		const newTrajectory = useSimulator.getState().robotGoTo(robotId, new Vector3(x, y, z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), currDuration);
+		//useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		trajectories.set(robotId, newTrajectory);
 	});
-	return duration;
+	return [duration, trajectories];
 };
 
 export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0) => {
@@ -42,18 +45,21 @@ export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0) =
 		robot.color = new Color(r, g, b);
 		useSimulator.getState().robots[robotID] = robot;
 	});
-	return 0.1; // There is actually a cost to switching LEDs
+	return [0.1, new NullTrajectory()]; // There is actually a cost to switching LEDs
 };
 
 export const goToXyzDuration = (groupState: SimulatorGroupState, x: number, y: number, z: number, duration: number) =>{
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) => {
-		const newTrajectory = useSimulator.getState().robotGoTo(robotId, new Vector3(x, y, z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-		useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		const newTrajectory = useSimulator.getState().robotGoTo(robotId, new Vector3(x, y, z), new Vector3(0, 0, 0), new Vector3(0, 0, 0), duration);
+		trajectories.set(robotId, newTrajectory);
+		// useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
 	});
-	return duration;
+	return [duration, trajectories];
 };
 
 export const land = (groupState: SimulatorGroupState, height: number, duration: number) => {
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) => {
 		var currPosition;
 		if (useSimulator.getState().robots[robotId] == undefined) {
@@ -66,13 +72,15 @@ export const land = (groupState: SimulatorGroupState, height: number, duration: 
 		var goalPosition = currPosition;
 		goalPosition.z = height;
 
-		const newTrajectory = useSimulator.getState().robotGoTo(robotId, goalPosition, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-		useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		const newTrajectory = useSimulator.getState().robotGoTo(robotId, goalPosition, new Vector3(0, 0, 0), new Vector3(0, 0, 0), duration);
+		//useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		trajectories.set(robotId, newTrajectory);
 	});
-	return duration;
+	return [duration, trajectories];
 };
 
 export const takeoff = (groupState: SimulatorGroupState, height: number, duration: number) => {
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) => {
 		var currPosition;
 		if (useSimulator.getState().robots[robotId] == undefined) {
@@ -84,14 +92,16 @@ export const takeoff = (groupState: SimulatorGroupState, height: number, duratio
 
 		var goalPosition = currPosition;
 		goalPosition.z = height;
-		const newTrajectory = useSimulator.getState().robotGoTo(robotId, goalPosition, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-		useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		const newTrajectory = useSimulator.getState().robotGoTo(robotId, goalPosition, new Vector3(0, 0, 0), new Vector3(0, 0, 0), duration);
+		//useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		trajectories.set(robotId, newTrajectory);
 	});
-	return duration;
+	return [duration, trajectories];
 };
 
 export const moveSpeed = (groupState: SimulatorGroupState, x: number, y: number, z: number, speed: number) =>{
 	var duration = 0;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) => {
 		var currPosition;
 		if (useSimulator.getState().robots[robotId] == undefined) {
@@ -105,17 +115,19 @@ export const moveSpeed = (groupState: SimulatorGroupState, x: number, y: number,
 		goalPosition.x += x;
 		goalPosition.y += y;
 		goalPosition.z += z;
-		const newTrajectory = useSimulator.getState().robotGoTo(robotId, goalPosition, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
 		const currDuration = new Vector3(x, y, z).length() / speed; 
+		const newTrajectory = useSimulator.getState().robotGoTo(robotId, goalPosition, new Vector3(0, 0, 0), new Vector3(0, 0, 0), currDuration);
 		duration = Math.max(currDuration, duration);
-		useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
+		trajectories.set(robotId, newTrajectory);
+		//useSimulator.getState().updateTrajectory(robotId, newTrajectory, duration);
 	});
-	return duration;
+	return [duration, trajectories];
 };
 
-export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, velocity: number, degrees: number, direction: any) =>{
+export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, velocity: number, degrees: number, direction: any): [number, Map<string, Trajectory>] =>{
 	console.log(direction); // TODO Add direction?
 	var duration = 0;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) =>{
 		const axes = ['X', 'Z'];
 		const radians = toRadians(degrees);
@@ -123,12 +135,13 @@ export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, v
 		const arclength = radius * (radians);
 		duration = arclength / velocity;
 		const circleTraj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise);
-		useSimulator.getState().updateTrajectory(robotId, circleTraj, duration);
+		trajectories.set(robotId, circleTraj);
+		// useSimulator.getState().updateTrajectory(robotId, circleTraj, duration);
 	});
-	return duration;
+	return [duration, trajectories];
 };
 
 
 export const dummy = () => {
-	return 0.1;
+	return [0.1, new NullTrajectory()];
 }; // non-zero duration so it's not hidden

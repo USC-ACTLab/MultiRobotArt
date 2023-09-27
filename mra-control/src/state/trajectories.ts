@@ -1,12 +1,22 @@
 import * as THREE from 'three';
 
 export abstract class Trajectory {
-	duration: number;
-	constructor(duration: number) {
+	constructor(public duration: number) {
 		this.duration = duration;
 	}
 
 	abstract evaluate(t: number): THREE.Vector3;
+}
+
+export class NullTrajectory extends Trajectory {
+	constructor() {
+		super(0.1);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	evaluate(t: number): THREE.Vector3 {
+		return new THREE.Vector3();
+	}
 }
 
 export class PolynomialTrajectory extends Trajectory {
