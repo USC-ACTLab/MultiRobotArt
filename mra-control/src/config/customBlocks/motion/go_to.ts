@@ -37,7 +37,7 @@ export const block_go_to_speed: RobartBlockDefinition = {
 		var z = block.getFieldValue('z_pos');
 		var speed = block.getFieldValue('speed');
 
-		return `duration += simulator.goToXyzSpeed(groupState, ${x}, ${y}, ${z}, ${speed});\n`;
+		return `simulator.goToXyzSpeed(groupState, ${x}, ${y}, ${z}, ${speed});\n`;
 	},
 	execute: (block, groupState) => {
 		const simulator = SIM;

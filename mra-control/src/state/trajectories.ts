@@ -8,6 +8,27 @@ export abstract class Trajectory {
 	abstract evaluate(t: number): THREE.Vector3;
 }
 
+// export class TrajectoryWrapper extends Trajectory {
+// 	traj: Trajectory | undefined;
+// 	trajectoryType: new (duration: number) => Trajectory;
+// 	args: any[];
+// 	constructor(trajectoryType: new (arg: any[]) => Trajectory, ...args: any[]) {
+// 		super(-1.0);
+// 		this.traj = undefined;
+// 		this.trajectoryType = trajectoryType;
+// 		this.args = args;
+// 	}
+
+// 	evaluate(t: number) {
+// 		if (this.traj === undefined) {
+// 			this.traj = new this.trajectoryType(this.args);
+// 			this.duration = this.traj.duration;
+// 		}
+
+// 		return this.traj.evaluate(t);
+// 	}
+// }
+
 export class NullTrajectory extends Trajectory {
 	constructor() {
 		super(0.1);

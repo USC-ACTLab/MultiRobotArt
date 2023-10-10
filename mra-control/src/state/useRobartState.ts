@@ -328,7 +328,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						let lines = get().blocks[blockId].javaScript.split('\n'); // Need to return a Record<robotId, Trajectory>...
 						lines.forEach((line) => {
 							if (line.length !== 0) {
-								let [dur, trajectoryRecord]: [number, Record<string, Trajectory>] = eval(line);
+								let [dur, trajectoryRecord]: [number, Record<string, Trajectory>] = eval(line); // Return a Trajectory lambda function? Only compute actual trajectory when ready?
 								duration += dur;
 							}
 						});

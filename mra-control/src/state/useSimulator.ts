@@ -80,7 +80,7 @@ export type SimulatorActions = {
 	updateRobotBoundingBox: (robotId: string, boundingBox: THREE.Box3) => void;
 	checkCollisions: (robotId: string) => boolean;
 	updateTrajectory: (robotId: string, trajectory: traj.Trajectory, duration: number) => void;
-	addTrajectory: (robotId: string, trajectory: traj.Trajectory | undefined, start_time: number, duration: number) => void;
+	addTrajectory: (robotId: string, trajectory: string) => void;
 	getMostRecentTrajectory: (robotId: string, time: number)  => [traj.Trajectory | undefined, number];
 	robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3, duration: number) => traj.Trajectory;  
 	robotCircle: (robotId: string, radius?: number, axes?: string[], radians?: number, clockwise?: boolean) => traj.Trajectory; 
@@ -123,9 +123,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					console.log('Set Trajectory!');
 					get().updateTrajectory(robotId, mostRecentTraj, mostRecentTraj.duration);
 				}
-
-				if (get().robots[robotId].trajectory === null || get().robots[robotId].trajectory === undefined || get().robots[robotId].trajectory.duration < 0) return;
-				const trajectoryTime = get().robots[robotId].timeAlongTrajectory + deltaT / get().robots[robotId].trajectory?.duration;
+				// TODO: Fix If statement
+				if (get().robots[robotId].trajectory?.duration === undefined || get().robots[robotId]?.trajectory?.duration === undefined || get().robots[robotId].trajectory.duration <= 0) return;
+				const trajectoryTime = get().robots[robotId].timeAlongTrajectory + deltaT / get().robots[robotId].trajectory.duration;
 				const newPos = get().robots[robotId].trajectory.evaluate(trajectoryTime);
 
 				const offset = newPos.clone().sub(get().robots[robotId].pos);
@@ -138,7 +138,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					trajectory: get().robots[robotId].trajectory,
 					trajectoryStartTime: get().robots[robotId].trajectoryStartTime,
 				};
-
+				// TODO: switch to next trajectory if available...
 				if (robots[robotId].timeAlongTrajectory >= 1) {
 					robots[robotId].trajectory = nullTrajectory;
 					robots[robotId].timeAlongTrajectory = 0;
@@ -210,22 +210,10 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				state.robots[robotId].trajectoryStartTime = state.time;
 			});
 		},
-		addTrajectory: (robotId, trajectory, startTime, duration) => {
+		addTrajectory: (robotId, javascriptLine) => {
 			// Add trajectory to trajectories Map
-			const trajState: TrajectorySimState = {
-				robotId,
-				trajectory,
-				startTime,
-				duration,
-			};
-
-			set((state) => {
-				if (state.trajectories.get(robotId) === undefined) {
-					state.trajectories.set(robotId, []);
-				}
-
-				state.trajectories.get(robotId)?.push(trajState);
-			});
+			// TODO: Add trajectory to queue
+			console.log(robotId, javascriptLine);
 		},
 		getMostRecentTrajectory: (robotId: string, time: number): [traj.Trajectory | undefined, number] => {
 			const trajectories = get().trajectories.get(robotId);
@@ -303,37 +291,29 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 
 			Object.values(timeline.groups).forEach((group) => {
 				// Need the following local variables so that the EVAL works properly.
-				const groupState: SimulatorGroupState = {
+				/*const groupState: SimulatorGroupState = {
 					robotIDs: Object.keys(group.robots),
 				};
-				const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.
+				const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.*/
 				// END: The need of said local variables
         
-				var duration = 0; // Duration is modified by each block
 				Object.values(group.items).forEach(timelineItem => {
 					const offset = timelineItem.startTime - startTime;
 					if (offset < 0) return;
 
 					const timeout = setTimeout(() => {
-						// TODO: Totally safe, no security flaws whatsoever.
 						let lines = blocks[timelineItem.blockId].javaScript.split('\n');
 						lines.forEach((line) => {
-							// each line returns a duration of that line (e.g. moveTo command) and a map of trajectories for each robotId
 							if (line.length > 0) {
-								let [dur, trajectoryRecord]: [number, Map<string, traj.Trajectory>] = eval(line);
+								// let [dur, trajectoryRecord]: [number, Map<string, traj.Trajectory>] = eval(line); 
 								Object.keys(group.robots).forEach((robotId) => {
-									get().addTrajectory(robotId, trajectoryRecord?.get(robotId), timelineItem.startTime + duration, dur);
+									get().addTrajectory(robotId, line);
 								});
-								duration += dur;
 							}
 						});
 					}, timeline.scale * offset * 1000);
-					console.log(duration);
-					console.log(groupState);
-					console.log(simulator.dummy());
 					simulatorTimeouts.push(timeout);
 				});
-				duration = Math.max(0.1, duration);
 			});
 		},
 		cancelSimulation: () => {
