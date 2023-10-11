@@ -1,5 +1,9 @@
 # `mra-control` - Web UI for Robot Block Programming
 
+## Project Description Page
+
+Coming with some nice images and description soon...
+
 ## Running Locally
 
 To run the project, you should just need to do the following:
@@ -11,12 +15,12 @@ To run the project, you should just need to do the following:
 
 ## Webapp Deployment
 
-The webapp is currently deployed at [https://robot-art-webapp.github.io/MultiRobotArt/] by the github account robot-art-webapp. To deploy, follow the following pipeline (assuming access to the deployment repo):
+The webapp is currently deployed at https://robot-art-webapp.github.io/MultiRobotArt/ by the github account robot-art-webapp. To deploy, follow the following pipeline (assuming access to the deployment repo):
 
 1. Commit and update the `deployment` branch with your local changes.
 2. Tag your updating commit with a version number/date/helpful note.
 3. build for deployment with `npm run deploy`
-4. Open [github.com/robot-art-webapp/MultiRobotArt/tree/gh-pages] and Sync Fork
+4. Open https://github.com/robot-art-webapp/MultiRobotArt/tree/gh-pages and Sync Fork
 5. Verify that the changes have taken effect and no new bugs are introduced.
 
 ## Adding or Modifying a New Trajectory Block
@@ -24,6 +28,8 @@ The webapp is currently deployed at [https://robot-art-webapp.github.io/MultiRob
 Instructions for adding or modifying new blocks coming soon...
 
 ## Running on Real World Robots
+
+Coming soon...
 
 ## TODOs:
 The github issues contain some TODOs and are listed here in order of priority/when they will be done. This does not include bug fixes that are ongoing.
