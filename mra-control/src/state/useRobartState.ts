@@ -188,6 +188,13 @@ const defaultRobartState: MRAState = {
 		scale: 1,
 		mode: 'ADD',
 		groups: {
+			groupAllCFs: {
+				id: 'groupAllCFs',
+				name: 'All CFs',
+				items: {},
+				robots: {},
+				duration: 60,
+			},
 			group1: {
 				id: 'group1',
 				name: 'Group 1',
@@ -216,13 +223,13 @@ const defaultRobartState: MRAState = {
 				robots: {},
 				duration: 60,
 			},
-			group5: {
-				id: 'group5',
-				name: 'Group 5',
-				items: {},
-				robots: {},
-				duration: 60,
-			},
+			// group5: {
+			// 	id: 'group5',
+			// 	name: 'Group 5',
+			// 	items: {},
+			// 	robots: {},
+			// 	duration: 60,
+			// },
 		},
 	},
 	editingBlockId: undefined,
@@ -456,6 +463,8 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					createRobot: () => {
 						const id = uuid();
 						const numRobots = Object.keys(get().robots).length;
+						
+						console.log(get().timelineState.groups);
 						set((state) => {
 							state.robots[id] = {
 								id,
@@ -463,6 +472,8 @@ export const useRobartState = create<MRAState & MRAActions>()(
 								type: 'crazyflie',
 								startingPosition: [0, 0, 0],
 							};
+							// Add to group with all CFs
+							state.timelineState.groups.groupAllCFs.robots[id] = state.robots[id];
 						});
 						return id;
 					},

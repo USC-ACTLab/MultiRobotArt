@@ -2,6 +2,7 @@ import {IconButton} from '@MRAControl/components/buttons/IconButton';
 import {useRobartState} from '@MRAControl/state/useRobartState';
 import {useRobotManager} from '@MRAControl/state/useRobotManager';
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
 
 export const RobotSidebar = () => {
 	const robots = useRobartState((state) => state.robots);
