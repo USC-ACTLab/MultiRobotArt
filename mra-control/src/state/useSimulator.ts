@@ -3,14 +3,12 @@
 import * as THREE from 'three';
 import {create} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-
+import {Queue} from 'queue-typescript';
 import {type SimulatorGroupState} from './simulatorCommands';
 import * as SIM from './simulatorCommands';
 import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
 export const fps = 60;
-import {enableMapSet} from 'immer';
-enableMapSet();
 
 // type TrajectoryPolynomial =
 //   | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
@@ -20,9 +18,6 @@ enableMapSet();
 //   polynomial: TrajectoryPolynomial;
 //   duration: number;
 // }
-
-
-
 
 export type RobotSimState = {
 	id: string;
@@ -36,6 +31,7 @@ export type RobotSimState = {
 	trajectoryDuration: number;
 	timeAlongTrajectory: number;
 	trajectoryStartTime: number;
+	trajectoryQueue: Queue<string>;
 };
 
 export type TrajectorySimState = {
@@ -51,14 +47,16 @@ export type SimulatorState = {
 	time: number;
 	timeDilation: number;
 	status: 'RUNNING' | 'STOPPED' | 'PAUSED';
+	trajectoryQueue: Queue<string>;
 };
 
 const defaultSimulatorState: SimulatorState = {
 	robots: {},
 	time: 0,
 	timeDilation: 1,
-	trajectories: new Map<string, TrajectorySimState[]>,
+	trajectories: new Map<string, TrajectorySimState[]>(),
 	status: 'STOPPED',
+	trajectoryQueue: new Queue<string>(),
 };
 
 const nullTrajectory = new traj.PolynomialTrajectory(-1, []) as traj.Trajectory;
@@ -115,21 +113,40 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			//TODO update time text in simulation window
 			const robots = {...currentRobots};
 
+			const simulator = SIM;
+			const groupState: SimulatorGroupState = {
+				robotIDs: Object.keys(robots),
+			};
 			// update trajectories from most recent trajectory
 
 			Object.keys(robots).forEach((robotId) => {
-				const [mostRecentTraj, startTime] = get().getMostRecentTrajectory(robotId, newSimTime);
-				if (mostRecentTraj && Math.abs(startTime - get().robots[robotId].trajectoryStartTime) >= deltaT) {
-					console.log('Set Trajectory!');
-					get().updateTrajectory(robotId, mostRecentTraj, mostRecentTraj.duration);
+				if (robots[robotId].timeAlongTrajectory >= 1) {
+					//switch trajectories
+					let newTraj: Map<string, traj.Trajectory>;
+					let duration = 0;
+					if (robots[robotId].trajectoryQueue.length > 0) {
+						[duration, newTraj] = eval(robots[robotId].trajectoryQueue.dequeue());
+						get().updateTrajectory(robotId, newTraj.get(robotId), duration);
+					} else {
+						get().updateTrajectory(robotId, new traj.NullTrajectory(), -1);
+					}
+				} else if (robots[robotId].trajectoryQueue.length > 0 && robots[robotId].trajectory.duration <= 0) {
+					let newTraj: Map<string, traj.Trajectory>;
+					let duration = 0;
+					[duration, newTraj] = eval(robots[robotId].trajectoryQueue.dequeue());
+					get().updateTrajectory(robotId, newTraj.get(robotId), duration);
 				}
-				// TODO: Fix If statement
-				if (get().robots[robotId].trajectory?.duration === undefined || get().robots[robotId]?.trajectory?.duration === undefined || get().robots[robotId].trajectory.duration <= 0) return;
-				const trajectoryTime = get().robots[robotId].timeAlongTrajectory + deltaT / get().robots[robotId].trajectory.duration;
+				
+
+				// if trajectory doesn't exist or has non-positive duration, do nothing
+				if (get().robots[robotId]?.trajectory.duration === undefined || get().robots[robotId].trajectory.duration <= 0) {
+					return;
+				}
+
+				const trajectoryTime = get().robots[robotId].timeAlongTrajectory + deltaT / get().robots[robotId].trajectory?.duration;
 				const newPos = get().robots[robotId].trajectory.evaluate(trajectoryTime);
 
 				const offset = newPos.clone().sub(get().robots[robotId].pos);
-
 				robots[robotId] = {
 					...robots[robotId],
 					pos: newPos,
@@ -143,7 +160,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					robots[robotId].trajectory = nullTrajectory;
 					robots[robotId].timeAlongTrajectory = 0;
 				}
-
+				// Do not delete!
+				console.log(groupState, simulator);
 			});
 
 			set({
@@ -166,6 +184,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					trajectoryDuration: -1,
 					trajectories: new Map<string, traj.Trajectory[]>,
 					trajectoryStartTime: -1,
+					trajectoryQueue: new Queue<string>,
 				};
 				// simRobots[robot.id].boundingBox?.setFromObject()
 				// get().updateRobotBoundingBox(robot.id, new THREE.Box3());
@@ -213,7 +232,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		addTrajectory: (robotId, javascriptLine) => {
 			// Add trajectory to trajectories Map
 			// TODO: Add trajectory to queue
-			console.log(robotId, javascriptLine);
+			set((state) => {
+				state.robots[robotId].trajectoryQueue.enqueue(javascriptLine);
+			});
 		},
 		getMostRecentTrajectory: (robotId: string, time: number): [traj.Trajectory | undefined, number] => {
 			const trajectories = get().trajectories.get(robotId);
