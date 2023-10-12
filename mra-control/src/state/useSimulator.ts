@@ -118,7 +118,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				robotIDs: Object.keys(robots),
 			};
 			// update trajectories from most recent trajectory
-
 			Object.keys(robots).forEach((robotId) => {
 				if (robots[robotId].timeAlongTrajectory >= 1) {
 					//switch trajectories

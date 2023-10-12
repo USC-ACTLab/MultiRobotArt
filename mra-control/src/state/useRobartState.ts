@@ -289,6 +289,13 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					},
 					addBlockToTimeline: (groupId: string, blockId: string, startTime: number, isTrajectory: boolean) => {
 						// TODO: Check if this causes unintended consequences...
+						// let simState = useSimulator.getState();
+						// simState.executeSimulation(0, startTime);
+						// while (simState.time < startTime) {
+						// 	console.log(simState.time);
+						// 	simState.step();
+						// }
+
 						const groupState: SimulatorGroupState = {
 							robotIDs: Object.keys(get().timelineState.groups[groupId].robots),
 						};
