@@ -159,6 +159,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					robots[robotId].trajectory = nullTrajectory;
 					robots[robotId].timeAlongTrajectory = 0;
 				}
+
 				// Do not delete!
 				console.log(groupState, simulator);
 			});

@@ -1,7 +1,8 @@
 import {IconButton} from '@MRAControl/components/buttons/IconButton';
 import {faCopy, faPlusCircle, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {Button} from 'flowbite-react';
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
+import {names} from './BlockEditorHeader';
 
 import {useRobartState} from '../state/useRobartState';
 
@@ -21,7 +22,7 @@ export const BlockManagerPanel = () => {
 					icon={faPlusCircle}
 					text="New"
 					onClick={() => {
-						const id = createBlock('New Block');
+						const id = createBlock(names.next().value as string);
 						setEditingBlock(id);
 					}}
 				/>
