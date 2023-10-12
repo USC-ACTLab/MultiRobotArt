@@ -241,6 +241,24 @@ type MRAActions = MRAGeneralActions & TimelineActions & BlockActions & RobotActi
 
 type MRACompleteState = MRAState & MRAActions;
 
+function* startingPositionGenerator(): Generator<[number, number, number]> {
+	// Fill in 0.5m grid with crazyflies by default (can be overridden by user obviously)
+	let i = 0;
+	let x = 0, y = 0;
+	while (true) {
+		yield [x, y, 0];
+		if (i % 2 == 1) {
+			x += 0.5;
+		} else {
+			y += 0.5;
+		}
+
+		i += 1;
+	}
+}
+
+export const startingPositionSuggestions = startingPositionGenerator();
+
 export const useRobartState = create<MRAState & MRAActions>()(
 	immer(
 		subscribeWithSelector(
@@ -470,7 +488,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 								id,
 								name: `CF ${numRobots}`,
 								type: 'crazyflie',
-								startingPosition: [0, 0, 0],
+								startingPosition: startingPositionSuggestions.next().value,
 							};
 							// Add to group with all CFs
 							state.timelineState.groups.groupAllCFs.robots[id] = state.robots[id];
