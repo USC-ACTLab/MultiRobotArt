@@ -1,6 +1,10 @@
 # `mra-control` - Web UI for Robot Block Programming
 
-## Instructions
+## Project Description Page
+
+Coming with some nice images and description soon...
+
+## Running Locally
 
 To run the project, you should just need to do the following:
 
@@ -8,6 +12,36 @@ To run the project, you should just need to do the following:
 2. Install NodeJS/NPM if you do not have it installed already.
 3. Install the required packages using `npm i`.
 4. Launch the application with `npm run dev`.
+
+## Webapp Deployment
+
+The webapp is currently deployed at https://robot-art-webapp.github.io/MultiRobotArt/ by the github account robot-art-webapp. To deploy, follow the following pipeline (assuming access to the deployment repo):
+
+1. Commit and update the `deployment` branch with your local changes.
+2. Tag your updating commit with a version number/date/helpful note.
+3. build for deployment with `npm run deploy`
+4. Open https://github.com/robot-art-webapp/MultiRobotArt/tree/gh-pages and Sync Fork
+5. Verify that the changes have taken effect and no new bugs are introduced.
+
+## Adding or Modifying a New Trajectory Block
+
+Instructions for adding or modifying new blocks coming soon...
+
+## Running on Real World Robots
+
+Coming soon...
+
+## TODOs:
+The github issues contain some TODOs and are listed here in order of priority/when they will be done. This does not include bug fixes that are ongoing.
+
+1. Multiple trajectories in one timeline block - compose multiple commands together
+2. All robots (of one type) are added to one group by default - simplifies the `add group` process if testing simple things
+3. Rotation and Translation block modifiers - rotate/translate a trajectory
+4. Hide and add additional timeline lanes
+5. Arbitrary parametric equations block
+6. Nicer robot manager
+7. Trajectory visualization
+
 
 ## Overall Design Considerations
 
@@ -28,18 +62,3 @@ Some other notes on things that I propose to use (and have done so in scaffoldin
 3.  `zustand` - Simple/lightweight/accessible state management framework. Preferred to larger frameworks that require more boilerplate (such as
     `redux`). Allows for state to be shared between otherwise unrelated components.
 4.  `react-blockly` - Blockly integration into `react` (really just a lightweight wrapper).
-
-## Main TODOs before launch:
-    5. Wireframe rendering...
-    6. Flight Demo...
-    7. flickering hovering?
-    8. Make Deployable...
-
-
-for the future:
-    Rotations
-    paths to visualization
-    hide groups and add more groups
-    real world execution - trajectories
-    default with one robot beginning at the origin.
-    Nicer robot manager
