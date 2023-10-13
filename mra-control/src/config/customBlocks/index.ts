@@ -17,6 +17,7 @@ import {block_start_turn} from './curves/start_turn';
 import {block_get_a_position} from './utility/get_a_position';
 import {block_color} from './colors/color';
 import Blockly from 'blockly';
+import {multiTraj} from './motion/multi_traj';
 
 
 /**
@@ -40,6 +41,7 @@ export const CUSTOM_BLOCKS = {
 	block_start_turn,
 	block_get_a_position,
 	block_color,
+	multiTraj,
 };
 
 Object.values(CUSTOM_BLOCKS).forEach((block) => {

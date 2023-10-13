@@ -25,6 +25,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 				//blockToToolbox(CUSTOM_BLOCKS.block_start_linear_motion),
 				blockToToolbox(CUSTOM_BLOCKS.block_stop),
 				blockToToolbox(CUSTOM_BLOCKS.block_turn),
+				blockToToolbox(CUSTOM_BLOCKS.multiTraj),
 			],
 		},
 		{
