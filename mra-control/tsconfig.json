@@ -19,6 +19,6 @@
       "@MRAControl/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", ".eslintrc.json", ".eslintrc.cjs"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -15,8 +15,8 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			name: 'Straight Motion',
 			contents: [
 				// blockToToolbox(CUSTOM_BLOCKS.block_go_to_xyz),
-				blockToToolbox(CUSTOM_BLOCKS.block_takeoff),
-				blockToToolbox(CUSTOM_BLOCKS.block_land),
+				blockToToolbox(CUSTOM_BLOCKS.blockTakeoff),
+				blockToToolbox(CUSTOM_BLOCKS.blockLand),
 				blockToToolbox(CUSTOM_BLOCKS.block_go_to),
 				blockToToolbox(CUSTOM_BLOCKS.block_go_to_speed),
 				blockToToolbox(CUSTOM_BLOCKS.block_move_angles),

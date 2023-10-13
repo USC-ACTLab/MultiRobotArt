@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
-export const block_takeoff: RobartBlockDefinition = {
+export const blockTakeoff: RobartBlockDefinition = {
 	name: 'takeoff',
 	block:{
 		init: function () {
@@ -12,7 +13,7 @@ export const block_takeoff: RobartBlockDefinition = {
 				.appendField('meters over')
 				.appendField(new Blockly.FieldNumber(0), 'duration')
 				.appendField('seconds');
-			this.setPreviousStatement(true, null);
+			this.setPreviousStatement(false, null);
 			this.setNextStatement(true, null);
 			this.setColour(230);
 			this.setTooltip('');

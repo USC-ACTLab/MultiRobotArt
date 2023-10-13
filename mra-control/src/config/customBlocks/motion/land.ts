@@ -2,7 +2,7 @@ import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
-export const block_land: RobartBlockDefinition = {
+export const blockLand: RobartBlockDefinition = {
 	name: 'land',
 	block:{
 		init: function () {
@@ -13,7 +13,7 @@ export const block_land: RobartBlockDefinition = {
 				.appendField(new Blockly.FieldNumber(0), 'duration')
 				.appendField('seconds');
 			this.setPreviousStatement(true, null);
-			this.setNextStatement(true, null);
+			this.setNextStatement(false, null);
 			this.setColour(230);
 			this.setTooltip('');
 			this.setHelpUrl('');
