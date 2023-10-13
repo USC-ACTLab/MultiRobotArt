@@ -2,9 +2,10 @@
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
+import {string} from 'blockly/core/utils';
 
 export const multiTraj: RobartBlockDefinition = {
-	name: 'Trajectory By Components',
+	name: 'multiTraj',
 	block:{
 		init: function () {
 			this.appendDummyInput()
@@ -35,7 +36,25 @@ export const multiTraj: RobartBlockDefinition = {
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
-		return 'simulator.dummy();\n';
+		var x_traj = js.statementToCode(block, 'x');
+		var y_traj = js.statementToCode(block, 'y');
+		var z_traj = js.statementToCode(block, 'z');
+
+        console.log(x_traj);
+        // If no trajectory is given, use a dummy
+		if (x_traj.length === 0) {
+			x_traj = 'simulator.dummy()';
+		}if (y_traj.length === 0) {
+			y_traj = 'simulator.dummy()';
+		}if (z_traj.length === 0) {
+			z_traj = 'simulator.dummy()';
+		}
+
+
+		var code = `simulator.componentTraj(${x_traj}, ${y_traj}, ${z_traj})\n`;
+		console.log(code);
+
+		return code;
 	},
 	execute: (block, groupState) => {
 		const simulator = SIM;

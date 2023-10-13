@@ -48,4 +48,5 @@ Object.values(CUSTOM_BLOCKS).forEach((block) => {
 	Blockly.Blocks[block.name] = block.block;
 	pythonGenerator[block.name] = (b: Blockly.Block) => block.pythonGenerator(b, pythonGenerator);
 	js[block.name] = (b: Blockly.Block) => block.javascriptGenerator(b, js);
+	console.log(block.name);
 });

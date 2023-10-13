@@ -30,7 +30,7 @@ export const blockLand: RobartBlockDefinition = {
 	javascriptGenerator: (block, js) => {
 		var number_height = block.getFieldValue('height');
 		var duration = block.getFieldValue('duration');
-		return `simulator.land(groupState, ${number_height}, ${duration});\n`;
+		return `simulator.land(groupState, ${number_height}, ${duration})\n`;
 	},
 	execute: (block, groupState) => {
 		const simulator = SIM;
