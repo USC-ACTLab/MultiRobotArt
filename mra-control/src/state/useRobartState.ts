@@ -351,7 +351,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						// }
 						var duration = 0;
 						console.log(groupState); // Do not Remove!
-						console.log(simulator.dummy()); //Compiler will auto remove unused variables...
 						
 						// This only kind of works, doesn't work for velo commands because init position will be wrong.
 						// TODO: Run all blocks up until this point in the timeline to get position
@@ -482,7 +481,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						const id = uuid();
 						const numRobots = Object.keys(get().robots).length;
 						
-						console.log(get().timelineState.groups);
 						set((state) => {
 							state.robots[id] = {
 								id,

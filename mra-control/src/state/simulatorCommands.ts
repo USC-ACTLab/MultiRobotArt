@@ -8,7 +8,7 @@
 
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {Vector3, Color} from 'three';
-import {NullTrajectory, type Trajectory} from './trajectories';
+import {ComponentTrajectory, Hover, NullTrajectory, type Trajectory} from './trajectories';
 
 export type SimulatorGroupState = {
 	robotIDs: string[];
@@ -39,13 +39,24 @@ export const goToXyzSpeed = (groupState: SimulatorGroupState, x: number, y: numb
 	return [duration, trajectories];
 };
 
-export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0) => {
+export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0): [number, Map<string, Trajectory>] => {
+	let trajectories = new Map<string, Trajectory>();
 	groupState.robotIDs.forEach((robotID) =>{
-		const robot = {...useSimulator.getState().robots[robotID]};
+		let robot = {...useSimulator.getState().robots[robotID]};
+		// TODO Fix Colors! Need this line to work again and need trajectory to just hover. This will have issues with computing duration...
 		robot.color = new Color(r, g, b);
-		useSimulator.getState().robots[robotID] = robot;
+		console.warn(robotID, robot.color);
+		useSimulator.setState({
+			...useSimulator.getState(),
+			robots: {
+				...useSimulator.getState().robots,
+				[robotID]: robot,
+			},
+		});
+		console.warn(useSimulator.getState().robots[robotID].color)
+		trajectories.set(robotID, new Hover(robot.pos));
 	});
-	return [0.1, new NullTrajectory()]; // There is actually a cost to switching LEDs
+	return [0.1, trajectories]; // There is actually a cost to switching LEDs
 };
 
 export const goToXyzDuration = (groupState: SimulatorGroupState, x: number, y: number, z: number, duration: number) =>{
@@ -145,3 +156,14 @@ export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, v
 export const dummy = () => {
 	return [0.1, new NullTrajectory()];
 }; // non-zero duration so it's not hidden
+
+export const componentTraj = (groupState: SimulatorGroupState, [durX, trajX]: [number, Map<string, Trajectory>],
+	[durY, trajY]: [number, Map<string, Trajectory>], [durZ, trajZ]: [number, Map<string, Trajectory>]): [number, Map<string, Trajectory>] => {
+	let duration = Math.max(durX, durY, durZ);
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	groupState.robotIDs.forEach((robotId) =>{
+		let trajectory = new ComponentTrajectory(duration, durX, trajX.get(robotId), durY, trajY.get(robotId), durZ, trajZ.get(robotId));
+		trajectories.set(robotId, trajectory); 
+	});
+	return [duration, trajectories];
+};

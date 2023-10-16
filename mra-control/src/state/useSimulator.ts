@@ -9,6 +9,7 @@ import * as SIM from './simulatorCommands';
 import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
 export const fps = 60;
+import {enableMapSet} from 'immer';
 
 // type TrajectoryPolynomial =
 //   | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
@@ -136,7 +137,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					get().updateTrajectory(robotId, newTraj.get(robotId), duration);
 				}
 				
-
+	
 				// if trajectory doesn't exist or has non-positive duration, do nothing
 				if (get().robots[robotId]?.trajectory.duration === undefined || get().robots[robotId].trajectory.duration <= 0) {
 					return;
@@ -160,7 +161,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					robots[robotId].timeAlongTrajectory = 0;
 				}
 
-				// Do not delete!
+				robots[robotId].color = get().robots[robotId].color;
+				
+				// Do not delete! Needed to keep variables from being removed for being unused
 				console.log(groupState, simulator);
 			});
 
