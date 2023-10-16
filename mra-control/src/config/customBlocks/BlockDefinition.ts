@@ -40,6 +40,4 @@ export type RobartBlockDefinition = {
      * @returns A string of JavaScript code.
      */
 	javascriptGenerator: (block: Blockly.Block, js: BlocklyGenerator) => string;
-
-	execute: (block: Blockly.Block, groupState: SimulatorGroupState) => number;
 };
