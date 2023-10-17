@@ -1,9 +1,10 @@
-import {useUIState} from '@MRAControl/state/useUIState';
 import {BlockPythonCodePanel} from './BlockPythonCodePanel';
 import {SimulationPanel} from './simulation/SimulationPanel';
-import {Button, Tabs} from 'flowbite-react';
+import {Button} from 'flowbite-react';
 import {BlockJavaScriptCodePanel} from './BlockJavaScriptCodePanel';
-import {useRef, useState} from 'react';
+import {useState} from 'react';
+import {WarningsPanel} from './WarningsPanel';
+import React from 'react';
 
 type TabName = 'simulation' | 'python' | 'javascript' | 'warnings';
 export const RightPanel = () => {
@@ -31,7 +32,7 @@ export const RightPanel = () => {
 						setSelectedTab('warnings'); 
 					}}>
           Warnings
-		  </Button>
+					</Button>
 				</Button.Group>
 			</div>
 			<div className='flex-grow h-full'>

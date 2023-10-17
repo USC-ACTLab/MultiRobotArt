@@ -8,6 +8,7 @@ import {type SimulatorGroupState} from './simulatorCommands';
 import * as SIM from './simulatorCommands';
 import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
+import {useCrazyflieConstraintState} from './useConstraintState';
 export const fps = 60;
 
 // type TrajectoryPolynomial =
@@ -94,6 +95,18 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(0);
 		},
 		pause: () => {
+			const warnings = useCrazyflieConstraintState.getState().checkDynamicConstraints();
+			if (warnings !== undefined) {
+				warnings.forEach((w) => {
+					useRobartState.setState((state) => {
+						state.addWarning(w.repr);
+					});
+					console.warn(w);
+				});
+			}
+
+			console.warn(warnings);
+
 			set({status: 'PAUSED'});
 			get().cancelSimulation();
 		},
@@ -117,6 +130,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const groupState: SimulatorGroupState = {
 				robotIDs: Object.keys(robots),
 			};
+			useCrazyflieConstraintState.getState().positionHistory.set(newSimTime, new Map<string, THREE.Vector3>());
 			// update trajectories from most recent trajectory
 			Object.keys(robots).forEach((robotId) => {
 				if (robots[robotId].timeAlongTrajectory >= 1) {
@@ -159,6 +173,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					robots[robotId].trajectory = nullTrajectory;
 					robots[robotId].timeAlongTrajectory = 0;
 				}
+
+				useCrazyflieConstraintState.getState().positionHistory?.get(newSimTime)?.set(robotId, newPos);
 
 				// Do not delete!
 				console.log(groupState, simulator);
@@ -308,6 +324,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const robartRobots = useRobartState.getState().robots;
 			if (startTime === 0) {
 				get().setRobots(robartRobots);
+				// useRobartState.getState().warnings = [];
 			}
 
 			Object.values(timeline.groups).forEach((group) => {

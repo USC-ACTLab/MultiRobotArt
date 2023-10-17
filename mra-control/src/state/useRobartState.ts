@@ -14,6 +14,7 @@ import {useSimulator} from './useSimulator';
 import * as SIM from './simulatorCommands';
 import {type SimulatorGroupState} from './simulatorCommands';
 import {type Trajectory} from './trajectories';
+import {State} from 'blockly/core/utils/aria';
 
 const simulator = SIM;
 export type CodeBlock = {
@@ -95,7 +96,7 @@ export type MRAState = {
 	editingBlockId: string | undefined;
 	version: number;
 	robots: Record<string, RobotState>;
-  warnings: string[];
+	warnings: string[];
 };
 
 export type TimelineActions = {
@@ -180,6 +181,8 @@ export type MRAGeneralActions = {
 	resetProject: () => void;
 	setProjectName: (projectName: string) => void;
 	exportToROS: (filename: string) => void;
+	getWarnings: () => string[];
+	addWarning: (warning: string) => void;
 };
 
 const defaultRobartState: MRAState = {
@@ -236,7 +239,7 @@ const defaultRobartState: MRAState = {
 	editingBlockId: undefined,
 	version: ROBART_VERSION,
 	robots: {},
-  warnings: [],
+	warnings: [],
 };
 
 type MRAActions = MRAGeneralActions & TimelineActions & BlockActions & RobotActions;
@@ -279,7 +282,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
-              warnings: get().warnings,
+							warnings: get().warnings,
 						};
 						saveProjectToFile(state, fileName);
 					},
@@ -291,9 +294,14 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
-              warnings: get().warnings,
+							warnings: get().warnings,
 						};
 						exportROS(state, fileName);
+					},
+					getWarnings: () => {
+						//TODO update warnings on call or on step?
+						console.warn(get().warnings.length);
+						return get().warnings;
 					},
 					resetProject: () => {
 						set(defaultRobartState);
@@ -335,7 +343,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
-              warnings: get().warnings,
+							warnings: get().warnings,
 						};
  
 						// Sort by start time, eval all blocks in order to accumulate duration
@@ -390,6 +398,20 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						set((state) => {
 							state.timelineState.groups[groupId].items = oldItems;
 						});
+					},
+					addWarning: (warning: string) => {
+						const state: MRAState = {
+							blocks: get().blocks,
+							editingBlockId: undefined,
+							projectName: get().projectName,
+							timelineState: get().timelineState,
+							version: ROBART_VERSION,
+							robots: get().robots,
+							warnings: get().warnings,
+						};
+						const newWarnings = [...state.warnings, warning];
+						state.warnings = newWarnings;
+						set(state);
 					},
 					updateBlockInTimeline: (groupId, itemId, startTime) => {
 						const newItem = {
