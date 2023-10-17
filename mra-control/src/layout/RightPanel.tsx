@@ -5,7 +5,7 @@ import {Button, Tabs} from 'flowbite-react';
 import {BlockJavaScriptCodePanel} from './BlockJavaScriptCodePanel';
 import {useRef, useState} from 'react';
 
-type TabName = 'simulation' | 'python' | 'javascript';
+type TabName = 'simulation' | 'python' | 'javascript' | 'warnings';
 export const RightPanel = () => {
 	const [selectedTab, setSelectedTab] = useState<TabName>('simulation');
 	return  <>
@@ -27,12 +27,18 @@ export const RightPanel = () => {
 					}}>
           JavaScript Code
 					</Button>
+					<Button color={selectedTab == 'warnings' ? 'blue' : 'gray'} onClick={() => {
+						setSelectedTab('warnings'); 
+					}}>
+          Warnings
+		  </Button>
 				</Button.Group>
 			</div>
 			<div className='flex-grow h-full'>
 				{selectedTab == 'simulation' && <SimulationPanel />}
 				{selectedTab == 'python' && <BlockPythonCodePanel />}
 				{selectedTab == 'javascript' && <BlockJavaScriptCodePanel />}
+				{selectedTab == 'warnings' && <WarningsPanel />}
 			</div>
 		</div>
 	</>;

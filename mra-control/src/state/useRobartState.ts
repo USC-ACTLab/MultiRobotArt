@@ -95,6 +95,7 @@ export type MRAState = {
 	editingBlockId: string | undefined;
 	version: number;
 	robots: Record<string, RobotState>;
+  warnings: string[];
 };
 
 export type TimelineActions = {
@@ -235,6 +236,7 @@ const defaultRobartState: MRAState = {
 	editingBlockId: undefined,
 	version: ROBART_VERSION,
 	robots: {},
+  warnings: [],
 };
 
 type MRAActions = MRAGeneralActions & TimelineActions & BlockActions & RobotActions;
@@ -277,6 +279,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
+              warnings: get().warnings,
 						};
 						saveProjectToFile(state, fileName);
 					},
@@ -288,6 +291,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
+              warnings: get().warnings,
 						};
 						exportROS(state, fileName);
 					},
@@ -331,6 +335,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
+              warnings: get().warnings,
 						};
  
 						// Sort by start time, eval all blocks in order to accumulate duration
