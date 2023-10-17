@@ -51,15 +51,9 @@ export const multiTraj: RobartBlockDefinition = {
 		}
 
 
-		var code = `simulator.componentTraj(${x_traj}, ${y_traj}, ${z_traj})\n`;
+		var code = `simulator.componentTraj(groupState, ${x_traj}, ${y_traj}, ${z_traj})\n`;
 		console.log(code);
 
 		return code;
-	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		//TODO...
-
-		return simulator.dummy();
 	},
 };

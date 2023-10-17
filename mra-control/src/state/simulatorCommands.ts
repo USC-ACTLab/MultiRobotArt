@@ -45,7 +45,6 @@ export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0): 
 		let robot = {...useSimulator.getState().robots[robotID]};
 		// TODO Fix Colors! Need this line to work again and need trajectory to just hover. This will have issues with computing duration...
 		robot.color = new Color(r, g, b);
-		console.warn(robotID, robot.color);
 		useSimulator.setState({
 			...useSimulator.getState(),
 			robots: {
@@ -53,7 +52,6 @@ export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0): 
 				[robotID]: robot,
 			},
 		});
-		console.warn(useSimulator.getState().robots[robotID].color)
 		trajectories.set(robotID, new Hover(robot.pos));
 	});
 	return [0.1, trajectories]; // There is actually a cost to switching LEDs
@@ -157,8 +155,8 @@ export const dummy = () => {
 	return [0.1, new NullTrajectory()];
 }; // non-zero duration so it's not hidden
 
-export const componentTraj = (groupState: SimulatorGroupState, [durX, trajX]: [number, Map<string, Trajectory>],
-	[durY, trajY]: [number, Map<string, Trajectory>], [durZ, trajZ]: [number, Map<string, Trajectory>]): [number, Map<string, Trajectory>] => {
+export const componentTraj = (groupState: SimulatorGroupState, [durX, trajX]: Array<[number, Map<string, Trajectory>]>,
+	[durY, trajY]: Array<[number, Map<string, Trajectory>]>, [durZ, trajZ]: Array<[number, Map<string, Trajectory>]>): [number, Map<string, Trajectory>] => {
 	let duration = Math.max(durX, durY, durZ);
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) =>{

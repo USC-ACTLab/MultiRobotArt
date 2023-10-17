@@ -106,20 +106,23 @@ export class CircleTrajectory extends Trajectory {
 }
 
 export class ComponentTrajectory extends Trajectory {
-	trajX: Trajectory;
-	trajY: Trajectory;
-	trajZ: Trajectory;
-	durScalingX: number;
-	durScalingY: number;
-	durScalingZ: number;
-	constructor(duration: number, durX: number, trajX: Trajectory, durY: number, trajY: Trajectory, durZ: number, trajZ: Trajectory) {
+	trajX: Trajectory[];
+	trajY: Trajectory[];
+	trajZ: Trajectory[];
+	durScalingX: number[];
+	durScalingY: number[];
+	durScalingZ: number[];
+	constructor(duration: number, durX: number[], trajX: Trajectory[], durY: number[], trajY: Trajectory[], durZ: number[], trajZ: Trajectory[]) {
 		super(duration);
 		this.trajX = trajX;
 		this.trajY = trajY;
 		this.trajZ = trajZ;
-		this.durScalingX = durX / duration;
-		this.durScalingY = durY / duration;
-		this.durScalingZ = durZ / duration;
+
+		// Rescale the duration for x, y, z so that it can end midway through the whole trajectory
+		// e.g. if two different goto commands are specified for y and z axes 
+		this.durScalingX = durX.map((dur) => dur / duration);
+		this.durScalingY = durY.map((dur) => dur / duration);
+		this.durScalingZ = durZ.map((dur) => dur / duration);
 	}
 
 	evaluate(t: number): THREE.Vector3 {
