@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import {ColorWheelField} from './ColorWheel';
@@ -23,7 +26,7 @@ function hexToRgb(hex: string) {
 	} : null;
 }
 
-export const block_color: RobartBlockDefinition = {
+export const blockColor: RobartBlockDefinition = {
 	name: 'color',
 	block:{
 		init: function () {
@@ -38,25 +41,18 @@ export const block_color: RobartBlockDefinition = {
     
 	},
 
-	pythonGenerator: (block, python) => {
-		const color = block.getFieldValue('color');
-		const code = 'setLEDColorFromHex(cf, \"' + color + '\")\n';
+	pythonGenerator: (block, _python) => {
+		const color = block.getFieldValue('color') as string;
+		const code = 'setLEDColorFromHex(cf, "' + color + '")\n';
 		return code;
 	},
 
 
 
 	javascriptGenerator: (block, js) => {
-		var color = block.getFieldValue('color');
+		var color = block.getFieldValue('color') as string;
 		var rgbCol = hexToRgb(color);
 		return `simulator.setColor(groupState, ${rgbCol?.r},${rgbCol?.g},${rgbCol?.b})`;
 
-	},
-
-	execute: (block, groupState) => {
-		const sim = SIM;
-		var color = block.getFieldValue('color');
-		var rgbCol = hexToRgb(color);
-		return sim.setColor(groupState, rgbCol?.r, rgbCol?.g, rgbCol?.b);
 	},
 };

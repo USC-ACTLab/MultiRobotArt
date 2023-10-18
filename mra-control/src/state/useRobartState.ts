@@ -400,18 +400,10 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						});
 					},
 					addWarning: (warning: string) => {
-						const state: MRAState = {
-							blocks: get().blocks,
-							editingBlockId: undefined,
-							projectName: get().projectName,
-							timelineState: get().timelineState,
-							version: ROBART_VERSION,
-							robots: get().robots,
-							warnings: get().warnings,
-						};
+						const state = get();
 						const newWarnings = [...state.warnings, warning];
-						state.warnings = newWarnings;
-						set(state);
+						console.warn('addwarning', state.warnings);
+						set({...state, warnings: newWarnings});
 					},
 					updateBlockInTimeline: (groupId, itemId, startTime) => {
 						const newItem = {

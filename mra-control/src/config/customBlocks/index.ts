@@ -1,6 +1,6 @@
 import {pythonGenerator} from 'blockly/python';
 import {javascriptGenerator as js} from 'blockly/javascript';
-import {block_circle} from './curves/circle';
+import {blockCircle} from './curves/circle';
 import {block_start_linear_motion} from './motion/start_linear_motion';
 import {block_stop} from './motion/stop';
 import {block_go_to} from './motion/go_to_duration';
@@ -15,7 +15,7 @@ import {block_start_circle} from './curves/start_circle';
 import {block_start_move} from './curves/start_move';
 import {block_start_turn} from './curves/start_turn';
 import {block_get_a_position} from './utility/get_a_position';
-import {block_color} from './colors/color';
+import {blockColor} from './colors/color';
 import Blockly from 'blockly';
 import {multiTraj} from './motion/multi_traj';
 
@@ -35,12 +35,12 @@ export const CUSTOM_BLOCKS = {
 	block_stop,
 	blockTakeoff,
 	block_turn,
-	block_circle,
+	blockCircle,
 	block_start_circle,
 	block_start_move,
 	block_start_turn,
 	block_get_a_position,
-	block_color,
+	blockColor,
 	multiTraj,
 };
 

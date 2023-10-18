@@ -30,7 +30,7 @@ export type KinematicConstraintState = {
 
 export type ConstraintChecker = {
 	checkKinematicConstraints: () => ConstraintWarning[] | undefined;
-	checkDynamicConstraints: () => ConstraintWarning[] | undefined;
+	checkDynamicConstraints: (robotIDs: string[]) => ConstraintWarning[] | undefined;
 	positionHistory: Map<number, Map<string, THREE.Vector3>>;
 };
 
@@ -59,7 +59,7 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 					workspaceDimensions: dim,
 				});
 			},
-			checkDynamicConstraints() {
+			checkDynamicConstraints(robotIDs: string[]) {
 				const positions = get().positionHistory;
 				if (positions.size === 0) {
 					return undefined;
@@ -69,11 +69,9 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 				const timesteps = Array.from(positions.keys());
 				const sortedTimesteps = timesteps.sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
 
-				const robotIDs =  SimulatorGroupState 
-
 				let warnings: ConstraintWarning[] = [];
 				//Check velocity Constraints
-				robotIds.forEach(id => {
+				robotIDs.forEach(id => {
 					// For Each robot Check if currPos - prevPos > maxVel
 					for (let i = 1; i < sortedTimesteps.length; i++) {
 						const currentPosition = positions.get(sortedTimesteps[i])?.get(id);

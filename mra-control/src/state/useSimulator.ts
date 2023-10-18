@@ -95,18 +95,15 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(0);
 		},
 		pause: () => {
-			const warnings = useCrazyflieConstraintState.getState().checkDynamicConstraints();
-			if (warnings !== undefined) {
-				warnings.forEach((w) => {
-					useRobartState.setState((state) => {
-						state.addWarning(w.repr);
-					});
-					console.warn(w);
-				});
-			}
+			const warnings = useCrazyflieConstraintState.getState().checkDynamicConstraints(Object.keys(get().robots));
+			let reprs = warnings?.map((warning) => {
+				return warning.repr;
+			});
+			const state = useRobartState.getState();
+			useRobartState.setState({...state, warnings: reprs});
 
-			console.warn(warnings);
-
+			console.warn('final Warnings', warnings);
+			console.warn('warnings', useRobartState.getState().warnings);
 			set({status: 'PAUSED'});
 			get().cancelSimulation();
 		},

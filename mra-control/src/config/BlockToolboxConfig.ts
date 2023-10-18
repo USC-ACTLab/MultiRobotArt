@@ -32,7 +32,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			kind: 'category',
 			name: 'Curves',
 			contents: [
-				blockToToolbox(CUSTOM_BLOCKS.block_circle),
+				blockToToolbox(CUSTOM_BLOCKS.blockCircle),
 				//blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
 				blockToToolbox(CUSTOM_BLOCKS.block_start_move),
 				blockToToolbox(CUSTOM_BLOCKS.block_start_turn),
@@ -49,7 +49,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			kind: 'category',
 			name: 'Colors',
 			contents: [
-				blockToToolbox(CUSTOM_BLOCKS.block_color),
+				blockToToolbox(CUSTOM_BLOCKS.blockColor),
 			],
 		},
 		{
