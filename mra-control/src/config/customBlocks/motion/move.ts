@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
-export const block_move: RobartBlockDefinition = {
+export const blockMove: RobartBlockDefinition = {
 	name: 'move',
 	block: {
 		init: function () {
@@ -20,26 +22,17 @@ export const block_move: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
-		var dropdown_direction = block.getFieldValue('direction');
-		var number_distance = block.getFieldValue('distance');
-		var duration = block.getFieldValue('duration');
-		var code = 'move_direction(cf, ' + dropdown_direction + ',' + number_distance + ',' + duration + ')\n';
+	pythonGenerator: (block, _python) => {
+		var direction = block.getFieldValue('direction') as number;
+		var distance = block.getFieldValue('distance') as number;
+		var duration = block.getFieldValue('duration') as number;
+		var code = 'move_direction(cf, ' + direction + ',' + distance + ',' + duration + ')\n';
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
-		var dropdown_direction = block.getFieldValue('direction');
-		var number_distance = block.getFieldValue('distance');
-		var duration = block.getFieldValue('duration');
-		return `simulator.move_direction(groupState, ${dropdown_direction}, ${number_distance}, ${duration})\n`;
-	},
-	execute: (block, groupState) => {
-		//TODO...
-		const simulator = SIM;
-		var dropdown_direction = block.getFieldValue('direction');
-		var number_distance = block.getFieldValue('distance');
-		var duration = block.getFieldValue('duration');
-		return 0.1; // TODO
-		//return simulator.move_direction(groupState, dropdown_direction, number_distance, duration)
+	javascriptGenerator: (block, _js) => {
+		var direction = block.getFieldValue('direction') as number;
+		var distance = block.getFieldValue('distance') as number;
+		var duration = block.getFieldValue('duration') as number;
+		return `simulator.move_direction(groupState, ${direction}, ${distance}, ${duration})\n`;
 	},
 };

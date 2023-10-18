@@ -1,13 +1,12 @@
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Canvas} from '@react-three/fiber';
-import {Button, Modal} from 'flowbite-react';
-import {useEffect, useState} from 'react';
+import {Modal} from 'flowbite-react';
+import React, {useEffect, useState} from 'react';
 import * as THREE from 'three';
 
 import {IconButton} from '../components/buttons/IconButton';
 import {VectorEditor} from '../components/vector/VectorEditor';
 import {useCurveEditorState} from '../state/useCurveEditorState';
-import {useRobartState} from '../state/useRobartState';
 import {useUIState} from '../state/useUIState';
 import {CurveEditor} from './curveEditor/CurveEditor';
 

@@ -2,6 +2,7 @@ import {useRobartState} from '@MRAControl/state/useRobartState';
 import {faArrowsLeftRight, faEraser, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Button} from 'flowbite-react';
+import React from 'react';
 
 export const TimelineEditModeButtons = () => {
 	const timelineMode = useRobartState((state) => state.timelineState.mode);

@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 
-export const block_get_a_position: RobartBlockDefinition = {
+export const blockGetPosition: RobartBlockDefinition = {
 	name: 'get_a_position',
 	block: {
 		init: function () {
@@ -15,18 +17,15 @@ export const block_get_a_position: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
+	pythonGenerator: (block, _python) => {
 		//TODO Add python equivalent
-		var dropdown_which = block.getFieldValue('which');
-		var dropdown_name = block.getFieldValue('NAME');
-		var code = 'get_a_position(' + dropdown_which + ',' + dropdown_name + ')';
+		var which = block.getFieldValue('which') as string;
+		var name = block.getFieldValue('NAME') as string;
+		var code = 'get_a_position(' + which + ',' + name + ')';
 		// TODO: Change ORDER_NONE to the correct strength.
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
+	javascriptGenerator: (_block, _js) => {
 		return 'simulator.dummy()';
-	},
-	execute: (block, groupState) => {
-		return 0.1;
 	},
 };

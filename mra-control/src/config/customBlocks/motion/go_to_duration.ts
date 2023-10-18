@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 import {Simulation} from '@MRAControl/layout/simulation/Simulation';
 
-export const block_go_to: RobartBlockDefinition = {
+export const blockGoTo: RobartBlockDefinition = {
 	name: 'go_to',
 	block: {
 		init: function () {
@@ -24,30 +26,20 @@ export const block_go_to: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
-		var number_x_pos = block.getFieldValue('x_pos');
-		var number_y_pos = block.getFieldValue('y_pos');
-		var number_z_pos = block.getFieldValue('z_pos');
-		var duration = block.getFieldValue('duration');
-		var code = 'goto_duration(cf, ' + number_x_pos + ',' + number_y_pos + ',' + number_z_pos + ',' + duration + ')\n';
+	pythonGenerator: (block, _python) => {
+		var xPosition = block.getFieldValue('x_pos') as number;
+		var yPosition = block.getFieldValue('y_pos') as number;
+		var zPosition = block.getFieldValue('z_pos') as number;
+		var duration = block.getFieldValue('duration') as number;
+		var code = 'goto_duration(cf, ' + xPosition + ',' + yPosition + ',' + zPosition + ',' + duration + ')\n';
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
-		var x = block.getFieldValue('x_pos');
-		var y = block.getFieldValue('y_pos');
-		var z = block.getFieldValue('z_pos');
-		var duration = block.getFieldValue('duration');
+	javascriptGenerator: (block, _js) => {
+		var xPosition = block.getFieldValue('x_pos') as number;
+		var yPosition = block.getFieldValue('y_pos') as number;
+		var zPosition = block.getFieldValue('z_pos') as number;
+		var duration = block.getFieldValue('duration') as number;
 
-		return `simulator.goToXyzDuration(groupState, ${x}, ${y}, ${z}, ${duration})\n`;
-	},
-
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		var x = block.getFieldValue('x_pos');
-		var y = block.getFieldValue('y_pos');
-		var z = block.getFieldValue('z_pos');
-		var duration = block.getFieldValue('duration');
-
-		return simulator.goToXyzDuration(groupState, x, y, z, duration);
+		return `simulator.goToXyzDuration(groupState, ${xPosition}, ${yPosition}, ${zPosition}, ${duration})\n`;
 	},
 };

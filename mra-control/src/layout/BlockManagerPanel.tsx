@@ -1,7 +1,7 @@
 import {IconButton} from '@MRAControl/components/buttons/IconButton';
 import {faCopy, faPlusCircle, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {Button} from 'flowbite-react';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {names} from './BlockEditorHeader';
 
 import {useRobartState} from '../state/useRobartState';
@@ -11,9 +11,8 @@ export const BlockManagerPanel = () => {
 	const removeBlock = useRobartState((state) => state.removeBlock);
 	const createBlock = useRobartState((state) => state.createBlock);
 	const copyBlock = useRobartState((state) => state.copyBlock);
-	const selectedBlockID = useRobartState((state) => state.editingBlockId);
+	const selectedBlockId = useRobartState((state) => state.editingBlockId);
 	const setEditingBlock = useRobartState((state) => state.setEditingBlock);
-	const setDuration = useRobartState((state) => state.setDuration);
 
 	return (
 		<div>
@@ -30,8 +29,8 @@ export const BlockManagerPanel = () => {
 					icon={faCopy}
 					text="Copy"
 					onClick={() => {
-						if (selectedBlockID === undefined) return;
-						const id = copyBlock(selectedBlockID);
+						if (selectedBlockId === undefined) return;
+						const id = copyBlock(selectedBlockId);
 						setEditingBlock(id);
 					}}
 				/>
@@ -40,9 +39,9 @@ export const BlockManagerPanel = () => {
 					icon={faTrash}
 					text="Delete"
 					onClick={() => {
-						if (selectedBlockID === undefined) return;
+						if (selectedBlockId === undefined) return;
 						// TODO: Add a confirmation before removing the block
-						removeBlock(selectedBlockID);
+						removeBlock(selectedBlockId);
 					}}
 				/>
 			</div>

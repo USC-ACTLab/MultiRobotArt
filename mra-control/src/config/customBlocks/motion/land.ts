@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
@@ -21,21 +22,15 @@ export const blockLand: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
+	pythonGenerator: (block, _python) => {
 		var numberHeight = block.getFieldValue('height') as number;
 		var duration = block.getFieldValue('duration') as number;
 		var code = 'land(cf, ' + numberHeight + ',' + duration + ')\n';
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
-		var number_height = block.getFieldValue('height');
+	javascriptGenerator: (block, _js) => {
+		var height = block.getFieldValue('height');
 		var duration = block.getFieldValue('duration');
-		return `simulator.land(groupState, ${number_height}, ${duration})\n`;
-	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		var number_height = block.getFieldValue('height');
-		var duration = block.getFieldValue('duration');
-		return simulator.land(groupState, number_height, duration);
+		return `simulator.land(groupState, ${height}, ${duration})\n`;
 	},
 };

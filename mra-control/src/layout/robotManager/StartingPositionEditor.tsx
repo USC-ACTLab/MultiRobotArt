@@ -4,6 +4,7 @@ import {faArrowsRotate} from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import {Label, TextInput} from 'flowbite-react';
 import {type ReactEventHandler, useState} from 'react';
+import React from 'react';
 
 export const StartingPositionEditor = ({robotId}: {robotId: string}) => {
 	const selectedRobot = useRobartState((state) => state.robots[robotId]);

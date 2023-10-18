@@ -9,6 +9,7 @@ import {useUIState} from '../../state/useUIState';
 import {RobotManagerModal} from '../robotManager/RobotManagerModal';
 import {TimelineEditModeButtons} from './TimelineEditModeButtons';
 import {TimelineSimulationButtons} from './TimelineSimulationButtons';
+import React from 'react';
 
 export const Timeline = () => {
 	const timelineState = useRobartState((state) => state.timelineState);

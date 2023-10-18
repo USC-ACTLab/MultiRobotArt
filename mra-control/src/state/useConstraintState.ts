@@ -4,7 +4,6 @@ import * as THREE from 'three';
 import {create} from 'zustand';
 import {subscribeWithSelector} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
-import {useRobartState} from './useRobartState';
 
 type ConstraintViolation = 'velocity' | 'acceleration' | 'workspace';
 
