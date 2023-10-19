@@ -8,6 +8,7 @@ import {type SimulatorGroupState} from './simulatorCommands';
 import * as SIM from './simulatorCommands';
 import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
+import {type ConstraintWarning, useCrazyflieConstraintState} from './useConstraintState';
 export const fps = 60;
 import {enableMapSet} from 'immer';
 
@@ -95,6 +96,15 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(0);
 		},
 		pause: () => {
+			const warnings: ConstraintWarning[] | undefined = useCrazyflieConstraintState.getState().checkConstraints(Object.keys(get().robots));
+			let reprs = warnings?.map((warning) => {
+				return warning.repr;
+			});
+			const state = useRobartState.getState();
+			useRobartState.setState({...state, warnings: reprs});
+
+			console.warn('final Warnings', warnings);
+			console.warn('warnings', useRobartState.getState().warnings);
 			set({status: 'PAUSED'});
 			get().cancelSimulation();
 		},
@@ -103,6 +113,13 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(get().time);
 		},
 		halt: () => {
+			const warnings: ConstraintWarning[] | undefined = useCrazyflieConstraintState.getState().checkConstraints(Object.keys(get().robots));
+			let reprs = warnings?.map((warning) => {
+				return warning.repr;
+			});
+			const state = useRobartState.getState();
+			useRobartState.setState({...state, warnings: reprs});
+
 			set({status: 'STOPPED'});
 			get().cancelSimulation();
 		},
@@ -118,6 +135,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const groupState: SimulatorGroupState = {
 				robotIDs: Object.keys(robots),
 			};
+			useCrazyflieConstraintState.getState().positionHistory.set(newSimTime, new Map<string, THREE.Vector3>());
 			// update trajectories from most recent trajectory
 			Object.keys(robots).forEach((robotId) => {
 				if (robots[robotId].timeAlongTrajectory >= 1) {
@@ -160,6 +178,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					robots[robotId].trajectory = nullTrajectory;
 					robots[robotId].timeAlongTrajectory = 0;
 				}
+
+				useCrazyflieConstraintState.getState().positionHistory?.get(newSimTime)?.set(robotId, newPos);
 
 				robots[robotId].color = get().robots[robotId].color;
 				
@@ -311,6 +331,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const robartRobots = useRobartState.getState().robots;
 			if (startTime === 0) {
 				get().setRobots(robartRobots);
+				useRobartState.getState().warnings = [];
 			}
 
 			Object.values(timeline.groups).forEach((group) => {

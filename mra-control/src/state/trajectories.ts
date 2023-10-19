@@ -89,13 +89,13 @@ export class CircleTrajectory extends Trajectory {
 		const v1 = this.radius * Math.cos(t * (this.radians)) - 1;
 		const v2 = this.radius * Math.sin(t * (this.radians));
 		var x = this.pos.x, y = this.pos.y, z = this.pos.z;
-		if (this.axes.some(x => x === 'X')) {
+		if (this.axes.some((X) => X === 'X')) {
 			x = v1 + this.pos.x;
 		} else {
 			y = v1 + this.pos.y;
 		}
 
-		if (this.axes.some(x => x === 'Z')) {
+		if (this.axes.some((Z) => Z === 'Z')) {
 			z = v2 + this.pos.z;
 		} else {
 			y = v2 + this.pos.y;

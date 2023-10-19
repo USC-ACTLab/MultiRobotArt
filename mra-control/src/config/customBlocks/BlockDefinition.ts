@@ -1,9 +1,5 @@
 
-import {type SimulatorGroupState} from '@MRAControl/state/simulatorCommands';
-import {Trajectory} from '@MRAControl/state/trajectories';
-import {SimulatorState} from '@MRAControl/state/useSimulator';
 import type Blockly from 'blockly';
-import * as SIM from '@MRAControl/state/simulatorCommands';
 
 export type BlocklyOrder = 'ORDER_ATOMIC';
 

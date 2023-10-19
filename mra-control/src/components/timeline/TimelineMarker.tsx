@@ -1,6 +1,6 @@
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {pixelsPerSecond} from './TimelineGroupBody';
-
+import React from 'react';
 export const TimelineMarker = () => {
 	const time = useSimulator((state) => state.time);
 	return (

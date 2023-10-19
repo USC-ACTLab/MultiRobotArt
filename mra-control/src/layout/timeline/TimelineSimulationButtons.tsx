@@ -1,6 +1,7 @@
 import {IconButton} from '@MRAControl/components/buttons/IconButton';
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {faPause, faPlay, faSquare} from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
 
 export const TimelineSimulationButtons = () => {
 	const simulationStatus = useSimulator((state) => state.status);

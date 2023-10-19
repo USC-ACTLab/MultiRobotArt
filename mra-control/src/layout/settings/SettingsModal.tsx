@@ -1,6 +1,6 @@
 import {faSync} from '@fortawesome/free-solid-svg-icons';
-import {Button, Label, Modal, Tabs, TabsRef, TextInput} from 'flowbite-react';
-import React, {useRef, useState} from 'react';
+import {Button, Label, Modal, Tabs, TextInput} from 'flowbite-react';
+import React, {useState} from 'react';
 
 import {CancelButton} from '../../components/buttons/CancelButton';
 import {IconButton} from '../../components/buttons/IconButton';

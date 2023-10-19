@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
@@ -26,7 +28,7 @@ export const multiTraj: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
+	pythonGenerator: (block, _python) => {
 		// var number_velocity_x_m = block.getFieldValue('velocity_x_m');
 		// var number_velocity_y_m = block.getFieldValue('velocity_y_m');
 		// var number_velocity_z_m = block.getFieldValue('velocity_z_m');
@@ -36,17 +38,21 @@ export const multiTraj: RobartBlockDefinition = {
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
-		var x_traj = js.statementToCode(block, 'x');
-		var y_traj = js.statementToCode(block, 'y');
-		var z_traj = js.statementToCode(block, 'z');
+		var x_traj = js.statementToCode(block, 'x') as string;
+		var y_traj = js.statementToCode(block, 'y') as string;
+		var z_traj = js.statementToCode(block, 'z') as string;
 
-        console.log(x_traj);
-        // If no trajectory is given, use a dummy
+		console.log(x_traj);
+		// If no trajectory is given, use a dummy
 		if (x_traj.length === 0) {
 			x_traj = 'simulator.dummy()';
-		}if (y_traj.length === 0) {
+		}
+
+		if (y_traj.length === 0) {
 			y_traj = 'simulator.dummy()';
-		}if (z_traj.length === 0) {
+		}
+
+		if (z_traj.length === 0) {
 			z_traj = 'simulator.dummy()';
 		}
 

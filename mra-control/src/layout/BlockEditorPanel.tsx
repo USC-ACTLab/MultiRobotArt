@@ -4,7 +4,7 @@ import {useRobartState} from '@MRAControl/state/useRobartState';
 import Blockly from 'blockly';
 import {javascriptGenerator} from 'blockly/javascript';
 import {pythonGenerator} from 'blockly/python';
-import {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useBlocklyWorkspace} from 'react-blockly';
 
 import {BlockEditorHeader} from './BlockEditorHeader';
@@ -27,10 +27,11 @@ export const BlockEditorPanel = () => {
 				snap: true,
 			},
 		},
-		onWorkspaceChange: (workspace) => {
-			const python = pythonGenerator.workspaceToCode(workspace);
-			const javaScript = javascriptGenerator.workspaceToCode(workspace);
-			const execute = currentBlockId;
+		onWorkspaceChange: (workspaceChanged) => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+			const python = pythonGenerator.workspaceToCode(workspaceChanged) as string;
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+			const javaScript = javascriptGenerator.workspaceToCode(workspaceChanged) as string;
 			if (localBlockId && xml) saveBlock(localBlockId, {xml, python, javaScript});
 		},
 		ref: workspaceRef,

@@ -4,8 +4,6 @@ import {RenamableText} from '@MRAControl/components/utils/RenamableText';
 import {useRobartState} from '@MRAControl/state/useRobartState';
 import {useUIState} from '@MRAControl/state/useUIState';
 import {faDownload, faGear, faUpload} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {Button} from 'flowbite-react';
 import React, {useState} from 'react';
 
 import {SettingsModal} from './settings/SettingsModal';
@@ -26,7 +24,12 @@ export const NavigationBar = () => {
 					className="text-4xl font-extrabold"
 					text={projectName}
 					updateText={(newText) => {
-						newText !== '' ? setProjectName(newText) : setProjectName('New Robart Project');
+						if (newText !== '') {
+							setProjectName(newText);
+						} else {
+							setProjectName('New Robart Project');
+						}
+
 					}}
 				/>
 				<div className="flex flex-grow justify-end gap-3">

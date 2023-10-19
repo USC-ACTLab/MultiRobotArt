@@ -29,23 +29,23 @@ export const blockCircle: RobartBlockDefinition = {
 		},
 	},
 	pythonGenerator: (block, _python) => {
-		var radius = block.getFieldValue('radius_m') as number;
-		var velocity = block.getFieldValue('velocity') as number;
-		var angle = block.getFieldValue('angle_degrees') as number;
-		var dropdownDirection = block.getFieldValue('direction') as number;
-		var code = 'circle(' + radius + ',' + velocity + ',' + angle + ',\'' + dropdownDirection + '\')';
+		const radius = block.getFieldValue('radius_m') as number;
+		const velocity = block.getFieldValue('velocity') as number;
+		const degrees = block.getFieldValue('angle_degrees') as number;
+		const dropDownDirection = block.getFieldValue('direction') as string;
+		const code = 'circle(' + radius + ',' + velocity + ',' + degrees + ',\'' + dropDownDirection + '\')';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {
 		const radius = block.getFieldValue('radius_m') as number;
 		const velocity = block.getFieldValue('velocity') as number;
-		const angle = block.getFieldValue('angle_degrees') as number;
-		const direction = block.getFieldValue('direction') as string;
-		var clockwise = true;
-		if (direction == 'ccw') {
+		const degrees = block.getFieldValue('angle_degrees') as number;
+		const dropDownDirection = block.getFieldValue('direction') as string;	
+		let clockwise = true;
+		if (dropDownDirection == 'ccw') {
 			clockwise = false;
 		}
 
-		return `simulator.moveCircleVel(groupState, ${radius}, ${velocity}, ${angle}, ${clockwise})\n`;
+		return `simulator.moveCircleVel(groupState, ${radius}, ${velocity}, ${degrees}, ${clockwise})\n`;
 	},
 };

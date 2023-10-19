@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
-export const block_go_to_speed: RobartBlockDefinition = {
+export const blockGoToSpeed: RobartBlockDefinition = {
 	name: 'go_to_speed',
 	block: {
 		init: function () {
@@ -23,30 +25,20 @@ export const block_go_to_speed: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
-		var number_x_pos = block.getFieldValue('x_pos');
-		var number_y_pos = block.getFieldValue('y_pos');
-		var number_z_pos = block.getFieldValue('z_pos');
-		var number_speed = block.getFieldValue('speed');
-		var code = 'go_to(cf, ' + number_x_pos + ',' + number_y_pos + ',' + number_z_pos + ',' + number_speed + ')\n';
+	pythonGenerator: (block, _python) => {
+		var xPos = block.getFieldValue('x_pos') as number;
+		var yPos = block.getFieldValue('y_pos') as number;
+		var zPos = block.getFieldValue('z_pos') as number;
+		var speed = block.getFieldValue('speed') as number;
+		var code = 'go_to(cf, ' + xPos + ',' + yPos + ',' + zPos + ',' + speed + ')\n';
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
-		var x = block.getFieldValue('x_pos');
-		var y = block.getFieldValue('y_pos');
-		var z = block.getFieldValue('z_pos');
-		var speed = block.getFieldValue('speed');
+	javascriptGenerator: (block, _js) => {
+		var xPos = block.getFieldValue('x_pos') as number;
+		var yPos = block.getFieldValue('y_pos') as number;
+		var zPos = block.getFieldValue('z_pos') as number;
+		var speed = block.getFieldValue('speed') as number;
 
-		return `simulator.goToXyzSpeed(groupState, ${x}, ${y}, ${z}, ${speed})\n`;
-	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		var x = block.getFieldValue('x_pos');
-		var y = block.getFieldValue('y_pos');
-		var z = block.getFieldValue('z_pos');
-		var speed = block.getFieldValue('speed');
-
-		return simulator.goToXyzSpeed(groupState, x, y, z, speed);
- 
+		return `simulator.goToXyzSpeed(groupState, ${xPos}, ${yPos}, ${zPos}, ${speed})\n`;
 	},
 };
