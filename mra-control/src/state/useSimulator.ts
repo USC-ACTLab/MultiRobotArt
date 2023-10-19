@@ -8,7 +8,7 @@ import {type SimulatorGroupState} from './simulatorCommands';
 import * as SIM from './simulatorCommands';
 import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
-import {useCrazyflieConstraintState} from './useConstraintState';
+import {type ConstraintWarning, useCrazyflieConstraintState} from './useConstraintState';
 export const fps = 60;
 
 // type TrajectoryPolynomial =
@@ -95,7 +95,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(0);
 		},
 		pause: () => {
-			const warnings = useCrazyflieConstraintState.getState().checkDynamicConstraints(Object.keys(get().robots));
+			const warnings: ConstraintWarning[] | undefined = useCrazyflieConstraintState.getState().checkConstraints(Object.keys(get().robots));
 			let reprs = warnings?.map((warning) => {
 				return warning.repr;
 			});
@@ -112,6 +112,13 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(get().time);
 		},
 		halt: () => {
+			const warnings: ConstraintWarning[] | undefined = useCrazyflieConstraintState.getState().checkConstraints(Object.keys(get().robots));
+			let reprs = warnings?.map((warning) => {
+				return warning.repr;
+			});
+			const state = useRobartState.getState();
+			useRobartState.setState({...state, warnings: reprs});
+
 			set({status: 'STOPPED'});
 			get().cancelSimulation();
 		},
@@ -321,7 +328,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const robartRobots = useRobartState.getState().robots;
 			if (startTime === 0) {
 				get().setRobots(robartRobots);
-				// useRobartState.getState().warnings = [];
+				useRobartState.getState().warnings = [];
 			}
 
 			Object.values(timeline.groups).forEach((group) => {

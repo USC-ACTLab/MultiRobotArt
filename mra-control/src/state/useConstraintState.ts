@@ -28,7 +28,8 @@ export type KinematicConstraintState = {
 };
 
 export type ConstraintChecker = {
-	checkKinematicConstraints: () => ConstraintWarning[] | undefined;
+	checkConstraints: (robotIDs: string[]) => ConstraintWarning[] | undefined;
+	checkKinematicConstraints: (robotIDs: string[]) => ConstraintWarning[] | undefined;
 	checkDynamicConstraints: (robotIDs: string[]) => ConstraintWarning[] | undefined;
 	positionHistory: Map<number, Map<string, THREE.Vector3>>;
 };
@@ -93,9 +94,38 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 
 				return warnings;
 			},
-			checkKinematicConstraints() {
-				if (get().positionHistory.size > 0) {
+			checkConstraints(robotIDs: string[]) {
+				const dynamicConstraints = this.checkDynamicConstraints(robotIDs);
+				const kinematicConstraints = this.checkKinematicConstraints(robotIDs);
+				if (kinematicConstraints === undefined)
+					return dynamicConstraints;
+				return dynamicConstraints?.concat(kinematicConstraints);
+			},
+			checkKinematicConstraints(robotIDs: string[]) {
+				const history = get().positionHistory;
+				if (history.size > 0) {
 					let warnings: ConstraintWarning[] = [];
+					const timesteps = Array.from(history.keys());
+
+					const sortedTimesteps = timesteps.sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
+					// Check workspace bounds
+					robotIDs.forEach(id => {
+					// For Each robot Check if currPos - prevPos > maxVel
+						for (let i = 1; i < sortedTimesteps.length; i++) {
+							const currentPosition = history.get(sortedTimesteps[i])?.get(id);
+							if (currentPosition) {
+								if (!this.workspaceDimensions.containsPoint(currentPosition)) {
+									warnings.push({
+										time: sortedTimesteps[i],
+										repr: 'robot ' + id + ' has violated a workspace constraint at time ' + sortedTimesteps[i] + '. It\'s position was ' + currentPosition.x + ', ' + currentPosition.y + ', ' + currentPosition.z + '\n',
+										violationType: 'velocity',
+										robotId: id,
+									});
+								}
+								
+							}
+						}
+					});
 					return warnings;
 				}
 
