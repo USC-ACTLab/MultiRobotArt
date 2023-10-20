@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import {create} from 'zustand';
 import {subscribeWithSelector} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
+import {useRobartState} from './useRobartState';
 
 type ConstraintViolation = 'velocity' | 'acceleration' | 'workspace';
 
@@ -79,12 +80,14 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 						if (currentPosition && previousPosition) {
 							const velocity = currentPosition.distanceTo(previousPosition) / get().deltaT;
 							if (currentPosition && previousPosition &&  velocity > get().maxVelocity) {
+								const robotName = useRobartState.getState().robots[id].name;
 								warnings.push({
 									time: sortedTimesteps[i],
-									repr: 'robot ' + id + ' has violated a velocity constraint at time ' + sortedTimesteps[i] + '. It was travelling at ' + velocity + ' m/s.\n',
+									repr: 'robot ' + robotName + ' has violated a velocity constraint at time ' + sortedTimesteps[i] + '. It was travelling at ' + velocity + ' m/s.\n',
 									violationType: 'velocity',
 									robotId: id,
 								});
+								console.warn(robotName);
 							}
 						}
 					}
@@ -115,14 +118,16 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 							const currentPosition = history.get(sortedTimesteps[i])?.get(id);
 							if (currentPosition) {
 								if (!this.workspaceDimensions.containsPoint(currentPosition)) {
+
+									const robotName = useRobartState.getState().robots[id].name;
 									warnings.push({
 										time: sortedTimesteps[i],
-										repr: 'robot ' + id + ' has violated a workspace constraint at time ' + sortedTimesteps[i] + '. It\'s position was ' + currentPosition.x + ', ' + currentPosition.y + ', ' + currentPosition.z + '\n',
+										repr: 'robot ' + robotName + ' has violated a workspace constraint at time ' + sortedTimesteps[i] + '. It\'s position was ' + currentPosition.x + ', ' + currentPosition.y + ', ' + currentPosition.z + '\n',
 										violationType: 'velocity',
 										robotId: id,
 									});
 								}
-								
+
 							}
 						}
 					});

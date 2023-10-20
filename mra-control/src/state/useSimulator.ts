@@ -136,6 +136,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				robotIDs: Object.keys(robots),
 			};
 			useCrazyflieConstraintState.getState().positionHistory.set(newSimTime, new Map<string, THREE.Vector3>());
+			const state = useCrazyflieConstraintState.getState();
 			// update trajectories from most recent trajectory
 			Object.keys(robots).forEach((robotId) => {
 				if (robots[robotId].timeAlongTrajectory >= 1) {
@@ -179,7 +180,10 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					robots[robotId].timeAlongTrajectory = 0;
 				}
 
-				useCrazyflieConstraintState.getState().positionHistory?.get(newSimTime)?.set(robotId, newPos);
+				const positionHistory = state.positionHistory;
+				if (positionHistory) {
+					positionHistory.get(newSimTime)?.set(robotId, newPos);
+				}
 
 				robots[robotId].color = get().robots[robotId].color;
 				

@@ -181,7 +181,7 @@ export type MRAGeneralActions = {
 	resetProject: () => void;
 	setProjectName: (projectName: string) => void;
 	exportToROS: (filename: string) => void;
-	getWarnings: () => string[];
+	getWarnings: () => string;
 	addWarning: (warning: string) => void;
 };
 
@@ -301,7 +301,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					getWarnings: () => {
 						//TODO update warnings on call or on step?
 						console.warn(get().warnings.length);
-						return get().warnings;
+						return get().warnings.join('');
 					},
 					resetProject: () => {
 						set(defaultRobartState);

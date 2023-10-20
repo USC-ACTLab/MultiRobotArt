@@ -7,7 +7,7 @@ import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
 export const blockMoveAngles: RobartBlockDefinition = {
-	name: 'move_angles',
+	name: 'MoveAngles',
 	block: {
 		init: function () {
 			this.appendDummyInput()
