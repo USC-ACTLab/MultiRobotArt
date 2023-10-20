@@ -38,10 +38,8 @@ export const Simulation = () => {
 	}
 
 	const {size, viewport, camera} = useThree();
-	// console.log(camera.position)
 	// if (init || camera.up !== new THREE.Vector3(0, 0, 1)) {
-	// const direction = camera.up === new THREE.Vector3(0, 0, 1);
-	if (init || camera.up !== new THREE.Vector3(0, 0, 1)) {
+	if (init || (camera.up.x !== 0 || camera.up.y !== 0 || camera.up.z !== 1)) {
 		camera.position.set(-5, 0, 2);
 		camera.up.set(0, 0, 1);
 		init = false;
