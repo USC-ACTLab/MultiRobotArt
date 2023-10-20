@@ -7,6 +7,7 @@ import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane} 
 import {useFrame, useThree} from '@react-three/fiber';
 import {useRef} from 'react';
 import React from 'react';
+import * as THREE from 'three';
 import {type Group} from 'three';
 
 let init = true;
@@ -38,7 +39,9 @@ export const Simulation = () => {
 
 	const {size, viewport, camera} = useThree();
 	// console.log(camera.position)
-	if (init) {
+	// if (init || camera.up !== new THREE.Vector3(0, 0, 1)) {
+	// const direction = camera.up === new THREE.Vector3(0, 0, 1);
+	if (init || camera.up !== new THREE.Vector3(0, 0, 1)) {
 		camera.position.set(-5, 0, 2);
 		camera.up.set(0, 0, 1);
 		init = false;
