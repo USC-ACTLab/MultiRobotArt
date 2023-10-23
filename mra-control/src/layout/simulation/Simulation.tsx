@@ -7,7 +7,6 @@ import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane} 
 import {useFrame, useThree} from '@react-three/fiber';
 import {useRef} from 'react';
 import React from 'react';
-import * as THREE from 'three';
 import {type Group} from 'three';
 
 let init = true;

@@ -155,8 +155,10 @@ export const dummy = () => {
 	return [0.1, new NullTrajectory()];
 }; // non-zero duration so it's not hidden
 
-export const componentTraj = (groupState: SimulatorGroupState, [durX, trajX]: Array<[number, Map<string, Trajectory>]>,
-	[durY, trajY]: Array<[number, Map<string, Trajectory>]>, [durZ, trajZ]: Array<[number, Map<string, Trajectory>]>): [number, Map<string, Trajectory>] => {
+
+export const componentTraj = (groupState: SimulatorGroupState, [durX, trajX]: [number, Map<string, Trajectory>],
+	[durY, trajY]: [number, Map<string, Trajectory>], [durZ, trajZ]: [number, Map<string, Trajectory>]): [number, Map<string, Trajectory>] => {
+	//Duration is the max of the sums of all durations for one component
 	let duration = Math.max(durX, durY, durZ);
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) =>{

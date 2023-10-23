@@ -42,18 +42,23 @@ export const multiTraj: RobartBlockDefinition = {
 		var y_traj = js.statementToCode(block, 'y') as string;
 		var z_traj = js.statementToCode(block, 'z') as string;
 
-		console.log(x_traj);
 		// If no trajectory is given, use a dummy
 		if (x_traj.length === 0) {
 			x_traj = 'simulator.dummy()';
+		} else {
+			x_traj = x_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
 
 		if (y_traj.length === 0) {
 			y_traj = 'simulator.dummy()';
+		} else {
+			y_traj = y_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
 
 		if (z_traj.length === 0) {
 			z_traj = 'simulator.dummy()';
+		} else {
+			z_traj = z_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
 
 

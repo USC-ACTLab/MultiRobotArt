@@ -106,46 +106,55 @@ export class CircleTrajectory extends Trajectory {
 }
 
 export class ComponentTrajectory extends Trajectory {
-	trajX: Trajectory[];
-	trajY: Trajectory[];
-	trajZ: Trajectory[];
-	durScalingX: number[];
-	durScalingY: number[];
-	durScalingZ: number[];
-	constructor(duration: number, durX: number[], trajX: Trajectory[], durY: number[], trajY: Trajectory[], durZ: number[], trajZ: Trajectory[]) {
+	trajX: Trajectory;
+	trajY: Trajectory;
+	trajZ: Trajectory;
+
+	durX: number;
+	durY: number;
+	durZ: number;
+
+	durScalingX: number;
+	durScalingY: number;
+	durScalingZ: number;
+	constructor(duration: number, durX: number, trajX: Trajectory, durY: number, trajY: Trajectory, durZ: number, trajZ: Trajectory) {
 		super(duration);
 		this.trajX = trajX;
 		this.trajY = trajY;
 		this.trajZ = trajZ;
 
+		this.durX = durX;
+		this.durY = durY;
+		this.durZ = durZ;
+
 		// Rescale the duration for x, y, z so that it can end midway through the whole trajectory
 		// e.g. if two different goto commands are specified for y and z axes 
-		this.durScalingX = durX.map((dur) => dur / duration);
-		this.durScalingY = durY.map((dur) => dur / duration);
-		this.durScalingZ = durZ.map((dur) => dur / duration);
+		this.durScalingX = durX / duration;
+		this.durScalingY = durY / duration;
+		this.durScalingZ = durZ / duration;
+		console.warn(this.durScalingX, this.durScalingY, this.durScalingZ);
 	}
-
+	
 	evaluate(t: number): THREE.Vector3 {
 		var x = 0, y = 0, z = 0;
-		if (t * this.durScalingX > 1) {
+		if (t / this.durScalingX > 1) {
 			x = this.trajX.evaluate(1).x;
 		} else {
-			x = this.trajX.evaluate(t * this.durScalingX).x;
+			x = this.trajX.evaluate(t / this.durScalingX).x;
 		}
 
-		if (t * this.durScalingY > 1) {
+		if (t / this.durScalingY > 1) {
 			y = this.trajY.evaluate(1).y;
 		} else {
-			y = this.trajY.evaluate(t * this.durScalingY).y;
+			y = this.trajY.evaluate(t / this.durScalingY).y;
 		}
 
 		if (t * this.durScalingZ > 1) {
 			z = this.trajZ.evaluate(1).z;
 		} else {
-			z = this.trajZ.evaluate(t * this.durScalingZ).z;
+			z = this.trajZ.evaluate(t / this.durScalingZ).z;
 		}
 
 		return new THREE.Vector3(x, y, z);
-
 	}
 }
