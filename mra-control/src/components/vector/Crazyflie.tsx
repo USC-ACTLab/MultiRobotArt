@@ -12,7 +12,7 @@ import {useThree} from '@react-three/fiber';
 import React, {useEffect, useRef, useState} from 'react';
 import {Box3, MeshBasicMaterial, Vector3} from 'three';
 
-type CrazyflieProps = {
+export type CrazyflieProps = {
 	robotId: string;
 	renderBoundingBox: boolean;
 };

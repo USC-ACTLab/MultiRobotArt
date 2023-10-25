@@ -39,6 +39,7 @@ export type SimulatorState = {
 	time: number;
 	timeDilation: number;
 	status: 'RUNNING' | 'STOPPED' | 'PAUSED';
+	renderBoundingBoxes: boolean;
 };
 
 const defaultSimulatorState: SimulatorState = {
@@ -46,6 +47,7 @@ const defaultSimulatorState: SimulatorState = {
 	time: 0,
 	timeDilation: 1,
 	status: 'STOPPED',
+	renderBoundingBoxes: true,
 };
 
 const nullTrajectory = new traj.PolynomialTrajectory(-1, []) as traj.Trajectory;

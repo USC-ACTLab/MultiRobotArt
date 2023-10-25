@@ -18,6 +18,7 @@ export const Simulation = () => {
 	const setRobots = useSimulator((state) => state.setRobots);
 	const robartState = useRobartState();
 	const simulatorState = useSimulator();
+	const renderBB = simulatorState.renderBoundingBoxes;
  
 	useFrame(({clock}) => {
 		step();
@@ -68,7 +69,9 @@ export const Simulation = () => {
 			</Plane>
 			{Object.values(robots).map((robot) => (
 				<group key={robot.id} ref={marker} position={robot.pos}>
-					<Crazyflie robotId={robot.id} renderBoundingBox />
+					robartState
+					<Crazyflie robotId={robot.id} renderBoundingBox={renderBB} />
+					
 				</group>
 			))}
 			<primitive object={camera}></primitive>

@@ -1,5 +1,5 @@
 import {faSync} from '@fortawesome/free-solid-svg-icons';
-import {Button, Label, Modal, Tabs, TabsRef, TextInput} from 'flowbite-react';
+import {Button, Checkbox, Label, Modal, Tabs, TabsRef, TextInput} from 'flowbite-react';
 import React, {useRef, useState} from 'react';
 
 import {CancelButton} from '../../components/buttons/CancelButton';
@@ -8,6 +8,9 @@ import {ConfirmationModal} from '../../components/modal/ConfirmationModal';
 import {useRobartState} from '../../state/useRobartState';
 import {useUIState} from '../../state/useUIState';
 import {CurveEditorModal} from '../curveEditor/CurveEditorModal';
+import {type Group} from 'three';
+import { useSimulator } from '@MRAControl/state/useSimulator';
+import { Crazyflie, CrazyflieProps } from '@MRAControl/components/vector/Crazyflie';
 
 export const SettingsModal = () => {
 	const settingsModalOpen = useUIState((state) => state.settingsModalOpen);
@@ -16,9 +19,15 @@ export const SettingsModal = () => {
 	const projectName = useRobartState((state) => state.projectName);
 	const setProjectName = useRobartState((state) => state.setProjectName);
 	const toggleCurveEditor = useUIState((state) => state.toggleCurveEditor);
+	const marker = useRef<Group>(null!);
+	const robots = useSimulator((state) => state.robots);
 
 	const [confirmOpen, setConfirmOpen] = useState(false);
-
+	let showBoundingBox = false;
+	const handleBoundingBoxChange = (() => {
+		const renderBB = useSimulator.getState().renderBoundingBoxes;
+		useSimulator.setState({...useSimulator.getState(), renderBoundingBoxes: !renderBB})
+	});
 	return (
 		<>
 			<Modal show={settingsModalOpen} onClose={toggleSettingsModal}>
@@ -37,7 +46,12 @@ export const SettingsModal = () => {
 							</div>
 						</Tabs.Item>
 						<Tabs.Item title="Blocks">Block Settings</Tabs.Item>
-						<Tabs.Item title="Preferences">User Preferences</Tabs.Item>
+						<Tabs.Item title="Preferences">Show Bounding Boxes
+						<Checkbox
+							onChange={handleBoundingBoxChange}	
+							
+						></Checkbox>
+						</Tabs.Item>
 						<Tabs.Item title="Utilities">
 							<Button onClick={toggleCurveEditor}>Curve Editor</Button>
 						</Tabs.Item>
