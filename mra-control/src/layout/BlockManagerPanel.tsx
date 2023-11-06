@@ -47,11 +47,18 @@ export const BlockManagerPanel = () => {
 			</div>
 			<div className="flex flex-wrap gap-2 p-2">
 				{blocks.map((b) => (
-					<Button key={b.id} className="flex" onClick={() => {
-						setEditingBlock(b.id); 
-					}} color="success">
-						{b.name}
-					</Button>
+					<div 
+						key={b.id}
+						className={`flex ${selectedBlockId === b.id ? 'border-4 border-cyan-500 rounded-lg' : ''}`}
+					>
+						<Button 
+							onClick={() => {
+								setEditingBlock(b.id); 
+							}} 
+							color="success">
+							{b.name}
+						</Button>
+					</div>
 				))}
 			</div>
 		</div>

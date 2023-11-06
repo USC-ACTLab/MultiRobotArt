@@ -12,7 +12,6 @@ const addNewGroup = (() => {
 });
 
 export const AddTimelineGroupLabel = () => {
-
 	return (
 		<div className='h-16 w-16'><Button onClick={addNewGroup} style={{width: 'fit-content'}}>
 			Add Group <FontAwesomeIcon icon={faPlusCircle} />
