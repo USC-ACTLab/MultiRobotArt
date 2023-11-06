@@ -7,7 +7,7 @@ import React from 'react';
 const addNewGroup = (() => {
 	const groups = useRobartState.getState().timelineState.groups;
 	const numGroups = Object.keys(groups).length; 
-	const groupName = 'group ' + (numGroups + 1);
+	const groupName = 'group ' + numGroups;
 	useRobartState.getState().addGroup(groupName);
 });
 
