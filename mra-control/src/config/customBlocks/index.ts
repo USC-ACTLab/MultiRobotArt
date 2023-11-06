@@ -16,8 +16,10 @@ import {block_start_move} from './curves/start_move';
 import {block_start_turn} from './curves/start_turn';
 import {blockGetPosition} from './utility/get_a_position';
 import {blockColor} from './colors/color';
+import {blockColorOff} from './colors/colorOff';
 import Blockly from 'blockly';
 import {multiTraj} from './motion/multi_traj';
+import {blockCircleArc} from './curves/circleArc';
 
 
 /**
@@ -31,16 +33,14 @@ export const CUSTOM_BLOCKS = {
 	blockMoveAngles,
 	blockMoveXyz,
 	blockMove,
-	blockStartLinearMotion,
 	blockStop,
 	blockTakeoff,
 	blockTurn,
 	blockCircle,
-	block_start_circle,
-	block_start_move,
-	block_start_turn,
+	blockCircleArc,
 	blockGetPosition,
 	blockColor,
+	blockColorOff,
 	multiTraj,
 };
 
@@ -48,5 +48,4 @@ Object.values(CUSTOM_BLOCKS).forEach((block) => {
 	Blockly.Blocks[block.name] = block.block;
 	pythonGenerator[block.name] = (b: Blockly.Block) => block.pythonGenerator(b, pythonGenerator);
 	js[block.name] = (b: Blockly.Block) => block.javascriptGenerator(b, js);
-	console.log(block.name);
 });

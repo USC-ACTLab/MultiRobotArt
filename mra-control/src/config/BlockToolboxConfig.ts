@@ -33,6 +33,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			name: 'Curves',
 			contents: [
 				blockToToolbox(CUSTOM_BLOCKS.blockCircle),
+				blockToToolbox(CUSTOM_BLOCKS.blockCircleArc),
 				//blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
 				blockToToolbox(CUSTOM_BLOCKS.block_start_move),
 				blockToToolbox(CUSTOM_BLOCKS.block_start_turn),
@@ -50,6 +51,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			name: 'Colors',
 			contents: [
 				blockToToolbox(CUSTOM_BLOCKS.blockColor),
+				blockToToolbox(CUSTOM_BLOCKS.blockColorOff),
 			],
 		},
 		{

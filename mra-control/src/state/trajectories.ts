@@ -74,19 +74,24 @@ export class CircleTrajectory extends Trajectory {
 	radians: number;
 	clockwise: boolean;
 	pos: THREE.Vector3;
-	constructor(duration: number, init_pos: THREE.Vector3, radius: number, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false) {
+	startAngle: number;
+	endAngle: number;
+
+	constructor(duration: number, init_pos: THREE.Vector3, radius: number, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false, startAngle = 0, endAngle = 360) {
 		super(duration);
 		this.radius = radius;
 		this.axes = axes;
 		this.radians = radians;
 		this.clockwise = clockwise;
 		this.pos = init_pos;
+		this.startAngle = startAngle;
+		this.endAngle = endAngle;
 	}
 
 	evaluate(t: number): THREE.Vector3 {
 		// As t varies from 0 to 1, complete the desired arclength rotation for a given radius on a given axes
 		// subtract 1 from v1 to start at 0, 0
-		const v1 = this.radius * Math.cos(t * (this.radians)) - 1;
+		const v1 = this.radius * (Math.cos(t * (this.radians)) - 1); // TODO add starting and ending angles.
 		const v2 = this.radius * Math.sin(t * (this.radians));
 		var x = this.pos.x, y = this.pos.y, z = this.pos.z;
 		if (this.axes.some((X) => X === 'X')) {
@@ -97,7 +102,9 @@ export class CircleTrajectory extends Trajectory {
 
 		if (this.axes.some((Z) => Z === 'Z')) {
 			z = v2 + this.pos.z;
+			console.warn('Z!');
 		} else {
+			console.warn(this.axes);
 			y = v2 + this.pos.y;
 		}
 

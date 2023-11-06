@@ -183,6 +183,9 @@ export type MRAGeneralActions = {
 	exportToROS: (filename: string) => void;
 	getWarnings: () => string;
 	addWarning: (warning: string) => void;
+	addGroup: (groupId: string) => void;
+	renameGroup: (groupId: string, groupName: string) => void;
+	removeGroup: (groupId: string) => void;
 };
 
 const defaultRobartState: MRAState = {
@@ -227,13 +230,27 @@ const defaultRobartState: MRAState = {
 				robots: {},
 				duration: 60,
 			},
-			// group5: {
-			// 	id: 'group5',
-			// 	name: 'Group 5',
-			// 	items: {},
-			// 	robots: {},
-			// 	duration: 60,
-			// },
+			group5: {
+				id: 'group6',
+				name: 'Group 6',
+				items: {},
+				robots: {},
+				duration: 60,
+			},
+			group6: {
+				id: 'group7',
+				name: 'Group 7',
+				items: {},
+				robots: {},
+				duration: 60,
+			},
+			group7: {
+				id: 'group8',
+				name: 'Group 8',
+				items: {},
+				robots: {},
+				duration: 60,
+			},
 		},
 	},
 	editingBlockId: undefined,
@@ -537,6 +554,34 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							state.timelineState.groups[groupId].items = newItems;
 						});
 					},
+					renameGroup: (groupId: string, groupName: string) => {
+						const groups = get().timelineState.groups;
+						groups[groupId].name = groupName;
+						set((state) => {
+							state.timelineState.groups = groups;
+						});
+					},
+					addGroup: (groupName: string) => {
+						const groups = get().timelineState.groups;
+						const groupId = groupName.replace(/\s/g, '');
+						groups[groupId] = {id: 'groupId',
+							name: 'groupName',
+							items: {},
+							robots: {},
+							duration: 60,
+						};
+						set((state) => {
+							state.timelineState.groups = groups;
+						});
+					},
+					removeGroup: (groupId: string) => {
+						const groups = get().timelineState.groups;
+						delete groups[groupId];
+						set((state) => {
+							state.timelineState.groups = groups;
+						});
+					},
+
 				}),
 				{
 					storage: createJSONStorage(() => sessionStorage),

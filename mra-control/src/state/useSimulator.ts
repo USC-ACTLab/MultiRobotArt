@@ -181,9 +181,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				}
 
 				const positionHistory = state.positionHistory;
-				if (positionHistory) {
-					positionHistory.get(newSimTime)?.set(robotId, newPos);
-				}
+				//if (positionHistory) {
+				//	positionHistory.get(newSimTime)?.set(robotId, newPos);
+				//}
 
 				robots[robotId].color = get().robots[robotId].color;
 				

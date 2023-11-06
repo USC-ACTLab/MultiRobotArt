@@ -8,7 +8,7 @@
 
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {Vector3, Color} from 'three';
-import {ComponentTrajectory, Hover, NullTrajectory, type Trajectory} from './trajectories';
+import {CircleTrajectory, ComponentTrajectory, Hover, NullTrajectory, type Trajectory} from './trajectories';
 
 export type SimulatorGroupState = {
 	robotIDs: string[];
@@ -166,4 +166,30 @@ export const componentTraj = (groupState: SimulatorGroupState, [durX, trajX]: [n
 		trajectories.set(robotId, trajectory); 
 	});
 	return [duration, trajectories];
+};
+
+export const moveCircleArcVel = (groupState: SimulatorGroupState, radius: number, velocity: number, degreesStart: number, degreesEnd: number, direction: boolean): [number, Map<string, Trajectory>] => {
+	let arcLength = 0;
+	let arcAngle = 0;
+	let zeroedAngles = [degreesStart - Math.min(degreesStart, degreesEnd), degreesEnd - Math.min(degreesStart, degreesEnd)];
+	if (direction) { //Clockwise
+		arcAngle = 360 - Math.max(...zeroedAngles);
+	} else {
+		arcAngle = Math.max(...zeroedAngles);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+	arcLength = radius *  arcAngle * Math.PI / 180.;
+	let duration = arcLength / velocity;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	const robots = useSimulator.getState().robots;
+	groupState.robotIDs.forEach((robotId) =>{
+		//let trajectory = new ComponentTrajectory(duration, durX, trajX.get(robotId), durY, trajY.get(robotId), durZ, trajZ.get(robotId));
+		const initPos = robots[robotId];
+		let trajectory = new CircleTrajectory(duration, initPos, radius, ['Y', 'Z'], arcAngle * Math.PI / 180., degreesStart, degreesEnd);
+		trajectories.set(robotId, trajectory); 
+	});
+	return [duration, trajectories];
+
+
 };
