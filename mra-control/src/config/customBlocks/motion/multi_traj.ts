@@ -63,7 +63,6 @@ export const multiTraj: RobartBlockDefinition = {
 
 
 		var code = `simulator.componentTraj(groupState, ${x_traj}, ${y_traj}, ${z_traj})\n`;
-		console.log(code);
 
 		return code;
 	},

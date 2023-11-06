@@ -9,12 +9,15 @@ import {useUIState} from '../../state/useUIState';
 import {RobotManagerModal} from '../robotManager/RobotManagerModal';
 import {TimelineEditModeButtons} from './TimelineEditModeButtons';
 import {TimelineSimulationButtons} from './TimelineSimulationButtons';
-import React from 'react';
+import React, {useEffect} from 'react';
+import {AddTimelineGroupLabel} from './addTimelineGroupLabel';
+
 
 export const Timeline = () => {
 	const timelineState = useRobartState((state) => state.timelineState);
 	const groups = Object.values(timelineState.groups);
 	const toggleRobotManagerModal = useUIState((state) => state.toggleRobotManager);
+
 
 	return (
 		<div className="flex h-full w-full flex-col gap-2 rounded bg-blue-100">
@@ -34,6 +37,7 @@ export const Timeline = () => {
 						{groups.map((group) => (
 							<TimelineGroupLabel group={group} key={group.id} />
 						))}
+						<AddTimelineGroupLabel></AddTimelineGroupLabel>
 					</div>
 					<div className="relative flex h-full w-full flex-col gap-2 overflow-x-auto">
 						{groups.map((group) => (

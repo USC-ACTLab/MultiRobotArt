@@ -1,7 +1,6 @@
 import {pythonGenerator} from 'blockly/python';
 import {javascriptGenerator as js} from 'blockly/javascript';
 import {blockCircle} from './curves/circle';
-import {blockStartLinearMotion} from './motion/start_linear_motion';
 import {blockStop} from './motion/stop';
 import {blockGoTo} from './motion/go_to_duration';
 import {blockGoToSpeed} from './motion/go_to';
@@ -11,9 +10,6 @@ import {blockMoveXyz} from './motion/move_xyz';
 import {blockMove} from './motion/move';
 import {blockTakeoff} from './motion/takeoff';
 import {blockTurn} from './motion/turn';
-import {block_start_circle} from './curves/start_circle';
-import {block_start_move} from './curves/start_move';
-import {block_start_turn} from './curves/start_turn';
 import {blockGetPosition} from './utility/get_a_position';
 import {blockColor} from './colors/color';
 import {blockColorOff} from './colors/colorOff';
