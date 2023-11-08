@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as THREE from 'three';
 import {create} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-
+import {Queue} from 'queue-typescript';
 import {type SimulatorGroupState} from './simulatorCommands';
 import * as SIM from './simulatorCommands';
 import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
+import {type ConstraintWarning, useCrazyflieConstraintState} from './useConstraintState';
 export const fps = 60;
+import {enableMapSet} from 'immer';
 
 // type TrajectoryPolynomial =
 //   | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
@@ -18,9 +21,6 @@ export const fps = 60;
 //   duration: number;
 // }
 
-
-
-
 export type RobotSimState = {
 	id: string;
 	boundingBox?: THREE.Box3;
@@ -28,26 +28,39 @@ export type RobotSimState = {
 	vel: THREE.Vector3;
 	acc: THREE.Vector3;
 	color: THREE.Color;
-	trajectories: traj.Trajectory[];
-	trajectory: traj.Trajectory;
+	trajectories: Map<string, traj.Trajectory[]>;
+	trajectory: traj.Trajectory | undefined;
 	trajectoryDuration: number;
 	timeAlongTrajectory: number;
+	trajectoryStartTime: number;
+	trajectoryQueue: Queue<string>;
+};
+
+export type TrajectorySimState = {
+	robotId: string;
+	trajectory: traj.Trajectory | undefined;
+	startTime: number;
+	duration: number;
 };
 
 export type SimulatorState = {
 	robots: Record<string, RobotSimState>;
+	trajectories: Map<string, TrajectorySimState[]>;
 	time: number;
 	timeDilation: number;
 	status: 'RUNNING' | 'STOPPED' | 'PAUSED';
 	renderBoundingBoxes: boolean;
+	trajectoryQueue: Queue<string>;
 };
 
 const defaultSimulatorState: SimulatorState = {
 	robots: {},
 	time: 0,
 	timeDilation: 1,
+	trajectories: new Map<string, TrajectorySimState[]>(),
 	status: 'STOPPED',
 	renderBoundingBoxes: true,
+	trajectoryQueue: new Queue<string>(),
 };
 
 const nullTrajectory = new traj.PolynomialTrajectory(-1, []) as traj.Trajectory;
@@ -69,7 +82,9 @@ export type SimulatorActions = {
 	updateRobotBoundingBox: (robotId: string, boundingBox: THREE.Box3) => void;
 	checkCollisions: (robotId: string) => boolean;
 	updateTrajectory: (robotId: string, trajectory: traj.Trajectory, duration: number) => void;
-	robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3) => traj.Trajectory;  
+	addTrajectory: (robotId: string, trajectory: string) => void;
+	getMostRecentTrajectory: (robotId: string, time: number)  => [traj.Trajectory | undefined, number];
+	robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3, duration: number) => traj.Trajectory;  
 	robotCircle: (robotId: string, radius?: number, axes?: string[], radians?: number, clockwise?: boolean) => traj.Trajectory; 
 	executeSimulation: (startTime: number) => void;
 	cancelSimulation: () => void;
@@ -83,6 +98,15 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(0);
 		},
 		pause: () => {
+			const warnings: ConstraintWarning[] | undefined = useCrazyflieConstraintState.getState().checkConstraints(Object.keys(get().robots));
+			let reprs = warnings?.map((warning) => {
+				return warning.repr;
+			});
+			const state = useRobartState.getState();
+			useRobartState.setState({...state, warnings: reprs});
+
+			console.warn('final Warnings', warnings);
+			console.warn('warnings', useRobartState.getState().warnings);
 			set({status: 'PAUSED'});
 			get().cancelSimulation();
 		},
@@ -91,6 +115,13 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().executeSimulation(get().time);
 		},
 		halt: () => {
+			const warnings: ConstraintWarning[] | undefined = useCrazyflieConstraintState.getState().checkConstraints(Object.keys(get().robots));
+			let reprs = warnings?.map((warning) => {
+				return warning.repr;
+			});
+			const state = useRobartState.getState();
+			useRobartState.setState({...state, warnings: reprs});
+
 			set({status: 'STOPPED'});
 			get().cancelSimulation();
 		},
@@ -102,28 +133,64 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			//TODO update time text in simulation window
 			const robots = {...currentRobots};
 
+			const simulator = SIM;
+			const groupState: SimulatorGroupState = {
+				robotIDs: Object.keys(robots),
+			};
+			useCrazyflieConstraintState.getState().positionHistory.set(newSimTime, new Map<string, THREE.Vector3>());
+			const state = useCrazyflieConstraintState.getState();
+			// update trajectories from most recent trajectory
 			Object.keys(robots).forEach((robotId) => {
-				const robot = robots[robotId];
-				if (robot.trajectory === null || robot.trajectory.duration < 0) return;
+				if (robots[robotId].timeAlongTrajectory >= 1) {
+					//switch trajectories
+					let newTraj: Map<string, traj.Trajectory>;
+					let duration = 0;
+					if (robots[robotId].trajectoryQueue.length > 0) {
+						[duration, newTraj] = eval(robots[robotId].trajectoryQueue.dequeue());
+						get().updateTrajectory(robotId, newTraj.get(robotId), duration);
+					} else {
+						get().updateTrajectory(robotId, new traj.NullTrajectory(), -1);
+					}
+				} else if (robots[robotId].trajectoryQueue.length > 0 && robots[robotId].trajectory.duration <= 0) {
+					let newTraj: Map<string, traj.Trajectory>;
+					let duration = 0;
+					[duration, newTraj] = eval(robots[robotId].trajectoryQueue.dequeue());
+					get().updateTrajectory(robotId, newTraj.get(robotId), duration);
+				}
+				
+	
+				// if trajectory doesn't exist or has non-positive duration, do nothing
+				if (get().robots[robotId]?.trajectory.duration === undefined || get().robots[robotId].trajectory.duration <= 0) {
+					return;
+				}
 
-				const trajectoryTime = robot.timeAlongTrajectory + deltaT / robot.trajectoryDuration;
-				const newPos = robot.trajectory.evaluate(trajectoryTime);
+				const trajectoryTime = get().robots[robotId].timeAlongTrajectory + deltaT / get().robots[robotId].trajectory?.duration;
+				const newPos = get().robots[robotId].trajectory.evaluate(trajectoryTime);
 
-				const offset = newPos.clone().sub(robot.pos);
-
-				// console.log('robot', robotId, 'newpos', newPos);
-
+				const offset = newPos.clone().sub(get().robots[robotId].pos);
 				robots[robotId] = {
 					...robots[robotId],
 					pos: newPos,
-					boundingBox: robot.boundingBox?.clone().translate(offset),
+					boundingBox: get().robots[robotId].boundingBox?.clone().translate(offset),
 					timeAlongTrajectory: trajectoryTime,
+					trajectory: get().robots[robotId].trajectory,
+					trajectoryStartTime: get().robots[robotId].trajectoryStartTime,
 				};
-
+				// TODO: switch to next trajectory if available...
 				if (robots[robotId].timeAlongTrajectory >= 1) {
 					robots[robotId].trajectory = nullTrajectory;
 					robots[robotId].timeAlongTrajectory = 0;
 				}
+
+				const positionHistory = state.positionHistory;
+				//if (positionHistory) {
+				//	positionHistory.get(newSimTime)?.set(robotId, newPos);
+				//}
+
+				robots[robotId].color = get().robots[robotId].color;
+				
+				// Do not delete! Needed to keep variables from being removed for being unused
+				console.log(groupState, simulator);
 			});
 
 			set({
@@ -143,8 +210,10 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					color: new THREE.Color(255, 255, 255),
 					timeAlongTrajectory: 0,
 					trajectory: nullTrajectory,
-					trajectoryDuration: 0,
-					trajectories: [],
+					trajectoryDuration: -1,
+					trajectories: new Map<string, traj.Trajectory[]>,
+					trajectoryStartTime: -1,
+					trajectoryQueue: new Queue<string>,
 				};
 				// simRobots[robot.id].boundingBox?.setFromObject()
 				// get().updateRobotBoundingBox(robot.id, new THREE.Box3());
@@ -186,9 +255,29 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				state.robots[robotId].timeAlongTrajectory = 0;
 				state.robots[robotId].trajectory = trajectory;
 				state.robots[robotId].trajectoryDuration = duration;
+				state.robots[robotId].trajectoryStartTime = state.time;
 			});
 		},
-		robotGoTo: (robotId, pos, vel, acc) => {
+		addTrajectory: (robotId, javascriptLine) => {
+			// Add trajectory to trajectories Map
+			// TODO: Add trajectory to queue
+			set((state) => {
+				state.robots[robotId].trajectoryQueue.enqueue(javascriptLine);
+			});
+		},
+		getMostRecentTrajectory: (robotId: string, time: number): [traj.Trajectory | undefined, number] => {
+			const trajectories = get().trajectories.get(robotId);
+			var mostRecentTime = 0;
+			var mostRecentTraj: traj.Trajectory | undefined = undefined;
+			trajectories?.forEach((trajectory) => {
+				if (trajectory.startTime - time < 0 && trajectory.startTime > mostRecentTime) {
+					mostRecentTime = trajectory.startTime;
+					mostRecentTraj = trajectory.trajectory;
+				}
+			});
+			return [mostRecentTraj, mostRecentTime];
+		},
+		robotGoTo: (robotId, pos, vel, acc, duration) => {
 			const robot = get().robots[robotId];
 
 			// Degree 7 Polynomial solution to IVP
@@ -231,7 +320,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				.addScaledVector(pos, -10)
 				.multiplyScalar(2);
 
-			return (new traj.PolynomialTrajectory(1, [a0, a1, a2, a3, a4, a5, a6, a7])) as traj.Trajectory;
+			return (new traj.PolynomialTrajectory(duration, [a0, a1, a2, a3, a4, a5, a6, a7])) as traj.Trajectory;
 		},
 		robotCircle: (robotId: string, radius = 1, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false): traj.Trajectory => {
 			const robot = get().robots[robotId];
@@ -248,31 +337,34 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const robartRobots = useRobartState.getState().robots;
 			if (startTime === 0) {
 				get().setRobots(robartRobots);
+				useRobartState.getState().warnings = [];
 			}
 
 			Object.values(timeline.groups).forEach((group) => {
 				// Need the following local variables so that the EVAL works properly.
-				const groupState: SimulatorGroupState = {
+				/*const groupState: SimulatorGroupState = {
 					robotIDs: Object.keys(group.robots),
 				};
-				const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.
+				const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.*/
 				// END: The need of said local variables
         
-				var duration = 0; // Duration is modified by each block
 				Object.values(group.items).forEach(timelineItem => {
 					const offset = timelineItem.startTime - startTime;
 					if (offset < 0) return;
 
 					const timeout = setTimeout(() => {
-						// TODO: Totally safe, no security flaws whatsoever.
-						eval(blocks[timelineItem.blockId].javaScript);
+						let lines = blocks[timelineItem.blockId].javaScript.split('\n');
+						lines.forEach((line) => {
+							if (line.length > 0) {
+								// let [dur, trajectoryRecord]: [number, Map<string, traj.Trajectory>] = eval(line); 
+								Object.keys(group.robots).forEach((robotId) => {
+									get().addTrajectory(robotId, line);
+								});
+							}
+						});
 					}, timeline.scale * offset * 1000);
-					console.log(duration);
-					console.log(groupState);
-					console.log(simulator.dummy());
 					simulatorTimeouts.push(timeout);
 				});
-				duration = Math.max(0.1, duration);
 			});
 		},
 		cancelSimulation: () => {

@@ -3,6 +3,7 @@ import {useRobotManager} from '@MRAControl/state/useRobotManager';
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Badge, Dropdown} from 'flowbite-react';
+import React from 'react';
 
 export const RobotGroupEditor = () => {
 	const groups = useRobartState((state) => state.timelineState.groups);

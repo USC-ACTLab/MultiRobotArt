@@ -2,6 +2,7 @@ import {Modal} from 'flowbite-react';
 
 import {useUIState} from '../../state/useUIState';
 import {RobotManager} from './RobotManger';
+import React from 'react';
 
 export const RobotManagerModal = () => {
 	const robotManagerModalOpen = useUIState((state) => state.robotManagerModalOpen);

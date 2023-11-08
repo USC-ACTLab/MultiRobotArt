@@ -3,8 +3,8 @@
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 
-export const blockCircle: RobartBlockDefinition = {
-	name: 'circle',
+export const blockCircleArc: RobartBlockDefinition = {
+	name: 'circleArc',
 	block:{
 		init: function () {
 			this.appendDummyInput()
@@ -16,9 +16,13 @@ export const blockCircle: RobartBlockDefinition = {
 				.appendField(new Blockly.FieldNumber(0.2), 'velocity')
 				.appendField('m/s');
 			this.appendDummyInput()
-				.appendField('for')
-				.appendField(new Blockly.FieldAngle(90), 'angle_degrees')
+				.appendField('Starting at')
+				.appendField(new Blockly.FieldNumber(90), 'angle_degrees_start')
 				.appendField('degrees,');
+			this.appendDummyInput()
+				.appendField('Ending at')
+				.appendField(new Blockly.FieldNumber(90), 'angle_degrees_end')
+				.appendField('degrees');
 			this.appendDummyInput()
 				.appendField(new Blockly.FieldDropdown([['counterclockwise', 'ccw'], ['clockwise', 'cw']]), 'direction');
 			this.setPreviousStatement(true, null);
@@ -39,13 +43,14 @@ export const blockCircle: RobartBlockDefinition = {
 	javascriptGenerator: (block, _js) => {
 		const radius = block.getFieldValue('radius_m') as number;
 		const velocity = block.getFieldValue('velocity') as number;
-		const degrees = block.getFieldValue('angle_degrees') as number;
+		const degreesStart = block.getFieldValue('angle_degrees_start') as number;
+		const degreesEnd = block.getFieldValue('angle_degrees_end') as number;
 		const dropDownDirection = block.getFieldValue('direction') as string;	
 		let clockwise = true;
 		if (dropDownDirection == 'ccw') {
 			clockwise = false;
 		}
 
-		return `simulator.moveCircleVel(groupState, ${radius}, ${velocity}, ${degrees}, ${clockwise})\n`;
+		return `simulator.moveCircleArcVel(groupState, ${radius}, ${velocity}, ${degreesStart}, ${degreesEnd}, ${clockwise})\n`;
 	},
 };

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
-export const block_stop: RobartBlockDefinition = {
+export const blockStop: RobartBlockDefinition = {
 	name: 'stop',
 	block:{
 		init: function () {
@@ -15,15 +17,10 @@ export const block_stop: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
+	pythonGenerator: (_block, _python) => {
 		return 'stop_and_hover(cf)\n';
 	},
-	javascriptGenerator: (block, js) => {
-		return 'duration += simulator.stop_and_hover(groupState);\n';
-	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		return 0.1;
-		// TODO return simulator.stop_and_hover(groupState)
+	javascriptGenerator: (_block, _js) => {
+		return 'simulator.stop_and_hover(groupState)\n';
 	},
 };

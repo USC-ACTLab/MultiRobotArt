@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
-export const block_turn: RobartBlockDefinition = {
+export const blockTurn: RobartBlockDefinition = {
 	name: 'turn',
 	block:{
 		init: function () {
@@ -20,19 +22,15 @@ export const block_turn: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
+	pythonGenerator: (block, _python) => {
 		//TODO: add python equivalent
-		var dropdown_direction = block.getFieldValue('direction');
-		var angle_degrees = block.getFieldValue('degrees');
-		var angle_rate = block.getFieldValue('rate');
-		var code = 'turn(' + dropdown_direction + ',' + angle_degrees + ',' + angle_rate + ')\n';
+		var direction = block.getFieldValue('direction') as number;
+		var degrees = block.getFieldValue('degrees') as number;
+		var rate = block.getFieldValue('rate') as number;
+		var code = 'turn(' + direction + ',' + degrees + ',' + rate + ')\n';
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
-		return 'duration += simulator.dummy();';
-	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		return simulator.dummy();
+	javascriptGenerator: (_block, _js) => {
+		return 'simulator.dummy();';
 	},
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -12,6 +13,8 @@ import {exportROS, loadProjectFromFile, saveProjectToFile} from '../tools/projec
 import {useSimulator} from './useSimulator';
 import * as SIM from './simulatorCommands';
 import {type SimulatorGroupState} from './simulatorCommands';
+import {type Trajectory} from './trajectories';
+import {State} from 'blockly/core/utils/aria';
 
 const simulator = SIM;
 export type CodeBlock = {
@@ -93,6 +96,7 @@ export type MRAState = {
 	editingBlockId: string | undefined;
 	version: number;
 	robots: Record<string, RobotState>;
+	warnings: string[];
 };
 
 export type TimelineActions = {
@@ -177,6 +181,11 @@ export type MRAGeneralActions = {
 	resetProject: () => void;
 	setProjectName: (projectName: string) => void;
 	exportToROS: (filename: string) => void;
+	getWarnings: () => string;
+	addWarning: (warning: string) => void;
+	addGroup: (groupId: string) => void;
+	renameGroup: (groupId: string, groupName: string) => void;
+	removeGroup: (groupId: string) => void;
 };
 
 const defaultRobartState: MRAState = {
@@ -186,6 +195,13 @@ const defaultRobartState: MRAState = {
 		scale: 1,
 		mode: 'ADD',
 		groups: {
+			groupAllCFs: {
+				id: 'groupAllCFs',
+				name: 'All CFs',
+				items: {},
+				robots: {},
+				duration: 60,
+			},
 			group1: {
 				id: 'group1',
 				name: 'Group 1',
@@ -214,23 +230,35 @@ const defaultRobartState: MRAState = {
 				robots: {},
 				duration: 60,
 			},
-			group5: {
-				id: 'group5',
-				name: 'Group 5',
-				items: {},
-				robots: {},
-				duration: 60,
-			},
 		},
 	},
 	editingBlockId: undefined,
 	version: ROBART_VERSION,
 	robots: {},
+	warnings: [],
 };
 
 type MRAActions = MRAGeneralActions & TimelineActions & BlockActions & RobotActions;
 
 type MRACompleteState = MRAState & MRAActions;
+
+function* startingPositionGenerator(): Generator<[number, number, number]> {
+	// Fill in 0.5m grid with crazyflies by default (can be overridden by user obviously)
+	let i = 0;
+	let x = 0, y = 0;
+	while (true) {
+		yield [x, y, 0];
+		if (i % 2 == 1) {
+			x += 0.5;
+		} else {
+			y += 0.5;
+		}
+
+		i += 1;
+	}
+}
+
+export const startingPositionSuggestions = startingPositionGenerator();
 
 export const useRobartState = create<MRAState & MRAActions>()(
 	immer(
@@ -250,6 +278,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
+							warnings: get().warnings,
 						};
 						saveProjectToFile(state, fileName);
 					},
@@ -261,8 +290,14 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
+							warnings: get().warnings,
 						};
 						exportROS(state, fileName);
+					},
+					getWarnings: () => {
+						//TODO update warnings on call or on step?
+						console.warn(get().warnings.length);
+						return get().warnings.join('');
 					},
 					resetProject: () => {
 						set(defaultRobartState);
@@ -287,6 +322,13 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					},
 					addBlockToTimeline: (groupId: string, blockId: string, startTime: number, isTrajectory: boolean) => {
 						// TODO: Check if this causes unintended consequences...
+						// let simState = useSimulator.getState();
+						// simState.executeSimulation(0, startTime);
+						// while (simState.time < startTime) {
+						// 	console.log(simState.time);
+						// 	simState.step();
+						// }
+
 						const groupState: SimulatorGroupState = {
 							robotIDs: Object.keys(get().timelineState.groups[groupId].robots),
 						};
@@ -297,6 +339,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							timelineState: get().timelineState,
 							version: ROBART_VERSION,
 							robots: get().robots,
+							warnings: get().warnings,
 						};
  
 						// Sort by start time, eval all blocks in order to accumulate duration
@@ -316,11 +359,20 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						//   eval(block.javaScript);
 						// }
 						var duration = 0;
-						console.log(groupState);
-						console.log(simulator.dummy()); //Compiler will auto remove unused variables...
+						console.log(groupState); // Do not Remove!
+						
 						// This only kind of works, doesn't work for velo commands because init position will be wrong.
 						// TODO: Run all blocks up until this point in the timeline to get position
-						eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+
+						// Loop through every line in the given block, accumulate duration
+						let lines = get().blocks[blockId].javaScript.split('\n'); // Need to return a Record<robotId, Trajectory>...
+						lines.forEach((line) => {
+							if (line.length !== 0) {
+								let [dur, trajectoryRecord]: [number, Record<string, Trajectory>] = eval(line); // Return a Trajectory lambda function? Only compute actual trajectory when ready?
+								duration += dur;
+							}
+						});
+						// eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
 						//const currBlock = get().blocks[blockId]
 						//const execute = simulator.dummy //getSimCommand(currBlock)
 						//duration = execute(currBlock, groupState)
@@ -341,6 +393,12 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						set((state) => {
 							state.timelineState.groups[groupId].items = oldItems;
 						});
+					},
+					addWarning: (warning: string) => {
+						const state = get();
+						const newWarnings = [...state.warnings, warning];
+						console.warn('addwarning', state.warnings);
+						set({...state, warnings: newWarnings});
 					},
 					updateBlockInTimeline: (groupId, itemId, startTime) => {
 						const newItem = {
@@ -437,13 +495,16 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					createRobot: () => {
 						const id = uuid();
 						const numRobots = Object.keys(get().robots).length;
+						
 						set((state) => {
 							state.robots[id] = {
 								id,
 								name: `CF ${numRobots}`,
 								type: 'crazyflie',
-								startingPosition: [0, 0, 0],
+								startingPosition: startingPositionSuggestions.next().value,
 							};
+							// Add to group with all CFs
+							state.timelineState.groups.groupAllCFs.robots[id] = state.robots[id];
 						});
 						return id;
 					},
@@ -472,6 +533,35 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							state.timelineState.groups[groupId].items = newItems;
 						});
 					},
+					renameGroup: (groupId: string, groupName: string) => {
+						const groups = get().timelineState.groups;
+						groups[groupId].name = groupName;
+						set((state) => {
+							state.timelineState.groups = groups;
+						});
+					},
+					addGroup: (groupName: string) => {
+						const groups = get().timelineState.groups;
+						const groupId = groupName.replace(/\s/g, '');
+						const newGroups = {...groups, 
+							[groupId]: {id: groupId,
+								name: groupName,
+								items: {},
+								robots: {},
+								duration: 60},
+						};
+						set((state) => {
+							state.timelineState.groups = newGroups;
+						});
+					},
+					removeGroup: (groupId: string) => {
+						const groups = get().timelineState.groups;
+						delete groups[groupId];
+						set((state) => {
+							state.timelineState.groups = groups;
+						});
+					},
+
 				}),
 				{
 					storage: createJSONStorage(() => sessionStorage),

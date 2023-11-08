@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import * as Blockly from 'blockly/core';
 import iro from '@jaames/iro';
 import type {ColorPickerProps} from '@jaames/iro/dist/ColorPicker';
@@ -8,19 +10,7 @@ import type {ColorPickerProps} from '@jaames/iro/dist/ColorPicker';
 export class ColorWheelField extends Blockly.FieldColour {
 	/**
    * Class for the color picker.
-   *
-   * @param {string} color The starting color for the color.
-   *  It's a hex value, #ff00ff.
-   * @param {number} width Width of the color picker.
-   * @param {ColorPickerProps} options The iro color wheel options.
-   */
-	constructor(
-		protected color: string,
-		protected width = 150,
-		protected options: Partial<ColorPickerProps> = {},
-	) {
-		super(color);
-	}
+	*/
 
 	/**
    * Constructs a ColorWheelField from a JSON arg object.
@@ -29,13 +19,27 @@ export class ColorWheelField extends Blockly.FieldColour {
    * @package
    * @nocollapse
    */
-	static fromJson(options: Record<string, any>) {
+	static fromJson(options: Record<string, any>): ColorWheelField {
 		return new ColorWheelField(
-			options.color,
-			options.size || 150,
+			options.color as string,
+			options.size as number || 150,
 			options.options || {},
 		);
+	}  /*
+   * @param {string} color The starting color for the color.
+   *  It's a hex value, #ff00ff.
+   * @param {number} width Width of the color picker.
+   * @param {ColorPickerProps} options The iro color wheel options.
+   */
+
+	constructor(
+		protected color: string,
+		protected width = 150,
+		protected options: Partial<ColorPickerProps> = {},
+	) {
+		super(color);
 	}
+
 
 	/**
    * Over rides colour picker to show the popup.

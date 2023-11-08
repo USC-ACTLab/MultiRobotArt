@@ -3,7 +3,7 @@ import {RenamableText} from '@MRAControl/components/utils/RenamableText';
 import {useRobartState} from '@MRAControl/state/useRobartState';
 import {useRobotManager} from '@MRAControl/state/useRobotManager';
 import {faTrash} from '@fortawesome/free-solid-svg-icons';
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 import {RobotGroupEditor} from './RobotGroupEditor';
 import {StartingPositionEditor} from './StartingPositionEditor';
@@ -32,11 +32,11 @@ export const RobotEditor = () => {
 				text={selectedRobot.name}
 				className={'text-4xl font-extrabold'}
 				updateText={(newText) => {
-					newText !== ''
-						? updateRobot(selectedRobotId, {name: newText})
-						: updateRobot(selectedRobotId, {
-							name: 'Unnamed Robot',
-						}); 
+					if (newText !== '') {
+						updateRobot(selectedRobotId, {name: newText});
+					} else {
+						updateRobot(selectedRobotId, {name: 'Unnamed Robot'});
+					}
 				}
 				}
 			/>

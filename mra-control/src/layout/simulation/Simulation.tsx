@@ -3,7 +3,7 @@
 import {Crazyflie} from '@MRAControl/components/vector/Crazyflie';
 import {useRobartState} from '@MRAControl/state/useRobartState';
 import {useSimulator} from '@MRAControl/state/useSimulator';
-import {GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane} from '@react-three/drei';
+import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane} from '@react-three/drei';
 import {useFrame, useThree} from '@react-three/fiber';
 import {useRef} from 'react';
 import React from 'react';
@@ -38,8 +38,8 @@ export const Simulation = () => {
 	}
 
 	const {size, viewport, camera} = useThree();
-	// console.log(camera.position)
-	if (init) {
+	// if (init || camera.up !== new THREE.Vector3(0, 0, 1)) {
+	if (init || (camera.up.x !== 0 || camera.up.y !== 0 || camera.up.z !== 1)) {
 		camera.position.set(-5, 0, 2);
 		camera.up.set(0, 0, 1);
 		init = false;
@@ -74,6 +74,7 @@ export const Simulation = () => {
 					
 				</group>
 			))}
+
 			<primitive object={camera}></primitive>
 		</>
 	);

@@ -25,7 +25,7 @@ export const block_start_turn: RobartBlockDefinition = {
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
-		return 'duration += simulator.dummy();';
+		return 'simulator.dummy();\n';
 	},
 	execute: (block, groupState) => {
 		return 0.1;

@@ -47,7 +47,7 @@ export function Crazyflie({robotId, renderBoundingBox}: CrazyflieProps) {
 		if (renderBoundingBox) {
 			const crazyflieBoundingBox = new Box3();
 			crazyflieBoundingBox.setFromObject(group.current);
-			crazyflieBoundingBox.expandByVector(new Vector3(0, 0, 0.5));
+			crazyflieBoundingBox.expandByVector(new Vector3(0.05, 0.05, 0.5));
 			updateRobotBoundingBox(robotId, crazyflieBoundingBox);
 		}
 
@@ -178,7 +178,7 @@ export function Crazyflie({robotId, renderBoundingBox}: CrazyflieProps) {
             <pointLight position={[0, 0, 0]} intensity={0.5} />
           </Sphere> */}
 					</group>
-					<Sphere position={[0, 0, -0.05]} scale={0.033} castShadow={false} receiveShadow={false}>
+					<Sphere position={[0, 0, -0.005]} scale={0.02} castShadow={false} receiveShadow={false}>
 						<meshStandardMaterial emissive={simRobot ? [simRobot.color.r / 255, simRobot.color.g / 255, simRobot.color.b / 255] : [1, 1, 1]} />
 						<pointLight position={[0, 0, 0]} intensity={0.5} />
 					</Sphere>

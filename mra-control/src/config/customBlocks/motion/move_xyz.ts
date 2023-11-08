@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 
 import * as SIM from '@MRAControl/state/simulatorCommands';
-export const block_move_xyz: RobartBlockDefinition = {
+export const blockMoveXyz: RobartBlockDefinition = {
 	name: 'move_xyz',
 	block: {
 		init: function () {
@@ -31,27 +32,18 @@ export const block_move_xyz: RobartBlockDefinition = {
 		},
 	},
 	pythonGenerator: (block, python) => {
-		var number_x = block.getFieldValue('x');
-		var number_y = block.getFieldValue('y');
-		var number_z = block.getFieldValue('z');
-		var number_speed = block.getFieldValue('speed');
-		var code = 'goto_rel_at_speed(cf, ' + number_x + ',' + number_y + ',' + number_z + ',' + number_speed + ')\n';
+		var x = block.getFieldValue('x') as number;
+		var y = block.getFieldValue('y') as number;
+		var z = block.getFieldValue('z') as number;
+		var speed = block.getFieldValue('speed') as number;
+		var code = 'goto_rel_at_speed(cf, ' + x + ',' + y + ',' + z + ',' + speed + ')\n';
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
-		var number_x = block.getFieldValue('x');
-		var number_y = block.getFieldValue('y');
-		var number_z = block.getFieldValue('z');
-		var number_speed = block.getFieldValue('speed');
-		return `duration += simulator.moveSpeed(groupState, ${number_x}, ${number_y}, ${number_z}, ${number_speed});\n`;
-	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		var number_x = block.getFieldValue('x');
-		var number_y = block.getFieldValue('y');
-		var number_z = block.getFieldValue('z');
-		var number_speed = block.getFieldValue('speed');
-		return simulator.moveSpeed(groupState, number_x, number_y, number_z, number_speed);
-
+	javascriptGenerator: (block, _js) => {
+		var x = block.getFieldValue('x') as number;
+		var y = block.getFieldValue('y') as number;
+		var z = block.getFieldValue('z') as number;
+		var speed = block.getFieldValue('speed') as number;
+		return `simulator.moveSpeed(groupState, ${x}, ${y}, ${z}, ${speed})\n`;
 	},
 };

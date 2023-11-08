@@ -1,7 +1,17 @@
 import {RenamableText} from '@MRAControl/components/utils/RenamableText';
 
 import {type CodeBlock, useRobartState} from '../state/useRobartState';
+import React from 'react';
 
+function* nameGenerator(): Generator<string> {
+	let i = 0;
+	while (true) {
+		yield `New Block ${i}`;
+		i += 1;
+	}
+}
+
+export const names = nameGenerator();
 export const BlockEditorHeader = () => {
 	const currentBlockId = useRobartState((state) => state.editingBlockId);
 	const currentBlock: CodeBlock | undefined = useRobartState((state) => state.blocks[currentBlockId ?? '']);
@@ -14,8 +24,12 @@ export const BlockEditorHeader = () => {
 			<RenamableText
 				text={currentBlock.name}
 				className="text-lg font-bold"
-				updateText={(newText) => {
-					newText !== '' ? renameBlock(newText) : renameBlock('New Block');
+				updateText={(newText: string) => {
+					if (newText !== '') {
+						renameBlock(newText);
+					} else {
+						renameBlock(names.next().value as string);
+					}
 				}}
 			/>
 		</div>

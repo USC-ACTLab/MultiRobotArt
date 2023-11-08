@@ -1,6 +1,7 @@
 import {Canvas} from '@react-three/fiber';
 
 import {Simulation} from './Simulation';
+import React from 'react';
 
 export const SimulationPanel = () => {
 	return (

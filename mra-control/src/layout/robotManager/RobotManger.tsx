@@ -1,5 +1,6 @@
 import {RobotEditor} from './RobotEditor';
 import {RobotSidebar} from './RobotSidebar';
+import React from 'react';
 
 export const RobotManager = () => {
 	return (

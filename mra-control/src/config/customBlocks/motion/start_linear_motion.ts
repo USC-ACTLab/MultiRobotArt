@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 
-export const block_start_linear_motion: RobartBlockDefinition = {
+export const blockStartLinearMotion: RobartBlockDefinition = {
 	name: 'start_linear_motion',
 	block:{
 		init: function () {
@@ -29,21 +31,15 @@ export const block_start_linear_motion: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, python) => {
-		var number_velocity_x_m = block.getFieldValue('velocity_x_m');
-		var number_velocity_y_m = block.getFieldValue('velocity_y_m');
-		var number_velocity_z_m = block.getFieldValue('velocity_z_m');
-		var angle_rate_yaw = block.getFieldValue('rate_yaw');
-		var code = 'start_linear_motion(' + number_velocity_x_m + ',' + number_velocity_y_m + ',' + number_velocity_z_m + ',' + angle_rate_yaw + ')\n';
+	pythonGenerator: (block, _python) => {
+		var velX = block.getFieldValue('velocity_x_m') as number;
+		var velY = block.getFieldValue('velocity_y_m') as number;
+		var velZ = block.getFieldValue('velocity_z_m') as number;
+		var rateYaw = block.getFieldValue('rate_yaw') as number;
+		var code = 'start_linear_motion(' + velX + ',' + velY + ',' + velZ + ',' + rateYaw + ')\n';
 		return code;
 	},
-	javascriptGenerator: (block, js) => {
-		return 'duration += simulator.dummy();';
-	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		//TODO...
-
-		return simulator.dummy();
+	javascriptGenerator: (_block, _js) => {
+		return 'simulator.dummy();\n';
 	},
 };

@@ -23,15 +23,12 @@ function hexToRgb(hex: string) {
 	} : null;
 }
 
-export const blockColor: RobartBlockDefinition = {
-	name: 'color',
+export const blockColorOff: RobartBlockDefinition = {
+	name: 'colorOff',
 	block:{
 		init: function () {
 			this.appendDummyInput()
-				.appendField('set LED color:')
-				.appendField(new ColorWheelField('#00FF00', 150, {
-					layoutDirection: 'horizontal',
-				}), 'color');
+				.appendField('Turn LED Off');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 		},
@@ -40,7 +37,7 @@ export const blockColor: RobartBlockDefinition = {
 
 	pythonGenerator: (block, _python) => {
 		const color = block.getFieldValue('color') as string;
-		const code = 'setLEDColorFromHex(cf, "' + color + '")\n';
+		const code = 'setLEDColor(cf, 0, 0, 0")\n';
 		return code;
 	},
 
@@ -49,7 +46,8 @@ export const blockColor: RobartBlockDefinition = {
 	javascriptGenerator: (block, _js) => {
 		var color = block.getFieldValue('color') as string;
 		var rgbCol = hexToRgb(color);
-		return `simulator.setColor(groupState, ${rgbCol?.r},${rgbCol?.g},${rgbCol?.b})\n`;
+		return 'simulator.setColor(groupState, 0, 0, 0)\n';
 
 	},
 };
+
