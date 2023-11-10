@@ -3,11 +3,12 @@
 import {Crazyflie} from '@MRAControl/components/vector/Crazyflie';
 import {useRobartState} from '@MRAControl/state/useRobartState';
 import {useSimulator} from '@MRAControl/state/useSimulator';
-import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane} from '@react-three/drei';
+import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane, Sphere} from '@react-three/drei';
 import {useFrame, useThree} from '@react-three/fiber';
 import {useRef} from 'react';
 import React from 'react';
-import {type Group} from 'three';
+import type THREE from 'three';
+import {type Group, type Vector3} from 'three';
 
 let init = true;
 export const Simulation = () => {
@@ -18,7 +19,7 @@ export const Simulation = () => {
 	const setRobots = useSimulator((state) => state.setRobots);
 	const robartState = useRobartState();
 	const simulatorState = useSimulator();
- 
+	const trajectoryMarkers: Array<{position: Vector3; color: THREE.Color; id: string}> = useSimulator((state) => state.trajectoryMarkers);
 	useFrame(({clock}) => {
 		step();
 	});
@@ -69,6 +70,13 @@ export const Simulation = () => {
 			{Object.values(robots).map((robot) => (
 				<group key={robot.id} ref={marker} position={robot.pos}>
 					<Crazyflie robotId={robot.id} renderBoundingBox />
+				</group>
+			))}
+			{Object.values(trajectoryMarkers).map((trajectoryMarker) => (
+				<group key={trajectoryMarker.id} position={trajectoryMarker.position}>
+					<Sphere args={[0.05]}>
+						<meshBasicMaterial color={trajectoryMarker.color.getHex()}/>
+					</Sphere>
 				</group>
 			))}
 

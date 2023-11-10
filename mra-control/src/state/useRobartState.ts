@@ -372,7 +372,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 								duration += dur;
 							}
 						});
-						// eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+						// eval(get().blocks[blockId].javaScript); 
 						//const currBlock = get().blocks[blockId]
 						//const execute = simulator.dummy //getSimCommand(currBlock)
 						//duration = execute(currBlock, groupState)

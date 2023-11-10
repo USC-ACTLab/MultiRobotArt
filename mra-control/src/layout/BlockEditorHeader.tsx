@@ -4,7 +4,7 @@ import {type CodeBlock, useRobartState} from '../state/useRobartState';
 import React from 'react';
 
 function* nameGenerator(): Generator<string> {
-	let i = 0;
+	let i = 1;
 	while (true) {
 		yield `New Block ${i}`;
 		i += 1;

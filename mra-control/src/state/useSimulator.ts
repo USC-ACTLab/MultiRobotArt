@@ -10,7 +10,6 @@ import {type RobotState, useRobartState} from './useRobartState';
 import * as traj from './trajectories';
 import {type ConstraintWarning, useCrazyflieConstraintState} from './useConstraintState';
 export const fps = 60;
-import {enableMapSet} from 'immer';
 
 // type TrajectoryPolynomial =
 //   | [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3]
@@ -50,6 +49,8 @@ export type SimulatorState = {
 	timeDilation: number;
 	status: 'RUNNING' | 'STOPPED' | 'PAUSED';
 	trajectoryQueue: Queue<string>;
+	trajectoryMarkers: Array<{position: THREE.Vector3; color: THREE.Color; id: string}>;
+	markerFrequency: number;
 };
 
 const defaultSimulatorState: SimulatorState = {
@@ -59,6 +60,8 @@ const defaultSimulatorState: SimulatorState = {
 	trajectories: new Map<string, TrajectorySimState[]>(),
 	status: 'STOPPED',
 	trajectoryQueue: new Queue<string>(),
+	trajectoryMarkers: [],
+	markerFrequency: 0.25,
 };
 
 const nullTrajectory = new traj.PolynomialTrajectory(-1, []) as traj.Trajectory;
@@ -92,7 +95,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		...defaultSimulatorState,
 		play: () => {
 			// Set robots to initial positions...
-			set({status: 'RUNNING', time: 0});
+			set({status: 'RUNNING', time: 0, trajectoryMarkers: []});
 			get().executeSimulation(0);
 		},
 		pause: () => {
@@ -119,16 +122,16 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			});
 			const state = useRobartState.getState();
 			useRobartState.setState({...state, warnings: reprs});
-
+	
 			set({status: 'STOPPED'});
 			get().cancelSimulation();
 		},
 		step: () => {
-			const {status, time, timeDilation, robots: currentRobots} = get();
+			const {status, time, timeDilation, robots: currentRobots, markerFrequency} = get();
+			const trajectoryMarkers = get().trajectoryMarkers.slice();
 			if (status !== 'RUNNING') return;
 			const deltaT = 1 / (fps * timeDilation);
 			const newSimTime = time + deltaT;
-			//TODO update time text in simulation window
 			const robots = {...currentRobots};
 
 			const simulator = SIM;
@@ -186,6 +189,11 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				//}
 
 				robots[robotId].color = get().robots[robotId].color;
+
+				if (markerFrequency !== 0 && time % markerFrequency < deltaT) {
+					console.log(robots[robotId].color);
+					trajectoryMarkers.push({position: new THREE.Vector3().copy(robots[robotId].pos), color: robots[robotId].color, id:robotId + time});
+				}
 				
 				// Do not delete! Needed to keep variables from being removed for being unused
 				console.log(groupState, simulator);
@@ -194,6 +202,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			set({
 				robots,
 				time: newSimTime,
+				trajectoryMarkers: trajectoryMarkers,
 			});
 		},
 		setRobots: (robots) => {
