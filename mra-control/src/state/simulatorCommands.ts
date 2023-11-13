@@ -8,7 +8,7 @@
 
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {Vector3, Color} from 'three';
-import {CircleTrajectory, ComponentTrajectory, Hover, NullTrajectory, type Trajectory} from './trajectories';
+import {CircleTrajectory, ComponentTrajectory, Hover, NullTrajectory, ParametricTrajectory, type Trajectory} from './trajectories';
 
 export type SimulatorGroupState = {
 	robotIDs: string[];
@@ -190,6 +190,16 @@ export const moveCircleArcVel = (groupState: SimulatorGroupState, radius: number
 		trajectories.set(robotId, trajectory); 
 	});
 	return [duration, trajectories];
+};
 
-
+export const makeParametricTrajectory = (groupState: SimulatorGroupState, x: string, y: string, z: string, yaw: string, startTime: number, endTime: number, timeScaling: number): [number, Map<string, Trajectory>] => {
+	const robots = useSimulator.getState().robots;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	let duration = (endTime - startTime) * timeScaling;
+	groupState.robotIDs.forEach((robotId) => {
+		const initPos = robots[robotId].pos;
+		let trajectory = new ParametricTrajectory(initPos, x, y, z, yaw, startTime, endTime, timeScaling);
+		trajectories.set(robotId, trajectory);
+	});
+	return [duration, trajectories];
 };

@@ -74,8 +74,8 @@ export const Simulation = () => {
 			))}
 			{Object.values(trajectoryMarkers).map((trajectoryMarker) => (
 				<group key={trajectoryMarker.id} position={trajectoryMarker.position}>
-					<Sphere args={[0.05]}>
-						<meshBasicMaterial color={trajectoryMarker.color.getHex()}/>
+					<Sphere args={[0.03]}>
+						<meshBasicMaterial color={trajectoryMarker.color.getHex()}/> 
 					</Sphere>
 				</group>
 			))}

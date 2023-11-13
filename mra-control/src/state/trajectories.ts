@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import Sandbox from '@nyariv/sandboxjs';
 
 export abstract class Trajectory {
 	constructor(public duration: number) {
@@ -47,7 +48,8 @@ export class Hover extends Trajectory {
 		this.position = position;
 	}
 
-	evaluate(t: number): THREE.Vector3 {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	evaluate(_t: number): THREE.Vector3 {
 		return this.position;
 	}
 }
@@ -162,6 +164,58 @@ export class ComponentTrajectory extends Trajectory {
 			z = this.trajZ.evaluate(t / this.durScalingZ).z;
 		}
 
+		return new THREE.Vector3(x, y, z);
+	}
+}
+
+export class ParametricTrajectory extends Trajectory {
+	duration: number;
+	startTime: number;
+	endTime: number;
+	timeScaling: number;
+	xFunction: (t: number) => number;
+	yFunction: (t: number) => number;
+	zFunction: (t: number) => number;
+	yawFunction: (t: number) => number;
+	initPos: THREE.Vector3;
+	offset: THREE.Vector3;
+
+	constructor(initPos: THREE.Vector3, x: string, y: string, z: string, yaw: string, startTime: number, endTime: number, timeScaling: number) {
+		const duration = (endTime - startTime) * timeScaling;
+		super(duration);
+		this.initPos = initPos;
+		this.duration = duration;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.timeScaling = timeScaling;
+		this.xFunction = this.strToFunction(x);
+		this.yFunction = this.strToFunction(y);
+		this.zFunction = this.strToFunction(z);
+		this.yawFunction = this.strToFunction(yaw);
+
+		// Make sure the 
+		this.offset = initPos.sub(new THREE.Vector3(this.xFunction(startTime), this.yFunction(startTime), this.zFunction(startTime)));
+	}
+	
+	strToFunction(functionPlainText: string): (t: number) => number {
+		const functionLambda = ((t: number) => {
+			const regexMatch = /(?<![a-zA-Z])t(?![a-zA-Z])/g;
+			//TODO append imports like cos, sin, tan, ...etc.
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			const plainTextWithTInserted = functionPlainText.replaceAll(regexMatch, String(t));
+			const sandbox = new Sandbox();
+			const exec = sandbox.compile(plainTextWithTInserted);
+			const result = exec().run();
+			// TODO Sanity checks, or at least fail gracefully...
+			return result as number;
+		});
+		return functionLambda;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		const x = this.xFunction(t);
+		const y = this.yFunction(t);
+		const z = this.zFunction(t);
 		return new THREE.Vector3(x, y, z);
 	}
 }
