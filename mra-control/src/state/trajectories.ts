@@ -241,3 +241,48 @@ export class NegateTrajectory extends Trajectory {
 		return desiredPosition;
 	}
 }
+
+export class AddTrajectories extends Trajectory {
+	duration: number;
+	firstTrajectory: Trajectory;
+	secondTrajectory: Trajectory;
+	initPos: THREE.Vector3;
+	operation: 'add' | 'subtract';
+
+	constructor(initPos: THREE.Vector3, firstTrajectory: Trajectory, secondTrajectory: Trajectory, add = true) {
+		const duration = Math.max(firstTrajectory.duration, secondTrajectory.duration);
+		super(duration);
+		this.duration = duration;
+		this.firstTrajectory = firstTrajectory;
+		this.secondTrajectory = secondTrajectory;
+		this.operation = add ? 'add' : 'subtract';
+		this.initPos = initPos;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		if (this.operation === 'add') {
+			return this.firstTrajectory.evaluate(t).add(this.secondTrajectory.evaluate(t)).sub(this.initPos); 
+		} else {
+			return this.firstTrajectory.evaluate(t).sub(this.secondTrajectory.evaluate(t)).add(this.initPos); 
+		}
+	}
+}
+
+export class StretchTrajectory extends Trajectory {
+	duration: number;
+	originalTrajectory: Trajectory;
+	positionStretch: THREE.Vector3;
+	timeStretch: number;
+
+	constructor(originalTrajectory: Trajectory, xStretch: number, yStretch: number, zStretch: number, tStretch: number) {
+		super(originalTrajectory.duration * tStretch);
+		this.duration = originalTrajectory.duration * tStretch;
+		this.originalTrajectory = originalTrajectory;
+		this.positionStretch = new THREE.Vector3(xStretch, yStretch, zStretch);
+		this.timeStretch = tStretch;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		return this.originalTrajectory.evaluate(t).multiply(this.positionStretch);
+	}
+}

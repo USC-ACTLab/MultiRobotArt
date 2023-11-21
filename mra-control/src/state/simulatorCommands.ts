@@ -8,7 +8,7 @@
 
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {Vector3, Color} from 'three';
-import {CircleTrajectory, ComponentTrajectory, Hover, NegateTrajectory, NullTrajectory, ParametricTrajectory, type Trajectory} from './trajectories';
+import {AddTrajectories, CircleTrajectory, ComponentTrajectory, Hover, NegateTrajectory, NullTrajectory, ParametricTrajectory, StretchTrajectory, type Trajectory} from './trajectories';
 
 export type SimulatorGroupState = {
 	robotIDs: string[];
@@ -217,4 +217,31 @@ export const negateTrajectory = (groupState: SimulatorGroupState, [duration, ori
 		}
 	});
 	return [duration, trajectories];
+};
+
+export const addTrajectories = (groupState: SimulatorGroupState, [firstDuration, firstTrajectory]: [number, Map<string, Trajectory>], [secondDuration, secondTrajectory]: [number, Map<string, Trajectory>], add: boolean) => {
+	const robots = useSimulator.getState().robots;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	groupState.robotIDs.forEach((robotId) => {
+		const initPos = robots[robotId].pos;
+		let firstTrajectoryForRobot = firstTrajectory.get(robotId);
+		let secondTrajectoryForRobot = secondTrajectory.get(robotId);
+		if (firstTrajectoryForRobot && secondTrajectoryForRobot) {
+			let trajectory = new AddTrajectories(initPos, firstTrajectoryForRobot, secondTrajectoryForRobot, add);
+			trajectories.set(robotId, trajectory);
+		}
+	});
+	return [Math.max(firstDuration, secondDuration), trajectories];
+};
+
+export const stretchTrajectory = (groupState: SimulatorGroupState, [duration, traj]: [number, Map<string, Trajectory>], xStretch: number, yStretch: number, zStretch: number, tStretch: number): [number, Map<string, Trajectory>] => {
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	groupState.robotIDs.forEach((robotId) => {
+		let originalTrajectory = traj.get(robotId);
+		if (originalTrajectory) {
+			let trajectory = new StretchTrajectory(originalTrajectory, xStretch, yStretch, zStretch, tStretch);
+			trajectories.set(robotId, trajectory);
+		}
+	});
+	return [duration * tStretch, trajectories];
 };

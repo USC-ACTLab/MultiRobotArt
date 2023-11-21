@@ -17,7 +17,9 @@ import Blockly from 'blockly';
 import {multiTraj} from './motion/multi_traj';
 import {blockCircleArc} from './curves/circleArc';
 import {blockNegate} from './trajectoryModifiers/negate_trajectory';
-
+import {blockAddTrajectories} from './trajectoryModifiers/add_trajectories';
+import {blockSubtractTrajectories} from './trajectoryModifiers/subtract_trajectories';
+import { blockStretchTrajectories } from './trajectoryModifiers/stretch_trajectory';
 
 /**
  * This is where we collect all of the custom blocks and actually update Blockly definitions.
@@ -40,6 +42,9 @@ export const CUSTOM_BLOCKS = {
 	blockColorOff,
 	multiTraj,
 	blockNegate,
+	blockAddTrajectories,
+	blockSubtractTrajectories,
+	blockStretchTrajectories,
 };
 
 Object.values(CUSTOM_BLOCKS).forEach((block) => {
