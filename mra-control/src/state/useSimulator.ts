@@ -191,12 +191,13 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				robots[robotId].color = get().robots[robotId].color;
 
 				if (markerFrequency !== 0 && time % markerFrequency < deltaT) {
-					console.log(robots[robotId].color);
 					trajectoryMarkers.push({position: new THREE.Vector3().copy(robots[robotId].pos), color: robots[robotId].color, id:robotId + time});
 				}
 				
 				// Do not delete! Needed to keep variables from being removed for being unused
-				console.log(groupState, simulator);
+				if (time > 99999) {
+					console.log(groupState, simulator);
+				}
 			});
 
 			set({

@@ -6,6 +6,7 @@ export type BlocklyOrder = 'ORDER_ATOMIC';
 export type BlocklyGenerator = {
 	valueToCode: (block: Blockly.Block, name: string, order: BlocklyOrder) => any;
 	ORDER_ATOMIC: BlocklyOrder;
+	statementToCode(block: Blockly.Block, arg1: string): string;
 };
 
 /**

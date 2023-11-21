@@ -79,7 +79,7 @@ export class CircleTrajectory extends Trajectory {
 	startAngle: number;
 	endAngle: number;
 
-	constructor(duration: number, init_pos: THREE.Vector3, radius: number, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false, startAngle = 0, endAngle = 360) {
+	constructor(duration: number, init_pos: THREE.Vector3, radius: number, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = true, startAngle = 0, endAngle = 360) {
 		super(duration);
 		this.radius = radius;
 		this.axes = axes;
@@ -193,7 +193,7 @@ export class ParametricTrajectory extends Trajectory {
 		this.zFunction = this.strToFunction(z);
 		this.yawFunction = this.strToFunction(yaw);
 
-		// Make sure the 
+		// Make sure the function always starts at the correct position.
 		this.offset = initPos.sub(new THREE.Vector3(this.xFunction(startTime), this.yFunction(startTime), this.zFunction(startTime)));
 	}
 	
@@ -217,5 +217,27 @@ export class ParametricTrajectory extends Trajectory {
 		const y = this.yFunction(t);
 		const z = this.zFunction(t);
 		return new THREE.Vector3(x, y, z);
+	}
+}
+
+export class NegateTrajectory extends Trajectory {
+	duration: number;
+	initPos: THREE.Vector3;
+	originalTrajectory: Trajectory;
+	constructor(initPos: THREE.Vector3, originalTrajectory: Trajectory) {
+		const duration = originalTrajectory.duration;
+		super(duration);
+		this.duration = duration;
+		this.initPos = new THREE.Vector3;
+		this.initPos.copy(initPos);
+		this.originalTrajectory = originalTrajectory;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		const originalTrajectoryPosition = this.originalTrajectory.evaluate(t);
+		const initPos = new THREE.Vector3().copy(this.initPos);
+		const desiredPosition = initPos.multiplyScalar(2).sub(originalTrajectoryPosition);
+		console.warn(desiredPosition, this.initPos, t);
+		return desiredPosition;
 	}
 }

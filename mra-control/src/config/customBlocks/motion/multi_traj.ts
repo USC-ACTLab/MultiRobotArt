@@ -38,9 +38,9 @@ export const multiTraj: RobartBlockDefinition = {
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
-		var x_traj = js.statementToCode(block, 'x') as string;
-		var y_traj = js.statementToCode(block, 'y') as string;
-		var z_traj = js.statementToCode(block, 'z') as string;
+		var x_traj = js.statementToCode(block, 'x') ;
+		var y_traj = js.statementToCode(block, 'y') ;
+		var z_traj = js.statementToCode(block, 'z') ;
 
 		// If no trajectory is given, use a dummy
 		if (x_traj.length === 0) {
@@ -48,6 +48,7 @@ export const multiTraj: RobartBlockDefinition = {
 		} else {
 			x_traj = x_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
+
 
 		if (y_traj.length === 0) {
 			y_traj = 'simulator.dummy()';

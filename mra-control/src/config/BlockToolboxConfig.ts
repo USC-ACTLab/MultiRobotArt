@@ -25,7 +25,6 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 				//blockToToolbox(CUSTOM_BLOCKS.blockStartLinearMotion),
 				blockToToolbox(CUSTOM_BLOCKS.blockStop),
 				//blockToToolbox(CUSTOM_BLOCKS.blockTurn),
-				blockToToolbox(CUSTOM_BLOCKS.multiTraj),
 			],
 		},
 		{
@@ -50,6 +49,14 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			contents: [
 				blockToToolbox(CUSTOM_BLOCKS.blockColor),
 				blockToToolbox(CUSTOM_BLOCKS.blockColorOff),
+			],
+		},
+		{
+			kind: 'category',
+			name: 'Trajectory Modifiers',
+			contents: [
+				blockToToolbox(CUSTOM_BLOCKS.blockNegate),
+				blockToToolbox(CUSTOM_BLOCKS.multiTraj),
 			],
 		},
 		// {
@@ -82,10 +89,5 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 		// 		},
 		// 	],
 		// },
-		{
-			kind: 'category',
-			name: 'Rotation and Translation',
-			// colour: '#5CA699',
-		},
 	],
 };

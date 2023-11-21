@@ -16,6 +16,7 @@ import {blockColorOff} from './colors/colorOff';
 import Blockly from 'blockly';
 import {multiTraj} from './motion/multi_traj';
 import {blockCircleArc} from './curves/circleArc';
+import {blockNegate} from './trajectoryModifiers/negate_trajectory';
 
 
 /**
@@ -38,6 +39,7 @@ export const CUSTOM_BLOCKS = {
 	blockColor,
 	blockColorOff,
 	multiTraj,
+	blockNegate,
 };
 
 Object.values(CUSTOM_BLOCKS).forEach((block) => {
