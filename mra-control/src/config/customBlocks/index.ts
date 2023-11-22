@@ -19,7 +19,8 @@ import {blockCircleArc} from './curves/circleArc';
 import {blockNegate} from './trajectoryModifiers/negate_trajectory';
 import {blockAddTrajectories} from './trajectoryModifiers/add_trajectories';
 import {blockSubtractTrajectories} from './trajectoryModifiers/subtract_trajectories';
-import { blockStretchTrajectories } from './trajectoryModifiers/stretch_trajectory';
+import {blockStretchTrajectories} from './trajectoryModifiers/stretch_trajectory';
+import {blockRotateTrajectoryDegrees, blockRotateTrajectoryRadians} from './trajectoryModifiers/rotate_trajectory';
 
 /**
  * This is where we collect all of the custom blocks and actually update Blockly definitions.
@@ -45,6 +46,8 @@ export const CUSTOM_BLOCKS = {
 	blockAddTrajectories,
 	blockSubtractTrajectories,
 	blockStretchTrajectories,
+	blockRotateTrajectoryDegrees,
+	blockRotateTrajectoryRadians,
 };
 
 Object.values(CUSTOM_BLOCKS).forEach((block) => {

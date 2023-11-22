@@ -8,7 +8,7 @@
 
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {Vector3, Color} from 'three';
-import {AddTrajectories, CircleTrajectory, ComponentTrajectory, Hover, NegateTrajectory, NullTrajectory, ParametricTrajectory, StretchTrajectory, type Trajectory} from './trajectories';
+import {AddTrajectories, CircleTrajectory, ComponentTrajectory, Hover, NegateTrajectory, NullTrajectory, ParametricTrajectory, RotationTrajectory, StretchTrajectory, type Trajectory} from './trajectories';
 
 export type SimulatorGroupState = {
 	robotIDs: string[];
@@ -244,4 +244,18 @@ export const stretchTrajectory = (groupState: SimulatorGroupState, [duration, tr
 		}
 	});
 	return [duration * tStretch, trajectories];
+};
+
+export const rotateTrajectory = (groupState: SimulatorGroupState, [duration, traj]: [number, Map<string, Trajectory>], xRotation: number, yRotation: number, zRotation: number): [number, Map<string, Trajectory>] => {
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	const robots = useSimulator.getState().robots;
+	groupState.robotIDs.forEach((robotId) => {
+		let originalTrajectory = traj.get(robotId);
+		if (originalTrajectory) {
+			const initialPosition = robots[robotId].pos;
+			let trajectory = new RotationTrajectory(initialPosition, originalTrajectory, xRotation, yRotation, zRotation);
+			trajectories.set(robotId, trajectory);
+		}
+	});
+	return [duration, trajectories];
 };

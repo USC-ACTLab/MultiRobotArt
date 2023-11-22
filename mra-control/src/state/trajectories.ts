@@ -286,3 +286,22 @@ export class StretchTrajectory extends Trajectory {
 		return this.originalTrajectory.evaluate(t).multiply(this.positionStretch);
 	}
 }
+
+export class RotationTrajectory extends Trajectory {
+	duration: number;
+	originalTrajectory: Trajectory;
+	rotationEuler: THREE.Euler;
+	initialPosition: THREE.Vector3;
+
+	constructor(initialPosition: THREE.Vector3, originalTrajectory: Trajectory, xRotation: number, yRotation: number, zRotation: number) {
+		super(originalTrajectory.duration);
+		this.duration = originalTrajectory.duration;
+		this.originalTrajectory = originalTrajectory;
+		this.rotationEuler = new THREE.Euler(xRotation, yRotation, zRotation, 'XYZ');
+		this.initialPosition = initialPosition;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		return this.originalTrajectory.evaluate(t).sub(this.initialPosition).applyEuler(this.rotationEuler).add(this.initialPosition);
+	}
+}

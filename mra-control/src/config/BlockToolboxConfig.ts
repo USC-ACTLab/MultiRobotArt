@@ -60,6 +60,8 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 				blockToToolbox(CUSTOM_BLOCKS.blockAddTrajectories),
 				blockToToolbox(CUSTOM_BLOCKS.blockSubtractTrajectories),
 				blockToToolbox(CUSTOM_BLOCKS.blockStretchTrajectories),
+				blockToToolbox(CUSTOM_BLOCKS.blockRotateTrajectoryDegrees),
+				blockToToolbox(CUSTOM_BLOCKS.blockRotateTrajectoryRadians),
 			],
 		},
 		// {
