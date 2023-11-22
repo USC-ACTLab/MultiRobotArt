@@ -11,7 +11,7 @@ import {blockMove} from './motion/move';
 import {blockTakeoff} from './motion/takeoff';
 import {blockTurn} from './motion/turn';
 import {blockGetPosition} from './utility/get_a_position';
-import {blockColor} from './colors/color';
+import {blockColor, blockRandomColor} from './colors/color';
 import {blockColorOff} from './colors/colorOff';
 import Blockly from 'blockly';
 import {multiTraj} from './motion/multi_traj';
@@ -48,6 +48,7 @@ export const CUSTOM_BLOCKS = {
 	blockStretchTrajectories,
 	blockRotateTrajectoryDegrees,
 	blockRotateTrajectoryRadians,
+	blockRandomColor,
 };
 
 Object.values(CUSTOM_BLOCKS).forEach((block) => {

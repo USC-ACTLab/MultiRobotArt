@@ -53,3 +53,28 @@ export const blockColor: RobartBlockDefinition = {
 
 	},
 };
+export const blockRandomColor: RobartBlockDefinition = {
+	name: 'randomColor',
+	block:{
+		init: function () {
+			this.appendDummyInput()
+				.appendField('Random LED Color:');
+			this.setPreviousStatement(true, null);
+			this.setNextStatement(true, null);
+		},
+    
+	},
+
+	pythonGenerator: (block, _python) => {
+		const color = block.getFieldValue('color') as string;
+		const code = 'setLEDColorFromHex(cf, "' + color + '")\n';
+		return code;
+	},
+
+
+
+	javascriptGenerator: (block, _js) => {
+		var color = {r: Math.random(), b: Math.random(), g: Math.random()};
+		return `simulator.setColor(groupState, ${color?.r},${color?.g},${color?.b})\n`;
+	},
+};

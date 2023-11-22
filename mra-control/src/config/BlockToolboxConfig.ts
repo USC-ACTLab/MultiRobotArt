@@ -48,6 +48,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			name: 'Colors',
 			contents: [
 				blockToToolbox(CUSTOM_BLOCKS.blockColor),
+				blockToToolbox(CUSTOM_BLOCKS.blockRandomColor),
 				blockToToolbox(CUSTOM_BLOCKS.blockColorOff),
 			],
 		},
