@@ -359,7 +359,9 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						//   eval(block.javaScript);
 						// }
 						var duration = 0;
-						console.log(groupState); // Do not Remove!
+						if (groupId === 'This doesnt run') {
+							console.log(groupState); // Do not Remove!
+						}
 						
 						// This only kind of works, doesn't work for velo commands because init position will be wrong.
 						// TODO: Run all blocks up until this point in the timeline to get position
@@ -372,7 +374,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 								duration += dur;
 							}
 						});
-						// eval(get().blocks[blockId].javaScript); // TODO: Totally safe, no security flaws whatsoever.
+						// eval(get().blocks[blockId].javaScript); 
 						//const currBlock = get().blocks[blockId]
 						//const execute = simulator.dummy //getSimCommand(currBlock)
 						//duration = execute(currBlock, groupState)

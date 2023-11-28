@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import Sandbox from '@nyariv/sandboxjs';
 
 export abstract class Trajectory {
 	constructor(public duration: number) {
@@ -47,7 +48,8 @@ export class Hover extends Trajectory {
 		this.position = position;
 	}
 
-	evaluate(t: number): THREE.Vector3 {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	evaluate(_t: number): THREE.Vector3 {
 		return this.position;
 	}
 }
@@ -77,7 +79,7 @@ export class CircleTrajectory extends Trajectory {
 	startAngle: number;
 	endAngle: number;
 
-	constructor(duration: number, init_pos: THREE.Vector3, radius: number, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false, startAngle = 0, endAngle = 360) {
+	constructor(duration: number, init_pos: THREE.Vector3, radius: number, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = true, startAngle = 0, endAngle = 360) {
 		super(duration);
 		this.radius = radius;
 		this.axes = axes;
@@ -163,5 +165,143 @@ export class ComponentTrajectory extends Trajectory {
 		}
 
 		return new THREE.Vector3(x, y, z);
+	}
+}
+
+export class ParametricTrajectory extends Trajectory {
+	duration: number;
+	startTime: number;
+	endTime: number;
+	timeScaling: number;
+	xFunction: (t: number) => number;
+	yFunction: (t: number) => number;
+	zFunction: (t: number) => number;
+	yawFunction: (t: number) => number;
+	initPos: THREE.Vector3;
+	offset: THREE.Vector3;
+
+	constructor(initPos: THREE.Vector3, x: string, y: string, z: string, yaw: string, startTime: number, endTime: number, timeScaling: number) {
+		const duration = (endTime - startTime) * timeScaling;
+		super(duration);
+		this.initPos = initPos;
+		this.duration = duration;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.timeScaling = timeScaling;
+		this.xFunction = this.strToFunction(x);
+		this.yFunction = this.strToFunction(y);
+		this.zFunction = this.strToFunction(z);
+		this.yawFunction = this.strToFunction(yaw);
+
+		// Make sure the function always starts at the correct position.
+		this.offset = initPos.sub(new THREE.Vector3(this.xFunction(startTime), this.yFunction(startTime), this.zFunction(startTime)));
+	}
+	
+	strToFunction(functionPlainText: string): (t: number) => number {
+		const functionLambda = ((t: number) => {
+			const regexMatch = /(?<![a-zA-Z])t(?![a-zA-Z])/g;
+			//TODO append imports like cos, sin, tan, ...etc.
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			const plainTextWithTInserted = functionPlainText.replaceAll(regexMatch, String(t));
+			const sandbox = new Sandbox();
+			const exec = sandbox.compile(plainTextWithTInserted);
+			const result = exec().run();
+			// TODO Sanity checks, or at least fail gracefully...
+			return result as number;
+		});
+		return functionLambda;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		const x = this.xFunction(t);
+		const y = this.yFunction(t);
+		const z = this.zFunction(t);
+		return new THREE.Vector3(x, y, z);
+	}
+}
+
+export class NegateTrajectory extends Trajectory {
+	duration: number;
+	initPos: THREE.Vector3;
+	originalTrajectory: Trajectory;
+	constructor(initPos: THREE.Vector3, originalTrajectory: Trajectory) {
+		const duration = originalTrajectory.duration;
+		super(duration);
+		this.duration = duration;
+		this.initPos = new THREE.Vector3;
+		this.initPos.copy(initPos);
+		this.originalTrajectory = originalTrajectory;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		const originalTrajectoryPosition = this.originalTrajectory.evaluate(t);
+		const initPos = new THREE.Vector3().copy(this.initPos);
+		const desiredPosition = initPos.multiplyScalar(2).sub(originalTrajectoryPosition);
+		console.warn(desiredPosition, this.initPos, t);
+		return desiredPosition;
+	}
+}
+
+export class AddTrajectories extends Trajectory {
+	duration: number;
+	firstTrajectory: Trajectory;
+	secondTrajectory: Trajectory;
+	initPos: THREE.Vector3;
+	operation: 'add' | 'subtract';
+
+	constructor(initPos: THREE.Vector3, firstTrajectory: Trajectory, secondTrajectory: Trajectory, add = true) {
+		const duration = Math.max(firstTrajectory.duration, secondTrajectory.duration);
+		super(duration);
+		this.duration = duration;
+		this.firstTrajectory = firstTrajectory;
+		this.secondTrajectory = secondTrajectory;
+		this.operation = add ? 'add' : 'subtract';
+		this.initPos = initPos;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		if (this.operation === 'add') {
+			return this.firstTrajectory.evaluate(t).add(this.secondTrajectory.evaluate(t)).sub(this.initPos); 
+		} else {
+			return this.firstTrajectory.evaluate(t).sub(this.secondTrajectory.evaluate(t)).add(this.initPos); 
+		}
+	}
+}
+
+export class StretchTrajectory extends Trajectory {
+	duration: number;
+	originalTrajectory: Trajectory;
+	positionStretch: THREE.Vector3;
+	timeStretch: number;
+
+	constructor(originalTrajectory: Trajectory, xStretch: number, yStretch: number, zStretch: number, tStretch: number) {
+		super(originalTrajectory.duration * tStretch);
+		this.duration = originalTrajectory.duration * tStretch;
+		this.originalTrajectory = originalTrajectory;
+		this.positionStretch = new THREE.Vector3(xStretch, yStretch, zStretch);
+		this.timeStretch = tStretch;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		return this.originalTrajectory.evaluate(t).multiply(this.positionStretch);
+	}
+}
+
+export class RotationTrajectory extends Trajectory {
+	duration: number;
+	originalTrajectory: Trajectory;
+	rotationEuler: THREE.Euler;
+	initialPosition: THREE.Vector3;
+
+	constructor(initialPosition: THREE.Vector3, originalTrajectory: Trajectory, xRotation: number, yRotation: number, zRotation: number) {
+		super(originalTrajectory.duration);
+		this.duration = originalTrajectory.duration;
+		this.originalTrajectory = originalTrajectory;
+		this.rotationEuler = new THREE.Euler(xRotation, yRotation, zRotation, 'XYZ');
+		this.initialPosition = initialPosition;
+	}
+
+	evaluate(t: number): THREE.Vector3 {
+		return this.originalTrajectory.evaluate(t).sub(this.initialPosition).applyEuler(this.rotationEuler).add(this.initialPosition);
 	}
 }

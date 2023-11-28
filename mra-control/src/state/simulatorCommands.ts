@@ -8,7 +8,7 @@
 
 import {useSimulator} from '@MRAControl/state/useSimulator';
 import {Vector3, Color} from 'three';
-import {CircleTrajectory, ComponentTrajectory, Hover, NullTrajectory, type Trajectory} from './trajectories';
+import {AddTrajectories, CircleTrajectory, ComponentTrajectory, Hover, NegateTrajectory, NullTrajectory, ParametricTrajectory, RotationTrajectory, StretchTrajectory, type Trajectory} from './trajectories';
 
 export type SimulatorGroupState = {
 	robotIDs: string[];
@@ -162,7 +162,7 @@ export const componentTraj = (groupState: SimulatorGroupState, [durX, trajX]: [n
 	let duration = Math.max(durX, durY, durZ);
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) =>{
-		let trajectory = new ComponentTrajectory(duration, durX, trajX.get(robotId), durY, trajY.get(robotId), durZ, trajZ.get(robotId));
+		let trajectory = new ComponentTrajectory(duration, durX, trajX.get(robotId)!, durY, trajY.get(robotId)!, durZ, trajZ.get(robotId)!);
 		trajectories.set(robotId, trajectory); 
 	});
 	return [duration, trajectories];
@@ -185,11 +185,77 @@ export const moveCircleArcVel = (groupState: SimulatorGroupState, radius: number
 	const robots = useSimulator.getState().robots;
 	groupState.robotIDs.forEach((robotId) =>{
 		//let trajectory = new ComponentTrajectory(duration, durX, trajX.get(robotId), durY, trajY.get(robotId), durZ, trajZ.get(robotId));
-		const initPos = robots[robotId];
-		let trajectory = new CircleTrajectory(duration, initPos, radius, ['Y', 'Z'], arcAngle * Math.PI / 180., degreesStart, degreesEnd);
+		const initPos = robots[robotId].pos;
+		// eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+		let trajectory = new CircleTrajectory(duration, initPos, radius, ['Y', 'Z'], arcAngle * Math.PI / 180., true, degreesStart, degreesEnd);
 		trajectories.set(robotId, trajectory); 
 	});
 	return [duration, trajectories];
+};
 
+export const makeParametricTrajectory = (groupState: SimulatorGroupState, x: string, y: string, z: string, yaw: string, startTime: number, endTime: number, timeScaling: number): [number, Map<string, Trajectory>] => {
+	const robots = useSimulator.getState().robots;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	let duration = (endTime - startTime) * timeScaling;
+	groupState.robotIDs.forEach((robotId) => {
+		const initPos = robots[robotId].pos;
+		let trajectory = new ParametricTrajectory(initPos, x, y, z, yaw, startTime, endTime, timeScaling);
+		trajectories.set(robotId, trajectory);
+	});
+	return [duration, trajectories];
+};
 
+export const negateTrajectory = (groupState: SimulatorGroupState, [duration, originalTrajectory]: [number, Map<string, Trajectory>]): [number, Map<string, Trajectory>] => {
+	const robots = useSimulator.getState().robots;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	groupState.robotIDs.forEach((robotId) => {
+		const initPos = robots[robotId].pos;
+		let originalTrajectoryValue = originalTrajectory.get(robotId);
+		if (originalTrajectoryValue) {
+			let trajectory = new NegateTrajectory(initPos, originalTrajectoryValue);
+			trajectories.set(robotId, trajectory);
+		}
+	});
+	return [duration, trajectories];
+};
+
+export const addTrajectories = (groupState: SimulatorGroupState, [firstDuration, firstTrajectory]: [number, Map<string, Trajectory>], [secondDuration, secondTrajectory]: [number, Map<string, Trajectory>], add: boolean) => {
+	const robots = useSimulator.getState().robots;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	groupState.robotIDs.forEach((robotId) => {
+		const initPos = robots[robotId].pos;
+		let firstTrajectoryForRobot = firstTrajectory.get(robotId);
+		let secondTrajectoryForRobot = secondTrajectory.get(robotId);
+		if (firstTrajectoryForRobot && secondTrajectoryForRobot) {
+			let trajectory = new AddTrajectories(initPos, firstTrajectoryForRobot, secondTrajectoryForRobot, add);
+			trajectories.set(robotId, trajectory);
+		}
+	});
+	return [Math.max(firstDuration, secondDuration), trajectories];
+};
+
+export const stretchTrajectory = (groupState: SimulatorGroupState, [duration, traj]: [number, Map<string, Trajectory>], xStretch: number, yStretch: number, zStretch: number, tStretch: number): [number, Map<string, Trajectory>] => {
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	groupState.robotIDs.forEach((robotId) => {
+		let originalTrajectory = traj.get(robotId);
+		if (originalTrajectory) {
+			let trajectory = new StretchTrajectory(originalTrajectory, xStretch, yStretch, zStretch, tStretch);
+			trajectories.set(robotId, trajectory);
+		}
+	});
+	return [duration * tStretch, trajectories];
+};
+
+export const rotateTrajectory = (groupState: SimulatorGroupState, [duration, traj]: [number, Map<string, Trajectory>], xRotation: number, yRotation: number, zRotation: number): [number, Map<string, Trajectory>] => {
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	const robots = useSimulator.getState().robots;
+	groupState.robotIDs.forEach((robotId) => {
+		let originalTrajectory = traj.get(robotId);
+		if (originalTrajectory) {
+			const initialPosition = robots[robotId].pos;
+			let trajectory = new RotationTrajectory(initialPosition, originalTrajectory, xRotation, yRotation, zRotation);
+			trajectories.set(robotId, trajectory);
+		}
+	});
+	return [duration, trajectories];
 };

@@ -3,7 +3,7 @@ import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
 export type BlocklySettings = {
-	categories: string[]; // TODO: Use a stricter type from the blockly category definitions
+	categories: string[]; 
 };
 
 export type SimulationSettings = {

@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {type RobartBlockDefinition} from '../BlockDefinition';
 import Blockly from 'blockly';
 import * as SIM from '@MRAControl/state/simulatorCommands';
 import {string} from 'blockly/core/utils';
 
-export const multiTraj: RobartBlockDefinition = {
-	name: 'multiTraj',
+export const parametricBlock: RobartBlockDefinition = {
+	name: 'parametricBlock',
 	block:{
 		init: function () {
 			this.appendDummyInput()
@@ -38,9 +35,9 @@ export const multiTraj: RobartBlockDefinition = {
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
-		var x_traj = js.statementToCode(block, 'x') ;
-		var y_traj = js.statementToCode(block, 'y') ;
-		var z_traj = js.statementToCode(block, 'z') ;
+		var x_traj = js.statementToCode(block, 'x') as string;
+		var y_traj = js.statementToCode(block, 'y') as string;
+		var z_traj = js.statementToCode(block, 'z') as string;
 
 		// If no trajectory is given, use a dummy
 		if (x_traj.length === 0) {
@@ -49,14 +46,13 @@ export const multiTraj: RobartBlockDefinition = {
 			x_traj = x_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
 
-
 		if (y_traj.length === 0) {
 			y_traj = 'simulator.dummy()';
 		} else {
 			y_traj = y_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
 
-		if (z_traj.length === 0) {
+		if (z_traj.length === 1) {
 			z_traj = 'simulator.dummy()';
 		} else {
 			z_traj = z_traj.replace(/(\r\n|\n|\r)/gm, '');

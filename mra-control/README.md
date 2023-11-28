@@ -34,14 +34,11 @@ Coming soon...
 ## TODOs:
 The github issues contain some TODOs and are listed here in order of priority/when they will be done. This does not include bug fixes that are ongoing.
 
-~~1. Multiple trajectories in one timeline block - compose multiple commands together~~
-~~2. All robots (of one type) are added to one group by default - simplifies the `add group` process if testing simple things~~
-3. Rotation and Translation block modifiers - rotate/translate a trajectory
-4. Hide and add additional timeline lanes
-5. Arbitrary parametric equations block
-6. Nicer robot manager
-7. Trajectory visualization
-
+* Physical Constraints
+* Curves: lemniscate, lissajous, rose curve, etc.
+* Get rid of flickering
+* Python implementations
+* Tutorials
 
 ## Overall Design Considerations
 
