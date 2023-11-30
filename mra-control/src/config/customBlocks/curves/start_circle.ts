@@ -28,9 +28,4 @@ export const block_start_circle: RobartBlockDefinition = {
 		// TODO...
 		return 'simulator.dummy();\n';
 	},
-	execute: (block, groupState) => {
-		const simulator = SIM;
-		return 0.1;
-	},
-
 };

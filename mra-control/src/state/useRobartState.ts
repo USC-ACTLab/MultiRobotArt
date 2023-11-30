@@ -372,6 +372,9 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							if (line.length !== 0) {
 								let [dur, trajectoryRecord]: [number, Record<string, Trajectory>] = eval(line); // Return a Trajectory lambda function? Only compute actual trajectory when ready?
 								duration += dur;
+								if (line.length === 10000){
+									console.log(simulator);
+								}
 							}
 						});
 						// eval(get().blocks[blockId].javaScript); 

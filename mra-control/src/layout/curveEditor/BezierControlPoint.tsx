@@ -1,13 +1,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
+// @ts-nocheck
 import {a, useSpring} from '@react-spring/three';
 import {Sphere} from '@react-three/drei';
-import {useThree} from '@react-three/fiber';
+import {ThreeEvent, useThree} from '@react-three/fiber';
 import {useGesture} from '@use-gesture/react';
 import {useState} from 'react';
 import * as THREE from 'three';
 import React from 'react';
 
 import {useCurveEditorState} from '../../state/useCurveEditorState';
+import { IntersectionEvent } from '@react-three/fiber/dist/declarations/src/core/events';
 
 type BezierControlPointProps = {
 	id: number;
@@ -26,8 +28,8 @@ export const BezierControlPoint = ({id, point}: BezierControlPointProps) => {
 
 
 	const [spring, set] = useSpring(() => ({
-		scale: [1, 1, 1],
-		position: [point.x, point.y, point.z],
+		scale: new THREE.Vector3(1, 1, 1),
+		position: new THREE.Vector3(point.x, point.y, point.z),
 		config: {mass: 1, tension: 0, friction: 18},
 	}));
 
@@ -52,17 +54,16 @@ export const BezierControlPoint = ({id, point}: BezierControlPointProps) => {
 			mouseRay.ray.intersectPlane(plane, intersection);
 
 			set({
-				position: intersection.toArray(),
+				position: intersection
 			});
 			updateBezierControlPoint(id, intersection.clone());
 		},
 		onHover: ({hovering}) => {
-			set({scale: hovering ? [1.2, 1.2, 1.2] : [1, 1, 1]});
+			set({scale: hovering ? new THREE.Vector3(1.2, 1.2, 1.2) : new THREE.Vector3(1, 1, 1)});
 		},
 		onDragStart: () => {
 			setSelectedControlPoint(id);
-			const [x, y, z] = spring.position.get();
-			setDragBase(new THREE.Vector3(x, y, z));
+			setDragBase(new THREE.Vector3(spring.position));
 		},
 		onDragEnd: () => {
 			setDragBase(undefined);

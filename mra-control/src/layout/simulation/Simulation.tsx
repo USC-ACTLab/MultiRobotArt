@@ -19,6 +19,8 @@ export const Simulation = () => {
 	const setRobots = useSimulator((state) => state.setRobots);
 	const robartState = useRobartState();
 	const simulatorState = useSimulator();
+	const renderBB = simulatorState.renderBoundingBoxes;
+ 
 	const trajectoryMarkers: Array<{position: Vector3; color: THREE.Color; id: string}> = useSimulator((state) => state.trajectoryMarkers);
 	useFrame(({clock}) => {
 		step();
