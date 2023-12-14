@@ -125,6 +125,7 @@ export type TimelineActions = {
 	removeRobotFromGroup: (groupId: string, robotId: string) => void;
 	updateBlockInTimeline: (groupId: string, itemId: string, startTime: number) => void;
 	setTimelineMode: (mode: TimelineModes) => void;
+	removeGroups: (groupsToRemove: string[]) => void;
 };
 
 export type BlockActions = {
@@ -555,13 +556,19 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						});
 					},
 					removeGroup: (groupId: string) => {
-						const groups = get().timelineState.groups;
+						const groups = {...get().timelineState.groups};
+						console.log("hi")
 						delete groups[groupId];
 						set((state) => {
-							state.timelineState.groups = groups;
+							state.timelineState.groups = {...groups};
 						});
 					},
-
+					removeGroups: (groupsToRemove: string[]) =>  {
+					for (let i = 0; i < groupsToRemove.length; i++){
+						get().removeGroup(groupsToRemove[i]);
+				
+					}
+					},
 				}),
 				{
 					storage: createJSONStorage(() => sessionStorage),

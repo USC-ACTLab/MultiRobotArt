@@ -9,6 +9,7 @@ import {RightPanel} from './layout/RightPanel';
 import {SettingsModal} from './layout/settings/SettingsModal';
 import {Timeline} from './layout/timeline/Timeline';
 import {useRobartState} from './state/useRobartState';
+import {RemoveGroupModal } from './components/modal/RemoveGroup';
 
 function App() {
 	return (

@@ -10,7 +10,7 @@ import {RobotManagerModal} from '../robotManager/RobotManagerModal';
 import {TimelineEditModeButtons} from './TimelineEditModeButtons';
 import {TimelineSimulationButtons} from './TimelineSimulationButtons';
 import React, {useEffect} from 'react';
-import {AddTimelineGroupLabel} from './addTimelineGroupLabel';
+import {AddTimelineGroupLabel, RemoveTimelineGroupLabel} from './addTimelineGroupLabel';
 
 
 export const Timeline = () => {
@@ -38,6 +38,7 @@ export const Timeline = () => {
 							<TimelineGroupLabel group={group} key={group.id} />
 						))}
 						<AddTimelineGroupLabel></AddTimelineGroupLabel>
+						<RemoveTimelineGroupLabel></RemoveTimelineGroupLabel>
 					</div>
 					<div className="relative flex h-full w-full flex-col gap-2 overflow-x-auto">
 						{groups.map((group) => (
