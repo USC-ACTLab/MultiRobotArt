@@ -37,8 +37,8 @@ export const blockCircleArc: RobartBlockDefinition = {
 		const velocity = block.getFieldValue('velocity') as number;
 		const degrees = block.getFieldValue('angle_degrees') as number;
 		const dropDownDirection = block.getFieldValue('direction') as string;
-		const code = 'circle(' + radius + ',' + velocity + ',' + degrees + ',\'' + dropDownDirection + '\')';
-		return code;
+		const code = 'circle(groupState' + radius + ',' + velocity + ',' + degrees + ',\'' + dropDownDirection + '\')';
+		return code; //TODO, method doesn't exit!
 	},
 	javascriptGenerator: (block, _js) => {
 		const radius = block.getFieldValue('radius_m') as number;

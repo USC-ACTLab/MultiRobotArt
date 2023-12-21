@@ -19,7 +19,6 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 				blockToToolbox(CUSTOM_BLOCKS.blockLand),
 				blockToToolbox(CUSTOM_BLOCKS.blockGoTo),
 				blockToToolbox(CUSTOM_BLOCKS.blockGoToSpeed),
-				blockToToolbox(CUSTOM_BLOCKS.blockMoveAngles),
 				blockToToolbox(CUSTOM_BLOCKS.blockMoveXyz),
 				blockToToolbox(CUSTOM_BLOCKS.blockMove),
 				//blockToToolbox(CUSTOM_BLOCKS.blockStartLinearMotion),

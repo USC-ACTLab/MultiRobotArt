@@ -33,7 +33,9 @@ export const blockCircle: RobartBlockDefinition = {
 		const velocity = block.getFieldValue('velocity') as number;
 		const degrees = block.getFieldValue('angle_degrees') as number;
 		const dropDownDirection = block.getFieldValue('direction') as string;
-		const code = 'circle(' + radius + ',' + velocity + ',' + degrees + ',\'' + dropDownDirection + '\')';
+
+		const radians = degrees / 180 * Math.PI;
+		const code = 'circle(groupState, ' + radius + ', ' + velocity + ', ' + radians + ',\'' + dropDownDirection + '\')';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {

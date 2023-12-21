@@ -31,7 +31,7 @@ export const blockGoTo: RobartBlockDefinition = {
 		var yPosition = block.getFieldValue('y_pos') as number;
 		var zPosition = block.getFieldValue('z_pos') as number;
 		var duration = block.getFieldValue('duration') as number;
-		var code = 'goto_duration(cf, ' + xPosition + ',' + yPosition + ',' + zPosition + ',' + duration + ')\n';
+		var code = 'goto_duration(groupState, ' + xPosition + ',' + yPosition + ',' + zPosition + ',' + duration + ')\n';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {

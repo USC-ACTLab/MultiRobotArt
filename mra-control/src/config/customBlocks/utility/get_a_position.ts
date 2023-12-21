@@ -21,7 +21,7 @@ export const blockGetPosition: RobartBlockDefinition = {
 		//TODO Add python equivalent
 		var which = block.getFieldValue('which') as string;
 		var name = block.getFieldValue('NAME') as string;
-		var code = 'get_a_position(' + which + ',' + name + ')';
+		var code = 'get_a_position(groupState' + which + ',' + name + ')';
 		// TODO: Change ORDER_NONE to the correct strength.
 		return code;
 	},

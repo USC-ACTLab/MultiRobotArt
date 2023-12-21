@@ -26,7 +26,7 @@ export const blockMove: RobartBlockDefinition = {
 		var direction = block.getFieldValue('direction') as number;
 		var distance = block.getFieldValue('distance') as number;
 		var duration = block.getFieldValue('duration') as number;
-		var code = 'move_direction(cf, ' + direction + ',' + distance + ',' + duration + ')\n';
+		var code = 'move_direction(groupState, ' + direction + ',' + distance + ',' + duration + ')\n';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {

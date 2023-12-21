@@ -40,7 +40,7 @@ export const blockColor: RobartBlockDefinition = {
 
 	pythonGenerator: (block, _python) => {
 		const color = block.getFieldValue('color') as string;
-		const code = 'setLEDColorFromHex(cf, "' + color + '")\n';
+		const code = 'setLEDColorFromHex(groupState, "' + color + '")\n';
 		return code;
 	},
 
@@ -67,7 +67,7 @@ export const blockRandomColor: RobartBlockDefinition = {
 
 	pythonGenerator: (block, _python) => {
 		const color = block.getFieldValue('color') as string;
-		const code = 'setLEDColorFromHex(cf, "' + color + '")\n';
+		const code = 'setLEDColorFromHex(groupState, "' + color + '")\n';
 		return code;
 	},
 

@@ -5,11 +5,9 @@ import {blockStop} from './motion/stop';
 import {blockGoTo} from './motion/go_to_duration';
 import {blockGoToSpeed} from './motion/go_to';
 import {blockLand} from './motion/land';
-import {blockMoveAngles} from './motion/move_angles';
 import {blockMoveXyz} from './motion/move_xyz';
 import {blockMove} from './motion/move';
 import {blockTakeoff} from './motion/takeoff';
-import {blockTurn} from './motion/turn';
 import {blockGetPosition} from './utility/get_a_position';
 import {blockColor, blockRandomColor} from './colors/color';
 import {blockColorOff} from './colors/colorOff';
@@ -30,12 +28,10 @@ export const CUSTOM_BLOCKS = {
 	blockGoToSpeed,
 	blockGoTo,
 	blockLand,
-	blockMoveAngles,
 	blockMoveXyz,
 	blockMove,
 	blockStop,
 	blockTakeoff,
-	blockTurn,
 	blockCircle,
 	blockCircleArc,
 	blockGetPosition,

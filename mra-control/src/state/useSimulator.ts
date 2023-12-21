@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/naming-convention */
+// @ts-nocheck
+
 import * as THREE from 'three';
 import {create} from 'zustand';
 import {immer} from 'zustand/middleware/immer';

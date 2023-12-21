@@ -36,18 +36,14 @@ export const blockColorOff: RobartBlockDefinition = {
 	},
 
 	pythonGenerator: (block, _python) => {
-		const color = block.getFieldValue('color') as string;
-		const code = 'setLEDColor(cf, 0, 0, 0")\n';
+		const code = 'setLEDColor(groupState, 0, 0, 0)\n';
 		return code;
 	},
 
 
 
 	javascriptGenerator: (block, _js) => {
-		var color = block.getFieldValue('color') as string;
-		var rgbCol = hexToRgb(color);
 		return 'simulator.setColor(groupState, 0, 0, 0)\n';
-
 	},
 };
 
