@@ -62,7 +62,6 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 			pythonBlocks += '        self.wait_until(start_time)\n';
                 
 			var pythonLines = pythonCode.split('\n');
-			// TODO: Is this -1 needed or just a bug?
 			for (var i = 0; i < pythonLines.length - 1; i++) {
 				pythonBlocks += `        ${pythonLines[i]}\n`;
 			}
@@ -100,11 +99,10 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 
 	// Starting positions yaml
 	var startingPositions = 'positions:\n';
-	for (let robot in Object.values(projectState.robots)) {
+	for (const robot in projectState.robots) {
 		var pos = [0, 0, 0];
 		if (projectState.robots[robot] != undefined)
 			pos = projectState.robots[robot].startingPosition;
-		// TODO All 0s?
 		startingPositions += `    - [${pos[0]}, ${pos[1]}, ${pos[2]}]\n`;
 	}
 

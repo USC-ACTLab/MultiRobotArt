@@ -35,7 +35,7 @@ def main():
     nodes = []
     cfs = []
 
-    # Inject append here...
+    #   -----------Insert Nodes Here----------- 
 
     # cfs.append(all_crazyflies[0])
     # nodes.append(group1_node.worker_node(cfs, len(nodes), 1))
