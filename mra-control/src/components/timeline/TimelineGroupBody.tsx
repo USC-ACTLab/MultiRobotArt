@@ -57,7 +57,7 @@ export const TimelineGroupBody = ({group}: TimelineGroupProps) => {
 	const laneBodyRef = useRef<HTMLDivElement>(null);
 
 	const bind = useGesture({
-		onMouseOut: () => {
+		onMouseLeave: () => { //TODO this causes some remnants to remain?
 			setHoverX(undefined); 
 		},
 		onMouseMove: ({event: {clientX}}) => {
@@ -98,7 +98,7 @@ export const TimelineGroupBody = ({group}: TimelineGroupProps) => {
 	};
 
 	return (
-		<div
+		<div 
 			className="relative h-16 rounded bg-blue-300"
 			ref={laneBodyRef}
 			onClick={handleBodyClick}
