@@ -4,6 +4,7 @@ from std_msgs.msg import Int32
 from crazyflie_py import generate_trajectory
 import numpy as np
 from blocklyTranslations import *
+from types import SimpleNamespace
 
 Hz = 30
 
@@ -31,6 +32,7 @@ class worker_node(Node):
             num_nodes + 1
         )
         self.timer = self.create_timer(1/Hz, self.timer_callback)
+        self.timeHelper = timeHelper(self)
         self.ready_ids = set()
         self.executing = False
         self.running = False
@@ -76,15 +78,20 @@ class worker_node(Node):
         Typical format should be:
         
         start_time = 0.0
-        duration = 3.0
         self.wait_until(start_time)
-        for cf in self.crazyflies:
-            cf.takeoff(1.0, duration)
-        self.wait_until(start_time+duration)
+        takeoff(crazyflies, height=1.0, duration=2.0)
 
-        where start_time, duration, and in the inner portion of the for loop are provided.
+        start_time = 5.0
+        self.wait_until(start_time)
+        land(crazyflies, height=0.0, duration=2.0)
+        
+        ...
+
+        Where a new start time is added for each block.
         """
-        # BLOCKS...
+        ### ---------Insert Execution Code Here------------
+        groupState = SimpleNamespace(crazyflies=self.crazyflies, timeHelper=self.timeHelper)
+        
         pass
 
     def ready_callback(self, msg):

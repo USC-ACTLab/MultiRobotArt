@@ -25,7 +25,7 @@ export const blockLand: RobartBlockDefinition = {
 	pythonGenerator: (block, _python) => {
 		var numberHeight = block.getFieldValue('height') as number;
 		var duration = block.getFieldValue('duration') as number;
-		var code = 'land(cf, ' + numberHeight + ',' + duration + ')\n';
+		var code = 'land(groupState, ' + numberHeight + ',' + duration + ')\n';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {

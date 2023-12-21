@@ -25,7 +25,7 @@ export const blockTakeoff: RobartBlockDefinition = {
 	pythonGenerator: (block, _python) => {
 		var height = block.getFieldValue('height') as number;
 		var duration = block.getFieldValue('duration') as number;
-		var code = 'takeoff(cf, ' + height + ' ,' + duration + ')\n';
+		var code = 'takeoff(groupState, ' + height + ', ' + duration + ')\n';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {

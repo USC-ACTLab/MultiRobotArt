@@ -5,12 +5,20 @@ from PIL import ImageColor
 #  Landing/Takeoff commands
 ###
 
-def takeoff(cf, height=1.0, duration=2.0):
-    cf.takeoff(float(height), float(duration))
+def takeoff(groupState, height=1.0, duration=2.0):
+    timeHelper = groupState.timeHelper
+    crazyflies = groupState.crazyflies
+    for cf in crazyflies:
+        cf.takeoff(float(height), float(duration))
+    timeHelper.sleep(duration)
     return duration
 
-def land(cf, height=0.04, duration=2.0):
-    cf.land(float(height), float(duration))
+def land(groupState, height=0.04, duration=2.0):
+    timeHelper = groupState.timeHelper
+    crazyflies = groupState.crazyflies
+    for cf in crazyflies:
+        cf.land(float(height), float(duration))
+    timeHelper.sleep(duration)
     return duration
 
 ###

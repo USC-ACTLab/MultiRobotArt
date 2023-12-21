@@ -8,7 +8,7 @@ import FileSaver from 'file-saver';
 
 // TODO: Make these not hard coded...
 const trajLine = 45;
-const execBlocksLine = 88;
+const execBlocksLine = 94;
 var launcherNodeLine = 39;
 
 /**
@@ -57,37 +57,31 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 			const blockState = groupState.items[block];
 			const startTime = blockState.startTime;
 			const pythonCode = projectState.blocks[blockState.blockId].python;
-			if (blockState.isTrajectory) {
-				pythonTrajectories += '        trajectories.append(' + pythonCode + ')';
-				pythonBlocks += '        start_time = ${startTime}\n';
-				pythonBlocks += '        self.wait_until(start_time)\n';
-				pythonBlocks += '        for cf in self.crazyflies:\n';
-				pythonBlocks += '            cf.startTrajectory(${trajCounter}, 0, 1)\n';
-				pythonBlocks += '        self.wait_until(start_time + self.trajectories[${trajCounter}].duration\n';
-				trajCounter += 1;
-			} else {
-				const duration = 1.0; //TODO figure out how to get duration
+			// if (blockState.isTrajectory) {
+			// 	pythonTrajectories += '        trajectories.append(' + pythonCode + ')';
+			// 	pythonBlocks += '        start_time = ${startTime}\n';
+			// 	pythonBlocks += '        self.wait_until(start_time)\n';
+			// 	pythonBlocks += '        for cf in self.crazyflies:\n';
+			// 	pythonBlocks += '            cf.startTrajectory(${trajCounter}, 0, 1)\n';
+			// 	pythonBlocks += '        self.wait_until(start_time + self.trajectories[${trajCounter}].duration\n';
+			// 	trajCounter += 1;
+			// } else {
 				pythonBlocks += `        start_time = ${startTime}\n`;
-				pythonBlocks += `        total_duration = ${duration}\n`;
 				pythonBlocks += '        self.wait_until(start_time)\n';
                 
 				var pythonLines = pythonCode.split('\n');
 				// TODO: Is this -1 needed or just a bug?
 				for (var i = 0; i < pythonLines.length - 1; i++) {
-					pythonBlocks += '        for cf in self.crazyflies:\n';
-					pythonBlocks += `            block_duration = ${pythonLines[i]}\n`;
-					pythonBlocks += '        self.wait(block_duration)\n';
+				    pythonBlocks += `        ${pythonLines[i]}\n`;
 				}
-
-				pythonBlocks += '        self.wait_until(start_time + total_duration)\n';
-			}
+			// }
 		}
 
 		// Read in template
 		var workerNode = workerNodeTemplate.split('\n');
 
 		// Inject trajectories into template
-		workerNode.splice(trajLine, 0, pythonTrajectories);
+		// workerNode.splice(trajLine, 0, pythonTrajectories);
 		workerNode.splice(execBlocksLine, 0, pythonBlocks);
 
 		// For each worker, save file and insert start code to main node. 
@@ -164,6 +158,7 @@ from std_msgs.msg import Int32
 from crazyflie_py import generate_trajectory
 import numpy as np
 from blocklyTranslations import *
+from types import SimpleNamespace
 
 Hz = 30
 
@@ -191,6 +186,7 @@ class worker_node(Node):
             num_nodes + 1
         )
         self.timer = self.create_timer(1/Hz, self.timer_callback)
+        self.timeHelper = timeHelper(self)
         self.ready_ids = set()
         self.executing = False
         self.running = False
@@ -236,15 +232,20 @@ class worker_node(Node):
         Typical format should be:
         
         start_time = 0.0
-        duration = 3.0
         self.wait_until(start_time)
-        for cf in self.crazyflies:
-            cf.takeoff(1.0, duration)
-        self.wait_until(start_time+duration)
+        takeoff(crazyflies, height=1.0, duration=2.0)
 
-        where start_time, duration, and in the inner portion of the for loop are provided.
+        start_time = 5.0
+        self.wait_until(start_time)
+        land(crazyflies, height=0.0, duration=2.0)
+        
+        ...
+
+        Where a new start time is added for each block.
         """
-        # BLOCKS...
+        ### ---------Insert Execution Code Here------------
+        groupState = SimpleNamespace(crazyflies=self.crazyflies, timeHelper=self.timeHelper)
+        
         pass
 
     def ready_callback(self, msg):
