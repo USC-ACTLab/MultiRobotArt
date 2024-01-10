@@ -8,6 +8,9 @@ Hz = 20
 ###
 
 def takeoff(groupState, height=1.0, duration=2.0):
+    '''
+    Takeoff to a certain height for every crazyflie in groupState
+    '''
     timeHelper = groupState.timeHelper
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
@@ -67,7 +70,7 @@ def move_direction(groupState, direction, distance, duration):
     return duration
 
 def stop_and_hover(groupState, height=None):
-    
+
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
         position = cf.getPosition()
@@ -127,6 +130,36 @@ def circle(groupState, radius, velocity, radians, direction):
             pos += np.array(initPos)
             cf.cmdPos(pos)
         timeHelper.sleepForRate(Hz)
-        
+
     for cf in crazyflies:
         cf.notifySetpointsStop()
+
+
+###
+#   Logger Class
+###
+
+class CrazyflieSimLogger:
+    
+    def __init__(self):
+        self.hl_commands = []
+        self.ll_commands = []
+
+    def goTo(self, pos, yaw, duration, relative=False):
+        self.hl_commands.append(('goTo', pos, yaw, duration, relative))
+    
+    def cmdPos(self, pos):
+        self.ll_commands.append(('cmdPos', pos))
+
+class TimeHelperSimLogger:
+    def __init__(self):
+        self.times = []
+        self.currTime = 0
+
+    def sleep(self, duration):
+        self.times.append(self.currTime)
+        self.currTime += duration
+    
+    def sleepForRate(self, Hz):
+        self.times.append(self.currTime)
+        self.currTime += 1/Hz

@@ -112,6 +112,10 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 	zip.file('starting_positions.yaml', startingPosFile);
 	zip.file('configure.py', configureFile);
 	zip.file('launch_nodes.py', launcherFile);
+    
+    const translationsFile = new Blob([translations], {type: 'text/plain'});
+    zip.file('blocklyTranslations.py', translationsFile);
+    
 	const zipFile = await zip.generateAsync({type: 'blob'});
 	FileSaver.saveAs(zipFile, `${projectState.projectName}.zip`);
 };

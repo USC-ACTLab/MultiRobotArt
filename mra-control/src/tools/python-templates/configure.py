@@ -6,7 +6,7 @@ import os, sys, stat
 
 # Load starting positions from blockly
 with open('starting_positions.yaml') as f:
-    starting_positions = yaml.load(f)
+    starting_positions = yaml.safe_load(f)
 
 n_robots = len(starting_positions['positions'])
 
@@ -22,12 +22,13 @@ for i in range(n_robots):
 start_dict = {}
 for cf, pos in zip(cfs, starting_positions['positions']):
     print("Place cf {} at location {}".format(cf, pos))
-    start_dict[cf] = pos
+    start_dict[cf] = pos #TODO: Ordering!
 
 # Make changes to local mycrazyflies.yaml
-with open('crazyflies.yaml') as f:
-    all_crazyflies = yaml.load(f)
+with open(os.path.expanduser('~/ros2_ws/src/Brown-crazyswarm2/crazyflie/config/crazyflies.yaml'), 'r') as f:
+    all_crazyflies = yaml.safe_load(f)
 
+# TODO: All CFS have to be commented in...
 my_cfs = copy.deepcopy(all_crazyflies)
 for r in all_crazyflies['robots']:
     id = r.strip('cf')
@@ -43,8 +44,8 @@ with open('my_crazyflies.yaml', 'w') as f:
 
 # Make commands for sim and non-sim launches
 with open('sim.sh', 'w') as f:
-    f.write('ros2 launch launch.py config:=my_crazyflies.yaml backend:=sim')
+    f.write('ros2 launch crazyflie launch.py config:=my_crazyflies.yaml backend:=sim')
     os.chmod('sim.sh', stat.S_IRWXU)
 with open('run.sh', 'w') as f:
-    f.write('ros2 launch launch.py config:=my_crazyflies.yaml')
+    f.write('ros2 launch crazyflie launch.py config:=my_crazyflies.yaml')
     os.chmod('run.sh', stat.S_IRWXU)

@@ -188,16 +188,15 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				}
 
 				const positionHistory = state.positionHistory;
-				//if (positionHistory) {
-				//	positionHistory.get(newSimTime)?.set(robotId, newPos);
-				//}
+				if (positionHistory) {
+					positionHistory.get(newSimTime)?.set(robotId, newPos);
+				}
 
 				robots[robotId].color = get().robots[robotId].color;
 
 				if (markerFrequency !== 0 && time % markerFrequency < deltaT) {
 					trajectoryMarkers.push({position: new THREE.Vector3().copy(robots[robotId].pos), color: robots[robotId].color, id:robotId + time});
 				}
-				
 				// Do not delete! Needed to keep variables from being removed for being unused
 				if (time > 99999) {
 					console.log(groupState, simulator);

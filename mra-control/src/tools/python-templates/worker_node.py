@@ -5,7 +5,7 @@ from crazyflie_py import generate_trajectory
 import numpy as np
 from blocklyTranslations import *
 from types import SimpleNamespace
-
+import TimeHelper from TimeHelper # TODO add to files downloaded
 Hz = 30
 
 class worker_node(Node):
@@ -16,23 +16,24 @@ class worker_node(Node):
         num_nodes: number of nodes (threads) in total
         """
         super().__init__("worker_node_{}".format(id))
+        assert(isinstance(id, int))
         self.id = id
         self.num_nodes = num_nodes
         self.crazyflies = crazyflies
 
-        self.execution_ready_subscription(
+        self.execution_ready_subscription = self.create_subscription(
             Int32,
             'ready',
             self.ready_callback,
             num_nodes + 1
         )
-        self.execution_ready_publisher(
+        self.execution_ready_publisher = self.create_publisher(
             Int32,
             'ready',
             num_nodes + 1
         )
         self.timer = self.create_timer(1/Hz, self.timer_callback)
-        self.timeHelper = timeHelper(self)
+        self.timeHelper = TimeHelper(self)
         self.ready_ids = set()
         self.executing = False
         self.running = False
@@ -89,8 +90,8 @@ class worker_node(Node):
 
         Where a new start time is added for each block.
         """
-        ### ---------Insert Execution Code Here------------
         groupState = SimpleNamespace(crazyflies=self.crazyflies, timeHelper=self.timeHelper)
+        ### ---------Insert Execution Code Here------------
         
         pass
 

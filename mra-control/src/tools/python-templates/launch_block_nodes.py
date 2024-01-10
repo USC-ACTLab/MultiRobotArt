@@ -25,10 +25,11 @@ def main():
     # Initialize swarm
     swarm = Crazyswarm()
     with open("cfs_ordering.yaml") as f:
-        ordering = yaml.load(f)
+        ordering = yaml.safe_load(f) #TODO!!!
         order = ordering['cfs']
     # all_crazyflies = swarm.allcfs.crazyflies
-    all_crazyflies = [swarm.allcfs.crazyfliesById[k] for k in order]
+    
+    crazyflies = [swarm.allcfs.crazyfliesById[k] for k in order]
     # Construct Launch Description from yaml files
     # One node per line in the timeline, linked to a worker node described in the yaml file
     counter = 0
@@ -36,7 +37,7 @@ def main():
     cfs = []
 
     #   -----------Insert Nodes Here----------- 
-
+    #TODO fix insert to put id, not name...
     # cfs.append(all_crazyflies[0])
     # nodes.append(group1_node.worker_node(cfs, len(nodes), 1))
     
