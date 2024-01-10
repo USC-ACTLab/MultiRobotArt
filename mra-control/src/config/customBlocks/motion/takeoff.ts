@@ -15,7 +15,7 @@ export const blockTakeoff: RobartBlockDefinition = {
 				.appendField('meters over')
 				.appendField(new Blockly.FieldNumber(0), 'duration')
 				.appendField('seconds');
-			this.setPreviousStatement(false, null);
+			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(230);
 			this.setTooltip('');

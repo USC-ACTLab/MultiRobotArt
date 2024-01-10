@@ -16,7 +16,7 @@ export const blockLand: RobartBlockDefinition = {
 				.appendField(new Blockly.FieldNumber(0), 'duration')
 				.appendField('seconds');
 			this.setPreviousStatement(true, null);
-			this.setNextStatement(false, null);
+			this.setNextStatement(true, null);
 			this.setColour(230);
 			this.setTooltip('');
 			this.setHelpUrl('');
