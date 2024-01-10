@@ -95,7 +95,7 @@ def enableHighLevelCommander(cf):
 # Colors
 ###
 
-def setLEDFromHex(groupState, hex):
+def setLEDColorFromHex(groupState, hex):
     crazyflies = groupState.crazyflies
     rgb = ImageColor.getcolor(hex, "RGB")
     for cf in crazyflies:
