@@ -5,10 +5,11 @@ import FileSaver from 'file-saver';
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import workerNodeTemplate from './python-templates/worker_node.py?raw';
-import launcherNode from './python-templates/launch.py?raw';
+import launcherNode from './python-templates/launch_block_nodes.py?raw';
 import configure from './python-templates/configure.py?raw';
 import translations from './python-templates/blocklyTranslations.py?raw';
-
+import launchServer from './python-templates/launch.py?raw';
+import timeHelper from './python-templates/TimeHelper.py?raw';
 
 const extractLineNumber = (text: string, toMatch: string): number => {
 	// Get index of first match, split by lines and count # lines until occurance
@@ -78,11 +79,11 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 		// For each worker, save file and insert start code to main node. 
 		console.log(robotIndices);
 		var launcherText = `    import ${groupName}` + '_node\n';
-		launcherText = '    cfs = []\n';
+		launcherText += '    cfs = []\n';
 
 		for (let r in robotIndices) 
 			launcherText += `    cfs.append(crazyflies[${r}])\n`;
-		launcherText += `    nodes.append(${groupName}_node.worker_node(cfs, len(nodes)-1, ${numGroups}))\n`;
+		launcherText += `    nodes.append(${groupName}_node.worker_node(cfs, len(nodes), ${numGroups}))\n`;
 		mainNode.splice(launcherNodeLine, 0, launcherText);
 		launcherNodeLine += 2;
 
@@ -112,10 +113,15 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 	zip.file('starting_positions.yaml', startingPosFile);
 	zip.file('configure.py', configureFile);
 	zip.file('launch_nodes.py', launcherFile);
+    zip.file('TimeHelper.py', timeHelper);
+
     
     const translationsFile = new Blob([translations], {type: 'text/plain'});
     zip.file('blocklyTranslations.py', translationsFile);
-    
+
+    const launchFile = new Blob([launchServer], {type: 'text/plain'});
+    zip.file('launch.py', launchFile)
+
 	const zipFile = await zip.generateAsync({type: 'blob'});
 	FileSaver.saveAs(zipFile, `${projectState.projectName}.zip`);
 };

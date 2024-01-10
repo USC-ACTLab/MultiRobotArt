@@ -1,7 +1,5 @@
 import yaml
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch_ros.actions import Node
 from crazyflie_py import Crazyswarm
 import rclpy
 import threading
@@ -29,7 +27,7 @@ def main():
         order = ordering['cfs']
     # all_crazyflies = swarm.allcfs.crazyflies
     
-    crazyflies = [swarm.allcfs.crazyfliesById[k] for k in order]
+    crazyflies = [swarm.allcfs.crazyfliesById[int(k)] for k in order]
     # Construct Launch Description from yaml files
     # One node per line in the timeline, linked to a worker node described in the yaml file
     counter = 0

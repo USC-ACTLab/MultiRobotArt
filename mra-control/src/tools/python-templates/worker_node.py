@@ -5,7 +5,7 @@ from crazyflie_py import generate_trajectory
 import numpy as np
 from blocklyTranslations import *
 from types import SimpleNamespace
-import TimeHelper from TimeHelper # TODO add to files downloaded
+from TimeHelper import TimeHelper # TODO add to files downloaded
 Hz = 30
 
 class worker_node(Node):
@@ -67,7 +67,7 @@ class worker_node(Node):
         self.upload_trajectories(trajectories)
         msg = Int32()
         msg.data = self.id
-        self.ready_publisher.publish(msg)
+        self.execution_ready_publisher.publish(msg)
 
     def time(self):
         return self.get_clock().now().nanoseconds / 1e9

@@ -11,10 +11,7 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 
 def generate_launch_description():
     # load crazyflies
-    crazyflies_yaml = os.path.join(
-        get_package_share_directory('crazyflie'),
-        'config',
-        'crazyflies.yaml')
+    crazyflies_yaml = 'my_crazyflies.yaml'
 
     with open(crazyflies_yaml, 'r') as ymlfile:
         crazyflies = yaml.safe_load(ymlfile)
@@ -58,6 +55,7 @@ def generate_launch_description():
         get_package_share_directory('crazyflie'),
         'config',
         'teleop.yaml')
+
 
     return LaunchDescription([
         DeclareLaunchArgument('backend', default_value='cpp'),

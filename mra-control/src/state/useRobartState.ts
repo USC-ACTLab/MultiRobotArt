@@ -296,7 +296,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					},
 					getWarnings: () => {
 						//TODO update warnings on call or on step?
-						console.warn(get().warnings.length);
 						return get().warnings.join('');
 					},
 					resetProject: () => {
@@ -402,7 +401,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					addWarning: (warning: string) => {
 						const state = get();
 						const newWarnings = [...state.warnings, warning];
-						console.warn('addwarning', state.warnings);
 						set({...state, warnings: newWarnings});
 					},
 					updateBlockInTimeline: (groupId, itemId, startTime) => {

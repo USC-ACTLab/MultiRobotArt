@@ -41,6 +41,8 @@ for r in all_crazyflies['robots']:
 
 with open('my_crazyflies.yaml', 'w') as f:
     yaml.dump(my_cfs, f)
+with open('cfs_ordering.yaml', 'w') as f:
+    yaml.dump({'cfs': cfs}, f)
 
 # Make commands for sim and non-sim launches
 with open('sim.sh', 'w') as f:

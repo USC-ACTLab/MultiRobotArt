@@ -110,8 +110,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const state = useRobartState.getState();
 			useRobartState.setState({...state, warnings: reprs});
 
-			console.warn('final Warnings', warnings);
-			console.warn('warnings', useRobartState.getState().warnings);
 			set({status: 'PAUSED'});
 			get().cancelSimulation();
 		},
