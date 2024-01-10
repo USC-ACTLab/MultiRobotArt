@@ -45,6 +45,7 @@ export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0): 
 		let robot = {...useSimulator.getState().robots[robotID]};
 		// TODO Fix Colors! Need this line to work again and need trajectory to just hover. This will have issues with computing duration...
 		robot.color = new Color(r, g, b);
+		
 		useSimulator.setState({
 			...useSimulator.getState(),
 			robots: {
