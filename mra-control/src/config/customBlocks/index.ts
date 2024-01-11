@@ -30,7 +30,7 @@ export const CUSTOM_BLOCKS = {
 	blockGoTo,
 	blockLand,
 	blockMoveXyz,
-	blockMove,
+	// blockMove,
 	blockStop,
 	blockTakeoff,
 	blockCircle,

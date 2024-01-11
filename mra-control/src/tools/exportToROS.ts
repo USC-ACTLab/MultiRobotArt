@@ -32,6 +32,7 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 	const groups = projectState.timelineState.groups;
 	for (let groupName in groups) {
 		const groupState = projectState.timelineState.groups[groupName];
+        console.warn("name:", groupName)
 		const robots = Object.values(groupState.robots);
 		var robotIndices: string[] = [];
 		if (robots.length === 0) {
@@ -57,6 +58,7 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 		for (let block in groupState.items) {
 			console.log(block);
 			const blockState = groupState.items[block];
+            console.log(blockState.groupId)
 			const startTime = blockState.startTime;
 			const pythonCode = projectState.blocks[blockState.blockId].python;
 			pythonBlocks += `        start_time = ${startTime}\n`;
