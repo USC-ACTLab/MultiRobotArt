@@ -87,7 +87,6 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 									violationType: 'velocity',
 									robotId: id,
 								});
-								console.warn(robotName);
 							}
 						}
 					}
