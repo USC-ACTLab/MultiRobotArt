@@ -502,7 +502,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						set((state) => {
 							state.robots[id] = {
 								id,
-								name: `CF ${numRobots}`,
+								name: `CF ${numRobots + 1}`,
 								type: 'crazyflie',
 								startingPosition: startingPositionSuggestions.next().value,
 							};
