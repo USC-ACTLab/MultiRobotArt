@@ -1,6 +1,7 @@
 import {pythonGenerator} from 'blockly/python';
 import {javascriptGenerator as js} from 'blockly/javascript';
 import {blockCircle} from './curves/circle';
+import {blockCircleRadians} from './curves/circle';
 import {blockStop} from './motion/stop';
 import {blockGoTo} from './motion/go_to_duration';
 import {blockGoToSpeed} from './motion/go_to';
@@ -33,6 +34,7 @@ export const CUSTOM_BLOCKS = {
 	blockStop,
 	blockTakeoff,
 	blockCircle,
+	blockCircleRadians,
 	blockCircleArc,
 	blockGetPosition,
 	blockColor,

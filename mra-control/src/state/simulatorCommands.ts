@@ -45,7 +45,7 @@ export const setColor = (groupState: SimulatorGroupState, r = 0, g = 0, b = 0): 
 		let robot = {...useSimulator.getState().robots[robotID]};
 		// TODO Fix Colors! Need this line to work again and need trajectory to just hover. This will have issues with computing duration...
 		robot.color = new Color(r, g, b);
-		
+
 		useSimulator.setState({
 			...useSimulator.getState(),
 			robots: {
@@ -135,7 +135,6 @@ export const moveSpeed = (groupState: SimulatorGroupState, x: number, y: number,
 };
 
 export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, velocity: number, degrees: number, direction: any): [number, Map<string, Trajectory>] =>{
-	console.log(direction); // TODO Add direction?
 	var duration = 0;
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) =>{
@@ -144,7 +143,7 @@ export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, v
 		const clockwise = false;
 		const arclength = radius * (radians);
 		duration = arclength / velocity;
-		const circleTraj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise);
+		const circleTraj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise, duration);
 		trajectories.set(robotId, circleTraj);
 		// useSimulator.getState().updateTrajectory(robotId, circleTraj, duration);
 	});

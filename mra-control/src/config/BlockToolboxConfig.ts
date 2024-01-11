@@ -31,6 +31,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			name: 'Curves',
 			contents: [
 				blockToToolbox(CUSTOM_BLOCKS.blockCircle),
+				blockToToolbox(CUSTOM_BLOCKS.blockCircleRadians),
 				blockToToolbox(CUSTOM_BLOCKS.blockCircleArc),
 				//blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
 			],

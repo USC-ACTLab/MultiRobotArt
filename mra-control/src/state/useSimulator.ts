@@ -90,7 +90,7 @@ export type SimulatorActions = {
 	addTrajectory: (robotId: string, trajectory: string) => void;
 	getMostRecentTrajectory: (robotId: string, time: number)  => [traj.Trajectory | undefined, number];
 	robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3, duration: number) => traj.Trajectory;  
-	robotCircle: (robotId: string, radius?: number, axes?: string[], radians?: number, clockwise?: boolean) => traj.Trajectory; 
+	robotCircle: (robotId: string, radius?: number, axes?: string[], radians?: number, clockwise?: boolean, duration?: number) => traj.Trajectory; 
 	executeSimulation: (startTime: number) => void;
 	cancelSimulation: () => void;
 };
@@ -331,9 +331,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 
 			return (new traj.PolynomialTrajectory(duration, [a0, a1, a2, a3, a4, a5, a6, a7])) as traj.Trajectory;
 		},
-		robotCircle: (robotId: string, radius = 1, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false): traj.Trajectory => {
+		robotCircle: (robotId: string, radius = 1, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false, duration=1): traj.Trajectory => {
 			const robot = get().robots[robotId];
-			const trajectory = new traj.CircleTrajectory(1, robot.pos, radius, axes, radians, clockwise);
+			const trajectory = new traj.CircleTrajectory(duration, robot.pos, radius, axes, radians, clockwise);
 			return trajectory as traj.Trajectory;
 		},
 		executeSimulation: (startTime) => {

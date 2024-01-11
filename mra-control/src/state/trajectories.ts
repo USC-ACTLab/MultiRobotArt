@@ -93,6 +93,7 @@ export class CircleTrajectory extends Trajectory {
 	evaluate(t: number): THREE.Vector3 {
 		// As t varies from 0 to 1, complete the desired arclength rotation for a given radius on a given axes
 		// subtract 1 from v1 to start at 0, 0
+		console.warn(t)
 		const v1 = this.radius * (Math.cos(t * (this.radians)) - 1); // TODO add starting and ending angles.
 		const v2 = this.radius * Math.sin(t * (this.radians));
 		var x = this.pos.x, y = this.pos.y, z = this.pos.z;
@@ -104,9 +105,8 @@ export class CircleTrajectory extends Trajectory {
 
 		if (this.axes.some((Z) => Z === 'Z')) {
 			z = v2 + this.pos.z;
-			console.warn('Z!');
+
 		} else {
-			console.warn(this.axes);
 			y = v2 + this.pos.y;
 		}
 
@@ -141,7 +141,6 @@ export class ComponentTrajectory extends Trajectory {
 		this.durScalingX = durX / duration;
 		this.durScalingY = durY / duration;
 		this.durScalingZ = durZ / duration;
-		console.warn(this.durScalingX, this.durScalingY, this.durScalingZ);
 	}
 	
 	evaluate(t: number): THREE.Vector3 {
@@ -237,7 +236,6 @@ export class NegateTrajectory extends Trajectory {
 		const originalTrajectoryPosition = this.originalTrajectory.evaluate(t);
 		const initPos = new THREE.Vector3().copy(this.initPos);
 		const desiredPosition = initPos.multiplyScalar(2).sub(originalTrajectoryPosition);
-		console.warn(desiredPosition, this.initPos, t);
 		return desiredPosition;
 	}
 }
