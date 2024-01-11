@@ -6,7 +6,7 @@ import * as SIM from '@MRAControl/state/simulatorCommands';
 import {Simulation} from '@MRAControl/layout/simulation/Simulation';
 
 export const blockStretchTrajectories: RobartBlockDefinition = {
-	name: 'negate',
+	name: 'stretch',
 	block: {
 		init: function () {
 			this.appendDummyInput()
