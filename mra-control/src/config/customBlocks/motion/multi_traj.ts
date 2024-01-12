@@ -44,20 +44,20 @@ export const multiTraj: RobartBlockDefinition = {
 
 		// If no trajectory is given, use a dummy
 		if (x_traj.length === 0) {
-			x_traj = 'simulator.dummy()';
+			x_traj = 'simulator.dummy(groupState)';
 		} else {
 			x_traj = x_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
 
 
 		if (y_traj.length === 0) {
-			y_traj = 'simulator.dummy()';
+			y_traj = 'simulator.dummy(groupState)';
 		} else {
 			y_traj = y_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}
 
 		if (z_traj.length === 0) {
-			z_traj = 'simulator.dummy()';
+			z_traj = 'simulator.dummy(groupState)';
 		} else {
 			z_traj = z_traj.replace(/(\r\n|\n|\r)/gm, '');
 		}

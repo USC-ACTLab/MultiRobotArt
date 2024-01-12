@@ -137,12 +137,14 @@ export const moveSpeed = (groupState: SimulatorGroupState, x: number, y: number,
 export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, velocity: number, degrees: number, direction: any): [number, Map<string, Trajectory>] =>{
 	var duration = 0;
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	console.log('Circle!')
 	groupState.robotIDs.forEach((robotId) =>{
-		const axes = ['X', 'Z'];
+		const axes = ['Y', 'Z'];
 		const radians = toRadians(degrees);
-		const clockwise = false;
+		const clockwise = true;
 		const arclength = radius * (radians);
 		duration = arclength / velocity;
+		console.log('duration', duration, 'arclength', arclength)
 		const circleTraj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise, duration);
 		trajectories.set(robotId, circleTraj);
 		// useSimulator.getState().updateTrajectory(robotId, circleTraj, duration);
@@ -151,7 +153,13 @@ export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, v
 };
 
 
-export const dummy = () => {
+export const dummy = (groupState: SimulatorGroupState) => {
+	let duration = .1;
+	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
+	groupState.robotIDs.forEach((robotId) =>{
+		let trajectory = new NullTrajectory();
+		trajectories.set(robotId, trajectory); 
+	});	
 	return [0.1, new NullTrajectory()];
 }; // non-zero duration so it's not hidden
 
