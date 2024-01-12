@@ -32,7 +32,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			contents: [
 				blockToToolbox(CUSTOM_BLOCKS.blockCircle),
 				blockToToolbox(CUSTOM_BLOCKS.blockCircleRadians),
-				blockToToolbox(CUSTOM_BLOCKS.blockCircleArc),
+				// blockToToolbox(CUSTOM_BLOCKS.blockCircleArc),
 				//blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
 			],
 		},
