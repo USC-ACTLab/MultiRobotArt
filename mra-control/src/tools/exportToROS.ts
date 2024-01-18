@@ -69,6 +69,7 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 			const blockState = groupState.items[block];
 			const startTime = blockState.startTime;
 			const pythonCode = projectState.blocks[blockState.blockId].python;
+            pythonBlocks += '        # Block Name: ' + projectState.blocks[blockState.blockId].name + '\n';
 			pythonBlocks += `        start_time = ${startTime}\n`;
 			pythonBlocks += '        self.timeHelper.sleepUntil(start_time)\n';
                 
