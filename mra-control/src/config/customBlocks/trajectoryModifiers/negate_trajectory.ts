@@ -33,6 +33,6 @@ export const blockNegate: RobartBlockDefinition = {
 		var originalTraj = js.statementToCode(block, 'originalTraj');
 		originalTraj = originalTraj.trim();        
 
-		return `simulator.negateTrajectory(groupState, ${originalTraj})`;
+		return `simulator.negateTrajectory(groupState, ${originalTraj})\n`;
 	},
 };

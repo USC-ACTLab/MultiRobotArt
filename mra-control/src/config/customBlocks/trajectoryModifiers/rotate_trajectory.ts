@@ -38,7 +38,7 @@ export const blockRotateTrajectoryDegrees: RobartBlockDefinition = {
 		const y = block.getFieldValue('y') as number * Math.PI / 180;
 		const z = block.getFieldValue('z') as number * Math.PI / 180;
 
-		return `simulator.rotateTrajectory(groupState, ${originalTraj}, ${x}, ${y}, ${z})`;
+		return `simulator.rotateTrajectory(groupState, ${originalTraj}, ${x}, ${y}, ${z})\n`;
 	},
 };
 export const blockRotateTrajectoryRadians: RobartBlockDefinition = {
@@ -74,6 +74,6 @@ export const blockRotateTrajectoryRadians: RobartBlockDefinition = {
 		const y = block.getFieldValue('y') as number;
 		const z = block.getFieldValue('z') as number;
 
-		return `simulator.rotateTrajectory(groupState, ${originalTraj}, ${x}, ${y}, ${z})`;
+		return `simulator.rotateTrajectory(groupState, ${originalTraj}, ${x}, ${y}, ${z})\n`;
 	},
 };

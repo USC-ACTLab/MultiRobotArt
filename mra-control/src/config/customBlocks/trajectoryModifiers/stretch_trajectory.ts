@@ -42,6 +42,6 @@ export const blockStretchTrajectories: RobartBlockDefinition = {
 		const t = block.getFieldValue('t') as number;
 
 
-		return `simulator.stretchTrajectory(groupState, ${originalTraj}, ${x}, ${y}, ${z}, ${t})`;
+		return `simulator.stretchTrajectory(groupState, ${originalTraj}, ${x}, ${y}, ${z}, ${t})\n`;
 	},
 };

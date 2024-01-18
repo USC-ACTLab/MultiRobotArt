@@ -37,6 +37,6 @@ export const blockSubtractTrajectories: RobartBlockDefinition = {
 		firstTrajectory = firstTrajectory.trim();
 		secondTrajectory = secondTrajectory.trim();
 
-		return `simulator.addTrajectories(groupState, ${firstTrajectory}, ${secondTrajectory}, false)`;
+		return `simulator.addTrajectories(groupState, ${firstTrajectory}, ${secondTrajectory}, false)\n`;
 	},
 };
