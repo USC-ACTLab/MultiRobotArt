@@ -42,7 +42,7 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 		immer((set, get) => ({
 			maxVelocity: 1.0,
 			maxAcceleration: 5.0,
-			workspaceDimensions: new THREE.Box3(new THREE.Vector3(-4, -2.5, 0), new THREE.Vector3(4, 2.5, 2.5)),
+			workspaceDimensions: new THREE.Box3(new THREE.Vector3(-4, -2.5, -0.01), new THREE.Vector3(2, 2.5, 2.5)),
 			positionHistory: new Map<number, Map<string, THREE.Vector3>>(),
 			deltaT: 1 / 60,
 			setMaxVelocity(vel) {
@@ -117,7 +117,6 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 							const currentPosition = history.get(sortedTimesteps[i])?.get(id);
 							if (currentPosition) {
 								if (!this.workspaceDimensions.containsPoint(currentPosition)) {
-
 									const robotName = useRobartState.getState().robots[id].name;
 									warnings.push({
 										time: sortedTimesteps[i],
