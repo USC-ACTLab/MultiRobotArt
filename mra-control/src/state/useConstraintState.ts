@@ -83,7 +83,7 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 								const robotName = useRobartState.getState().robots[id].name;
 								warnings.push({
 									time: sortedTimesteps[i],
-									repr: 'robot ' + robotName + ' has violated a velocity constraint at time ' + sortedTimesteps[i] + '. It was travelling at ' + velocity + ' m/s.\n',
+									repr: 'robot ' + robotName + ' has violated a velocity constraint at time ' + sortedTimesteps[i].toFixed(2) + '. It was travelling at ' + velocity.toFixed(2) + ' m/s.\n',
 									violationType: 'velocity',
 									robotId: id,
 								});
@@ -120,7 +120,7 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 									const robotName = useRobartState.getState().robots[id].name;
 									warnings.push({
 										time: sortedTimesteps[i],
-										repr: 'robot ' + robotName + ' has violated a workspace constraint at time ' + sortedTimesteps[i] + '. It\'s position was ' + currentPosition.x + ', ' + currentPosition.y + ', ' + currentPosition.z + '\n',
+										repr: 'robot ' + robotName + ' has violated a workspace constraint at time ' + sortedTimesteps[i].toFixed(2) + '. It\'s position was ' + currentPosition.x.toFixed(2) + ', ' + currentPosition.y.toFixed(2) + ', ' + currentPosition.z.toFixed(2) + '\n',
 										violationType: 'velocity',
 										robotId: id,
 									});
