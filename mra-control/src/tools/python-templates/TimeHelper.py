@@ -7,6 +7,7 @@ class TimeHelper:
         # self.rosRate = None
         self.rateHz = None
         self.nextTime = None
+        self.zeroTime = self.time()
         # self.visualizer = visNull.VisNull()
 
     def time(self):
@@ -18,7 +19,8 @@ class TimeHelper:
         start = self.time()
         end = start + duration
         while self.time() < end:
-            rclpy.spin_once(self.node, timeout_sec=0)
+            pass
+            # rclpy.spin_once(self.node, timeout_sec=0)
 
     def sleepForRate(self, rateHz):
         """Sleep so that, if called in a loop, executes at specified rate."""
@@ -33,8 +35,14 @@ class TimeHelper:
             self.rateHz = rateHz
             self.nextTime = self.time() + 1.0 / rateHz
         while self.time() < self.nextTime:
-            rclpy.spin_once(self.node, timeout_sec=0)
+            pass
+            # rclpy.spin_once(self.node, timeout_sec=0)
         self.nextTime += 1.0 / rateHz
+
+    def sleepUntil(self, end_time):
+        while self.time() - self.zeroTime < end_time:
+            pass
+            # rclpy.spin_once(self.node, timeout_sec=0)
 
     def isShutdown(self):
         """Return True if the script should abort, e.g. from Ctrl-C."""

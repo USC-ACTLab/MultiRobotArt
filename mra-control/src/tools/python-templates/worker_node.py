@@ -21,21 +21,8 @@ class worker_node(Node):
         self.num_nodes = num_nodes
         self.crazyflies = crazyflies
 
-        self.execution_ready_subscription = self.create_subscription(
-            Int32,
-            'ready',
-            self.ready_callback,
-            num_nodes + 1
-        )
-        self.execution_ready_publisher = self.create_publisher(
-            Int32,
-            'ready',
-            num_nodes + 1
-        )
         self.timer = self.create_timer(1/Hz, self.timer_callback)
         self.timeHelper = TimeHelper(self)
-        self.ready_ids = set()
-        self.executing = False
         self.running = False
         self.done = False
     
@@ -44,8 +31,7 @@ class worker_node(Node):
         Inject Trajectory computation code here...
         """
         trajectories = []
-        
-        #TODO insert trajectories here...
+        ### -----Insert Trajectories Here-------
 
         return trajectories
 
@@ -54,20 +40,17 @@ class worker_node(Node):
             Upload trajectories to crazyflies one by one
         '''
 
-        # TODO: Currently doesn't support overlapping crazyflies as we will overwrite trajectories...
         for i, traj in enumerate(trajectories):
             for cf in crazyflies:
                 cf.uploadTrajectory(traj, i, 0)
 
-    def begin(self):
+    def start(self):
         """
-            Prepare for execution. Pre-compute trajectories and upload them to crazyflies
+            Start execution of blocks
         """
         trajectories = self.compute_trajectories()
         self.upload_trajectories(trajectories)
-        msg = Int32()
-        msg.data = self.id
-        self.execution_ready_publisher.publish(msg)
+        self.execute_blocks()
 
     def time(self):
         return self.get_clock().now().nanoseconds / 1e9
@@ -79,7 +62,7 @@ class worker_node(Node):
         Typical format should be:
         
         start_time = 0.0
-        self.wait_until(start_time)
+        self.timeHelper.sleepUntil(start_time)
         takeoff(crazyflies, height=1.0, duration=2.0)
 
         start_time = 5.0
@@ -93,26 +76,9 @@ class worker_node(Node):
         groupState = SimpleNamespace(crazyflies=self.crazyflies, timeHelper=self.timeHelper)
         ### ---------Insert Execution Code Here------------
         
-        pass
-
-    def ready_callback(self, msg):
-        self.ready_ids.add(msg.data)
+        self.done = True
     
     def timer_callback(self):
         if not self.running:
-            self.begin()
+            self.start()
             self.running = True
-        if len(self.ready_ids) == self.num_nodes and not self.executing:
-            self.running = True
-            self.start_time = self.get_clock().now()
-            self.execute_blocks()
-            self.destroy_node()
-            self.done = True
-
-    def wait_until(self, end_time):
-        while self.time() < end_time:
-            rclpy.spin_once(self, timeout_sec=0)
-
-    def wait(self, time):
-        end_time = self.time() + time
-        self.wait_until(end_time)

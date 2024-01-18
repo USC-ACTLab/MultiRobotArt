@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-for-in-array */
-import {type MRAState} from '@MRAControl/state/useRobartState';
+import {RobotState, type MRAState} from '@MRAControl/state/useRobartState';
 import JsZip from 'jszip';
 import FileSaver from 'file-saver';
 
@@ -29,25 +29,35 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 	var mainNode = launcherNode.split('\n');
 	var numGroups = 0; //Object.keys(projectState.timelineState.groups).length;
 	const zip = JsZip();
+    const allRobots = projectState.robots
+    const robotIndexMap: { [id: string]: number } = {};
+
+    Object.keys(allRobots).forEach((id: string, index: number) => {
+        robotIndexMap[id] = index;
+    });
+
 	const groups = projectState.timelineState.groups;
 	for (let groupName in groups) {
 		const groupState = projectState.timelineState.groups[groupName];
-        console.warn("name:", groupName)
 		const robots = Object.values(groupState.robots);
-		var robotIndices: string[] = [];
+
+		const robotIndices: number[] = [];
 		if (robots.length === 0) {
 			continue;
 		}
 
 		numGroups += 1;
 		for (let r in robots) {
-			console.log(robots, r);
-			if (robots[r] == undefined) {
-				continue;
-			}
+            const state = robots[r]
+            const index = robotIndexMap[state.id];
 
-			robotIndices.push(r);
-			console.log('Robot Indices', robotIndices);
+            // const r = groupState.robots[robotId];
+			// console.log(robots, r);
+			// if (robots[r] == undefined) {
+			// 	continue;
+			// }
+
+			robotIndices.push(index);
 		}
 
 		var pythonBlocks = '';
@@ -56,13 +66,11 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 		}
 
 		for (let block in groupState.items) {
-			console.log(block);
 			const blockState = groupState.items[block];
-            console.log(blockState.groupId)
 			const startTime = blockState.startTime;
 			const pythonCode = projectState.blocks[blockState.blockId].python;
 			pythonBlocks += `        start_time = ${startTime}\n`;
-			pythonBlocks += '        self.wait_until(start_time)\n';
+			pythonBlocks += '        self.timeHelper.sleepUntil(start_time)\n';
                 
 			var pythonLines = pythonCode.split('\n');
 			for (var i = 0; i < pythonLines.length - 1; i++) {
@@ -79,12 +87,12 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 		workerNode.splice(execBlocksLine, 0, pythonBlocks);
 
 		// For each worker, save file and insert start code to main node. 
-		console.log(robotIndices);
 		var launcherText = `    import ${groupName}` + '_node\n';
 		launcherText += '    cfs = []\n';
 
-		for (let r in robotIndices) 
+		for (const r of robotIndices) {
 			launcherText += `    cfs.append(crazyflies[${r}])\n`;
+        }
 		launcherText += `    nodes.append(${groupName}_node.worker_node(cfs, len(nodes), ${numGroups}))\n`;
 		mainNode.splice(launcherNodeLine, 0, launcherText);
 		launcherNodeLine += 2;
