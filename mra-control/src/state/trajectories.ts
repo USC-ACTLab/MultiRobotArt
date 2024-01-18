@@ -271,17 +271,22 @@ export class StretchTrajectory extends Trajectory {
 	originalTrajectory: Trajectory;
 	positionStretch: THREE.Vector3;
 	timeStretch: number;
+	initialPosition: THREE.Vector3;
 
-	constructor(originalTrajectory: Trajectory, xStretch: number, yStretch: number, zStretch: number, tStretch: number) {
+	constructor(initialPosition: THREE.Vector3, originalTrajectory: Trajectory, xStretch: number, yStretch: number, zStretch: number, tStretch: number) {
 		super(originalTrajectory.duration * tStretch);
 		this.duration = originalTrajectory.duration * tStretch;
 		this.originalTrajectory = originalTrajectory;
 		this.positionStretch = new THREE.Vector3(xStretch, yStretch, zStretch);
 		this.timeStretch = tStretch;
+		this.initialPosition = initialPosition;
 	}
 
 	evaluate(t: number): THREE.Vector3 {
-		return this.originalTrajectory.evaluate(t).multiply(this.positionStretch);
+		const originalVal = this.originalTrajectory.evaluate(t)
+		const offset = originalVal.sub(this.initialPosition);
+		const newOffset = offset.multiply(this.positionStretch);
+		return newOffset.add(this.initialPosition);
 	}
 }
 

@@ -139,6 +139,8 @@ def circle(groupState, radius, velocity, radians, direction):
 #   Logger Class
 ###
 
+
+
 class CrazyflieSimLogger:
     
     def __init__(self):
@@ -150,6 +152,21 @@ class CrazyflieSimLogger:
     
     def cmdPos(self, pos):
         self.ll_commands.append(('cmdPos', pos))
+    
+    def setLEDColor(self):
+        pass
+    
+    def takeoff(self):
+        pass
+
+    def land(self):
+        pass
+
+    def getPosition(self):
+        pass
+
+    def notifySetpointsStop(self):
+        pass
 
 class TimeHelperSimLogger:
     def __init__(self):
@@ -163,3 +180,6 @@ class TimeHelperSimLogger:
     def sleepForRate(self, Hz):
         self.times.append(self.currTime)
         self.currTime += 1/Hz
+    
+    def sleepUntil(self, time):
+        self.times
