@@ -243,11 +243,12 @@ export const addTrajectories = (groupState: SimulatorGroupState, [firstDuration,
 };
 
 export const stretchTrajectory = (groupState: SimulatorGroupState, [duration, traj]: [number, Map<string, Trajectory>], xStretch: number, yStretch: number, zStretch: number, tStretch: number): [number, Map<string, Trajectory>] => {
+	const robots = useSimulator.getState().robots;
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	groupState.robotIDs.forEach((robotId) => {
 		let originalTrajectory = traj.get(robotId);
 		if (originalTrajectory) {
-			let trajectory = new StretchTrajectory(originalTrajectory, xStretch, yStretch, zStretch, tStretch);
+			let trajectory = new StretchTrajectory(robots[robotId].pos, originalTrajectory, xStretch, yStretch, zStretch, tStretch);
 			trajectories.set(robotId, trajectory);
 		}
 	});

@@ -33,7 +33,7 @@ def goto_at_speed(groupState, x, y, z, v, rel=False):
     crazyflies = groupState.crazyflies
     max_duration = 0
     for cf in crazyflies:
-        curr_pos = cf.getPosition()
+        curr_pos = cf.position()
         dist = np.linalg.norm(curr_pos, np.array([x, y, z]))
         duration = dist / v
         cf.goTo((float(x), float(y), float(z)), 0, duration=duration, relative=rel)
@@ -73,7 +73,7 @@ def stop_and_hover(groupState, height=None):
 
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
-        position = cf.getPosition()
+        position = cf.position()
         cf.goTo(position, 0, 1.0)
     
 
@@ -82,7 +82,7 @@ def stop_and_hover(groupState, height=None):
 #  Low Level Commands...
 ###
 def getPosition(cf):
-    return cf.getPosition()
+    return cf.position()
 
 #TODO: Enable low level commands...
 def cmdPos(cf, pos):
@@ -162,7 +162,7 @@ class CrazyflieSimLogger:
     def land(self):
         pass
 
-    def getPosition(self):
+    def position(self):
         pass
 
     def notifySetpointsStop(self):
