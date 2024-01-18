@@ -469,7 +469,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							xml: '',
 							python: '',
 							javaScript: '',
-							duration: 3,
+							duration: 1,
 						};
 						set((state) => {
 							state.blocks[block.id] = block;
