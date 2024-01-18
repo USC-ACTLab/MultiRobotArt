@@ -12,13 +12,13 @@ export const blockStretchTrajectories: RobartBlockDefinition = {
 			this.appendDummyInput()
 				.appendField('Stretch Trajectory')
 				.appendField('x: ')
-				.appendField(new Blockly.FieldNumber(1), 'x')
+				.appendField(new Blockly.FieldNumber(1, 0.01), 'x')
 				.appendField(' y: ')
-				.appendField(new Blockly.FieldNumber(1), 'y')
+				.appendField(new Blockly.FieldNumber(1, 0.01), 'y')
 				.appendField(' z: ')
-				.appendField(new Blockly.FieldNumber(1), 'z')
+				.appendField(new Blockly.FieldNumber(1, 0.01), 'z')
 				.appendField(' time: ')
-				.appendField(new Blockly.FieldNumber(1), 't');
+				.appendField(new Blockly.FieldNumber(1, 0.01), 't');
 			this.appendStatementInput('originalTraj')
 				.appendField('Trajectory: ');
 			this.setPreviousStatement(true, null);

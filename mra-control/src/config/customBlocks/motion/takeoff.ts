@@ -11,9 +11,9 @@ export const blockTakeoff: RobartBlockDefinition = {
 		init: function () {
 			this.appendDummyInput()
 				.appendField('takeoff to')
-				.appendField(new Blockly.FieldNumber(0), 'height')
+				.appendField(new Blockly.FieldNumber(1, 0), 'height')
 				.appendField('meters over')
-				.appendField(new Blockly.FieldNumber(0), 'duration')
+				.appendField(new Blockly.FieldNumber(3, 0.1), 'duration')
 				.appendField('seconds');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);

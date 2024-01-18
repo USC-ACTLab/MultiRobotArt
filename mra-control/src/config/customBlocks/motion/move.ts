@@ -13,7 +13,7 @@ export const blockMove: RobartBlockDefinition = {
 				.appendField(new Blockly.FieldDropdown([['up', 'up'], ['down', 'down'], ['left', 'left'], ['right', 'right'], ['forward', 'forward'], ['backward', 'backward']]), 'direction')
 				.appendField(new Blockly.FieldNumber(0), 'distance')
 				.appendField('meters for')
-				.appendField(new Blockly.FieldNumber(0), 'duration')
+				.appendField(new Blockly.FieldNumber(3, 0.1), 'duration')
 				.appendField('seconds');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);

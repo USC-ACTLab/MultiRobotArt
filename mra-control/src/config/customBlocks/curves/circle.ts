@@ -9,11 +9,11 @@ export const blockCircle: RobartBlockDefinition = {
 		init: function () {
 			this.appendDummyInput()
 				.appendField(new Blockly.FieldLabelSerializable('Go in circle of radius'), 'Circular motion')
-				.appendField(new Blockly.FieldNumber(1, 0), 'radius_m')
+				.appendField(new Blockly.FieldNumber(1, 0.01), 'radius_m')
 				.appendField('m');
 			this.appendDummyInput()
 				.appendField('at speed')
-				.appendField(new Blockly.FieldNumber(0.5), 'velocity')
+				.appendField(new Blockly.FieldNumber(0.5, 0.01), 'velocity')
 				.appendField('m/s');
 			this.appendDummyInput()
 				.appendField('for')

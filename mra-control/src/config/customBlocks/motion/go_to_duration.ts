@@ -17,7 +17,7 @@ export const blockGoTo: RobartBlockDefinition = {
 				.appendField('Z:')
 				.appendField(new Blockly.FieldNumber(0), 'z_pos')
 				.appendField('over')
-				.appendField(new Blockly.FieldNumber(0), 'duration')
+				.appendField(new Blockly.FieldNumber(3, 0.1), 'duration')
 				.appendField('seconds');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);

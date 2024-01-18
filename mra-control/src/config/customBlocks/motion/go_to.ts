@@ -16,7 +16,7 @@ export const blockGoToSpeed: RobartBlockDefinition = {
 				.appendField('Z:')
 				.appendField(new Blockly.FieldNumber(0), 'z_pos')
 				.appendField('at')
-				.appendField(new Blockly.FieldNumber(0), 'speed')
+				.appendField(new Blockly.FieldNumber(0.5, 0.01), 'speed')
 				.appendField('m/s');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
