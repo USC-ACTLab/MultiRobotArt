@@ -22,7 +22,7 @@ export const blockRotateTrajectoryDegrees: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Rotate the given trajectory by the given Euler Angles.');
 			this.setHelpUrl('');
 		},
 	},
@@ -58,7 +58,7 @@ export const blockRotateTrajectoryRadians: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Rotate the given trajectory by the given Euler Angles.');
 			this.setHelpUrl('');
 		},
 	},

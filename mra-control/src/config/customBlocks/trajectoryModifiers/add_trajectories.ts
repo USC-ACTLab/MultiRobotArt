@@ -18,7 +18,7 @@ export const blockAddTrajectories: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Add two trajectories together. At every timestep, the output (relative change from initial position) of each trajectory is added together. When trajectories have different durations, this will run for the longer of the two durations. Note: Cannot take multiple vertically stacked blocks as input.');
 			this.setHelpUrl('');
 		},
 	},

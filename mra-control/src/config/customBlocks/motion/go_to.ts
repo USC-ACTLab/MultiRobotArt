@@ -21,7 +21,7 @@ export const blockGoToSpeed: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Move to a desired position at a certain speed. NOTE: Desired speed is an average speed, not a maximum speed.');
 			this.setHelpUrl('');
 		},
 	},

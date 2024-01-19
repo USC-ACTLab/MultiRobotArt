@@ -22,7 +22,7 @@ export const blockGoTo: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Go To a desired position over a given duration.');
 			this.setHelpUrl('');
 		},
 	},

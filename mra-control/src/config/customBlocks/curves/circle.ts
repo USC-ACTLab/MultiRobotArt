@@ -22,8 +22,8 @@ export const blockCircle: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
-			this.setHelpUrl('');
+			this.setTooltip('Draw a circle in the YZ-Plane with given parameters. The circle begins at angle=0 and proceeds counter-clockwise until the desired angle is reached. Note that an angle of 0 is on the right side of the circle (Think Unit Circle).');
+			this.setHelpUrl('https://en.wikipedia.org/wiki/Unit_circle');
 		},
 	},
 	pythonGenerator: (block, _python) => {
@@ -71,7 +71,7 @@ export const blockCircleRadians: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Draw a circle in the YZ-Plane with given parameters. The circle begins at angle=0 and proceeds counter-clockwise until the desired angle is reached. Note that an angle of 0 is on the right side of the circle (Think Unit Circle).');
 			this.setHelpUrl('');
 		},
 	},
@@ -88,7 +88,6 @@ export const blockCircleRadians: RobartBlockDefinition = {
 		const radius = block.getFieldValue('radius_m') as number;
 		const velocity = block.getFieldValue('velocity') as number;
 		const radians = block.getFieldValue('angle_radians') as number;
-		const dropDownDirection = block.getFieldValue('direction') as string;	
 		let clockwise = true;
 		// if (dropDownDirection == 'ccw') {
 		// 	clockwise = false;

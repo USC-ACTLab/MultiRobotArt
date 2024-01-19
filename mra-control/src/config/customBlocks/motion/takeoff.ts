@@ -18,7 +18,7 @@ export const blockTakeoff: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(230);
-			this.setTooltip('');
+			this.setTooltip('Takeoff smoothly to a given height.');
 			this.setHelpUrl('');
 		},
 	},

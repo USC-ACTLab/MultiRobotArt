@@ -27,7 +27,7 @@ export const blockMoveXyz: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Move a direction at an average given speed.');
 			this.setHelpUrl('');
 		},
 	},

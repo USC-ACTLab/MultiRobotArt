@@ -34,6 +34,7 @@ export const blockColor: RobartBlockDefinition = {
 				}), 'color');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
+			this.setTooltip("Change the color of the LED ring on the crazyflie.")
 		},
     
 	},
@@ -61,12 +62,13 @@ export const blockRandomColor: RobartBlockDefinition = {
 				.appendField('Random LED Color:');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
+			this.setTooltip("Change the color of the LED ring to a random color! (Picks three random numbers for red, green, and blue)")
 		},
     
 	},
 
 	pythonGenerator: (block, _python) => {
-		const color = block.getFieldValue('color') as string;
+		var color = {r: Math.random(), b: Math.random(), g: Math.random()};
 		const code = 'setLEDColorFromHex(groupState, "' + color + '")\n';
 		return code;
 	},

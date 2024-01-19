@@ -18,7 +18,7 @@ export const blockSubtractTrajectories: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Subtract two trajectories (see add).');
 			this.setHelpUrl('');
 		},
 	},

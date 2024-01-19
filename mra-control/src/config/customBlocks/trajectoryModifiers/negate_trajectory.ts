@@ -16,7 +16,7 @@ export const blockNegate: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Do the opposite (relative to current position) of the given trajectory.');
 			this.setHelpUrl('');
 		},
 	},

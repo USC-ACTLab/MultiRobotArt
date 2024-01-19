@@ -18,7 +18,7 @@ export const blockLand: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(230);
-			this.setTooltip('');
+			this.setTooltip('Land at a certain height.');
 			this.setHelpUrl('');
 		},
 	},

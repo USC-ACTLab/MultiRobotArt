@@ -31,6 +31,7 @@ export const blockColorOff: RobartBlockDefinition = {
 				.appendField('Turn LED Off');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
+			this.setTooltip('Turn the LED ring off. (Set red, green, and blue to 0)')
 		},
     
 	},

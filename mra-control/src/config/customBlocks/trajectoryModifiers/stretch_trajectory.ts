@@ -12,19 +12,19 @@ export const blockStretchTrajectories: RobartBlockDefinition = {
 			this.appendDummyInput()
 				.appendField('Stretch Trajectory')
 				.appendField('x: ')
-				.appendField(new Blockly.FieldNumber(1, 0.01), 'x')
+				.appendField(new Blockly.FieldNumber(1, 0.0), 'x')
 				.appendField(' y: ')
-				.appendField(new Blockly.FieldNumber(1, 0.01), 'y')
+				.appendField(new Blockly.FieldNumber(1, 0.0), 'y')
 				.appendField(' z: ')
-				.appendField(new Blockly.FieldNumber(1, 0.01), 'z')
+				.appendField(new Blockly.FieldNumber(1, 0.0), 'z')
 				.appendField(' time: ')
-				.appendField(new Blockly.FieldNumber(1, 0.01), 't');
+				.appendField(new Blockly.FieldNumber(1, 0.0), 't');
 			this.appendStatementInput('originalTraj')
 				.appendField('Trajectory: ');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('');
+			this.setTooltip('Stretch or shrink a trajectory by any component or time. A stretch of 0.5 will make all x values in the trajectory shrink by half, a stretch of 2.0 will double all x values in the trajectory. A time stretch factor of 0.5 will make the trajectory take half the time (twice as fast), and a factor of 2.0 will make it take twice as long (half as fast).');
 			this.setHelpUrl('');
 		},
 	},
