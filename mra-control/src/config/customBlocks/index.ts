@@ -13,7 +13,7 @@ import {blockGetPosition} from './utility/get_a_position';
 import {blockColor, blockRandomColor} from './colors/color';
 import {blockColorOff} from './colors/colorOff';
 import Blockly from 'blockly';
-import {multiTraj} from './motion/multi_traj';
+import {multiTraj} from './trajectoryModifiers/multi_traj';
 import {blockCircleArc} from './curves/circleArc';
 import {blockNegate} from './trajectoryModifiers/negate_trajectory';
 import {blockAddTrajectories} from './trajectoryModifiers/add_trajectories';
