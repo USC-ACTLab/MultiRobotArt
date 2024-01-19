@@ -142,7 +142,7 @@ export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, v
 		const axes = ['Y', 'Z'];
 		const radians = toRadians(degrees);
 		const clockwise = true;
-		const arclength = radius * (radians);
+		const arclength = Math.abs(radius * (radians));
 		duration = arclength / velocity;
 		console.log('duration', duration, 'arclength', arclength)
 		const circleTraj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise, duration);
@@ -187,7 +187,7 @@ export const moveCircleArcVel = (groupState: SimulatorGroupState, radius: number
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-	arcLength = radius *  arcAngle * Math.PI / 180.;
+	arcLength = Math.abs(radius *  arcAngle * Math.PI / 180.);
 	let duration = arcLength / velocity;
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
 	const robots = useSimulator.getState().robots;
