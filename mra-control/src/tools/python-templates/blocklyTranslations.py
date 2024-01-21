@@ -255,7 +255,13 @@ def stretch(groupState, command, x_stretch, y_stretch, z_stretch, time_stretch):
                 pass
     execute_commands(groupState, originalGroupState)
 
-    
+def addTrajectories(groupState, command1, command2):
+    # TODO: Need to convert goTo's to low level commands with formula
+    pass
+
+def subtractTrajectories(groupState, command1, command2):
+    pass
+
 def execute_commands(simGroupState, originalGroupState):
     # Note, assumes all crazyflies in group are issued similar commands (all are told goTo)
     # Assumes first command is to be executed immediately

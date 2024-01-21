@@ -20,9 +20,10 @@ export const blockNegate: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, _python) => {
-		// TODO...
-		let code = 'pass';
+	pythonGenerator: (block, python) => {
+		var originalTraj = python.statementToCode(block, 'originalTraj');
+		originalTraj = originalTraj.trim();
+		const code = `negate(groupState, lambda groupState: ${originalTraj})\n`;
 		return code;
 	},
 	javascriptGenerator: (block, js) => {

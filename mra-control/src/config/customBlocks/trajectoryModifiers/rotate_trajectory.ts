@@ -62,9 +62,13 @@ export const blockRotateTrajectoryRadians: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, _python) => {
-		// TODO...
-		let code = 'pass';
+	pythonGenerator: (block, python) => {
+		var originalTraj = python.statementToCode(block, 'originalTraj');
+		originalTraj = originalTraj.trim();
+		const x = block.getFieldValue('x') as number;
+		const y = block.getFieldValue('y') as number;
+		const z = block.getFieldValue('z') as number;
+		let code = `rotate(groupState, lambda groupState ${originalTraj}, ${x}, ${y}, ${z})\n`;
 		return code;
 	},
 	javascriptGenerator: (block, js) => {

@@ -28,10 +28,16 @@ export const blockStretchTrajectories: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, _python) => {
-		// TODO...
-		let code = 'pass';
-		return code;
+	pythonGenerator: (block, python) => {
+		var originalTraj = python.statementToCode(block, 'originalTraj');
+		originalTraj = originalTraj.trim();
+		const x = block.getFieldValue('x') as number;
+		const y = block.getFieldValue('y') as number;
+		const z = block.getFieldValue('z') as number;
+		const t = block.getFieldValue('t') as number;
+
+
+		return `stretchTrajectory(groupState, lambda groupState: ${originalTraj}, ${x}, ${y}, ${z}, ${t})\n`;
 	},
 	javascriptGenerator: (block, js) => {
 		var originalTraj = js.statementToCode(block, 'originalTraj');

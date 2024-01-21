@@ -22,10 +22,13 @@ export const blockSubtractTrajectories: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, _python) => {
-		// TODO...
-		let code = 'pass';
-		return code;
+	pythonGenerator: (block, python) => {
+		var firstTrajectory = python.statementToCode(block, 'firstTrajectory');
+		var secondTrajectory = python.statementToCode(block, 'secondTrajectory');
+		firstTrajectory = firstTrajectory.trim();
+		secondTrajectory = secondTrajectory.trim();
+
+		return `subtractTrajectories(groupState, lambda groupState: ${firstTrajectory}, lambda groupState: ${secondTrajectory}, false)\n`;
 	},
 	javascriptGenerator: (block, js) => {
 		// var xPosition = block.getFieldValue('x_pos') as number;

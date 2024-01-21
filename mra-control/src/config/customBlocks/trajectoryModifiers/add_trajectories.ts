@@ -22,9 +22,12 @@ export const blockAddTrajectories: RobartBlockDefinition = {
 			this.setHelpUrl('');
 		},
 	},
-	pythonGenerator: (block, _python) => {
-		// TODO...
-		let code = 'pass';
+	pythonGenerator: (block, python) => {
+		var firstTrajectory = python.statementToCode(block, 'firstTrajectory');
+		var secondTrajectory = python.statementToCode(block, 'secondTrajectory');
+		firstTrajectory = firstTrajectory.trim();
+		secondTrajectory = secondTrajectory.trim();
+		const code = `addTrajectories(groupState, lambda groupState: ${firstTrajectory}, lambda groupState: ${secondTrajectory}\n`;
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
