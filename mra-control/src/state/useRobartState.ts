@@ -200,49 +200,49 @@ const defaultRobartState: MRAState = {
 				name: 'All CFs',
 				items: {},
 				robots: {},
-				duration: 60,
+				duration: 120,
 			},
 			group1: {
 				id: 'group1',
 				name: 'Group 1',
 				items: {},
 				robots: {},
-				duration: 60,
+				duration: 120,
 			},
 			group2: {
 				id: 'group2',
 				name: 'Group 2',
 				items: {},
 				robots: {},
-				duration: 60,
+				duration: 120,
 			},
 			group3: {
 				id: 'group3',
 				name: 'Group 3',
 				items: {},
 				robots: {},
-				duration: 60,
+				duration: 120,
 			},
 			group4: {
 				id: 'group4',
 				name: 'Group 4',
 				items: {},
 				robots: {},
-				duration: 60,
+				duration: 120,
 			},
 			group5: {
 				id: 'group5',
 				name: 'Group 5',
 				items: {},
 				robots: {},
-				duration: 60,
+				duration: 120,
 			},
 			group6: {
 				id: 'group6',
 				name: 'Group 6',
 				items: {},
 				robots: {},
-				duration: 60,
+				duration: 120,
 			},
 		},
 	},
@@ -326,7 +326,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							name,
 							items: {},
 							robots: {},
-							duration: 60,
+							duration: 120,
 						};
 						set((state) => {
 							state.timelineState.groups[id] = group;
@@ -565,7 +565,7 @@ export const useRobartState = create<MRAState & MRAActions>()(
 								name: groupName,
 								items: {},
 								robots: {},
-								duration: 60},
+								duration: 120},
 						};
 						set((state) => {
 							state.timelineState.groups = newGroups;
