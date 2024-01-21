@@ -32,7 +32,7 @@ export const blockRotateTrajectoryDegrees: RobartBlockDefinition = {
 		const x = block.getFieldValue('x') as number * Math.PI / 180;
 		const y = block.getFieldValue('y') as number * Math.PI / 180;
 		const z = block.getFieldValue('z') as number * Math.PI / 180;
-		let code = `rotate(groupState, lambda groupState ${originalTraj}, ${x}, ${y}, ${z})\n`;
+		let code = `rotate(groupState, lambda groupState: ${originalTraj}, ${x}, ${y}, ${z})\n`;
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
@@ -72,7 +72,7 @@ export const blockRotateTrajectoryRadians: RobartBlockDefinition = {
 		const x = block.getFieldValue('x') as number;
 		const y = block.getFieldValue('y') as number;
 		const z = block.getFieldValue('z') as number;
-		let code = `rotate(groupState, lambda groupState ${originalTraj}, ${x}, ${y}, ${z})\n`;
+		let code = `rotate(groupState, lambda groupState: ${originalTraj}, ${x}, ${y}, ${z})\n`;
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
