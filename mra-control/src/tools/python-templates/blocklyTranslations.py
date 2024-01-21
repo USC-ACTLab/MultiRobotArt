@@ -4,6 +4,7 @@ import numpy as np
 from PIL import ImageColor
 import rclpy
 from crazyflieLoggers import *
+import rowan
 
 
 Hz = 20
@@ -178,6 +179,45 @@ def negate(groupState, command):
                 # Just run the original command, no need to alter anything
                 pass
     execute_commands(groupState, originalGroupState)
+
+def rotate(groupState, command, x_rot, y_rot, z_rot):
+    originalGroupState = groupState
+    simCrazyflies = []
+    for cf in groupState.crazyflies:
+        rclpy.spin_once(cf.node)
+        simCrazyflies.append(CrazyflieSimLogger(cf.position()))
+    simTimeHelper = TimeHelperSimLogger()
+    simTimeHelper.currTime = originalGroupState.timeHelper.time()
+    groupState = SimpleNamespace(crazyflies=simCrazyflies, timeHelper=simTimeHelper)
+    # Execute Simulated Commands
+    command(groupState)
+    # Process commands to add startTime
+    setStartTimes(groupState)
+    for simcf, cf in zip(groupState.crazyflies, originalGroupState.crazyflies):
+        rclpy.spin_once(cf.node)
+        initialPosition = cf.position()
+        for i, command in enumerate(simcf.commands):
+            cfCommand = command.command
+            if cfCommand == 'goTo' or cfCommand == 'cmdPos':
+                if command.relative == False:
+                    originalDestination = command.position
+                    directionVector = np.array(initialPosition) - np.array(originalDestination)
+                    rotQuat = rowan.from_euler(x_rot, y_rot, z_rot, convention='xyz')
+                    rotatedVector = rowan.rotate(rotQuat, directionVector)
+                    newDestination = rotatedVector + initialPosition
+                    simcf.commands[i].position = newDestination
+                else:
+                    originalDestination = command.position
+                    directionVector = np.array(initialPosition) - np.array(originalDestination)
+                    rotQuat = rowan.from_euler(x_rot, y_rot, z_rot, convention='xyz')
+                    rotatedVector = rowan.rotate(rotQuat, directionVector)
+                    newDestination = rotatedVector
+                    simcf.commands[i].position = newDestination
+            else:
+                # Just run the original command, no need to alter anything
+                pass
+    execute_commands(groupState, originalGroupState)
+
     
 def execute_commands(simGroupState, originalGroupState):
     # Note, assumes all crazyflies in group are issued similar commands (all are told goTo)
