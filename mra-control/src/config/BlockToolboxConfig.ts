@@ -36,13 +36,13 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 				//blockToToolbox(CUSTOM_BLOCKS.block_start_circle),
 			],
 		},
-		{
-			kind: 'category',
-			name: 'Config',
-			contents: [
-				blockToToolbox(CUSTOM_BLOCKS.blockGetPosition),
-			],
-		},
+		// {
+		// 	kind: 'category',
+		// 	name: 'Config',
+		// 	contents: [
+		// 		blockToToolbox(CUSTOM_BLOCKS.blockGetPosition),
+		// 	],
+		// },
 		{
 			kind: 'category',
 			name: 'Colors',
