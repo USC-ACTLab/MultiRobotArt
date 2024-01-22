@@ -11,6 +11,7 @@ import translations from './python-templates/blocklyTranslations.py?raw';
 import launchServer from './python-templates/launch.py?raw';
 import timeHelper from './python-templates/TimeHelper.py?raw';
 import crazyflieLoggers from './python-templates/crazyflieLoggers.py?raw';
+import readmeText from './python-templates/readme.md?raw';
 
 const extractLineNumber = (text: string, toMatch: string): number => {
 	// Get index of first match, split by lines and count # lines until occurance
@@ -110,6 +111,7 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 	// Configuration file
 	const configureFile = new Blob([configure], {type: 'text/plain'});
     const loggersFile = new Blob([crazyflieLoggers], {type: 'text/plain'});
+    const readmeFile = new Blob([readmeText], {type: 'text/plain'});
 
 	// Starting positions yaml
 	var startingPositions = 'positions:\n';
@@ -128,6 +130,7 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 	zip.file('launch_nodes.py', launcherFile);
     zip.file('TimeHelper.py', timeHelper);
     zip.file('crazyflieLoggers.py', loggersFile);
+    zip.file('Readme.md', readmeFile);
 
     
     const translationsFile = new Blob([translations], {type: 'text/plain'});

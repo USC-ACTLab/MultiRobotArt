@@ -36,7 +36,7 @@ export const blockMoveXyz: RobartBlockDefinition = {
 		var y = block.getFieldValue('y') as number;
 		var z = block.getFieldValue('z') as number;
 		var speed = block.getFieldValue('speed') as number;
-		var code = 'goto_rel_at_speed(groupState, ' + x + ',' + y + ',' + z + ',' + speed + ')\n';
+		var code = 'goto_velocity_relative_position(groupState, ' + x + ',' + y + ',' + z + ',' + speed + ')\n';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {

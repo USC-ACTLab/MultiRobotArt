@@ -46,8 +46,8 @@ with open('cfs_ordering.yaml', 'w') as f:
 
 # Make commands for sim and non-sim launches
 with open('sim.sh', 'w') as f:
-    f.write('ros2 launch crazyflie launch.py config:=my_crazyflies.yaml backend:=sim')
+    f.write('ros2 launch launch.py backend:=sim')
     os.chmod('sim.sh', stat.S_IRWXU)
 with open('run.sh', 'w') as f:
-    f.write('ros2 launch crazyflie launch.py config:=my_crazyflies.yaml')
+    f.write('ros2 launch launch.py')
     os.chmod('run.sh', stat.S_IRWXU)

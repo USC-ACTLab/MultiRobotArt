@@ -14,9 +14,13 @@ Hz = 20
 ###
 
 def takeoff(groupState, height=1.0, duration=2.0):
-    '''
-    Takeoff to a certain height for every crazyflie in groupState
-    '''
+    """Takeoff command, runs for every crazyflie in groupState
+
+    Args:
+        groupState GroupState: crazyflies and timehelper objects
+        height (float, optional): height to takeoff to. Defaults to 1.0.
+        duration (float, optional): duration of command. Defaults to 2.0.
+    """
     timeHelper = groupState.timeHelper
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
@@ -24,6 +28,13 @@ def takeoff(groupState, height=1.0, duration=2.0):
     timeHelper.sleep(duration)
 
 def land(groupState, height=0.04, duration=2.0):
+    """Land command, runs for every crazyflie in groupState
+
+    Args:
+        groupState GroupState: crazyflies and timehelper objects
+        height (float, optional): height to land to. Defaults to 1.0.
+        duration (float, optional): duration of command. Defaults to 2.0.
+    """    
     timeHelper = groupState.timeHelper
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
@@ -34,7 +45,17 @@ def land(groupState, height=0.04, duration=2.0):
 #  Motion Primitive Commands
 ###
 
-def goto_at_speed(groupState, x, y, z, v, rel=False):
+def goto_velocity(groupState, x, y, z, v, rel=False):
+    """goTo command at a given *average* velocity, runs for every crazyflie in groupState
+
+    Args:
+        groupState GroupState: crazyflies and timehelper objects
+        x float: Desired x position 
+        y float: Desired y position
+        z float: Desired z position
+        v float: Desired average velocity
+        rel (bool, optional): Whether or not the command is relative or absolute. Defaults to False.
+    """    
     timeHelper = groupState.timeHelper
     crazyflies = groupState.crazyflies
     max_duration = 0
@@ -47,16 +68,35 @@ def goto_at_speed(groupState, x, y, z, v, rel=False):
     timeHelper.sleep(max_duration)
 
 def goto_duration(groupState, x, y, z, duration, rel=False):
+    """goTo command at a given duration, runs for every crazyflie in groupState
+
+    Args:
+        groupState GroupState: crazyflies and timehelper objects
+        x float: Desired x position 
+        y float: Desired y position
+        z float: Desired z position
+        duration float: duration of command
+        rel (bool, optional): Whether or not the command is relative or absolute. Defaults to False.
+    """      
     timeHelper = groupState.timeHelper
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
         cf.goTo((float(x), float(y), float(z)), 0, duration=duration, relative=rel)
     timeHelper.sleep(duration)
 
-def goto_rel_at_speed(groupState, x, y, z, v):
-    goto_at_speed(groupState, x, y, z, v, True)
+def goto_velocity_relative_position(groupState, x, y, z, v):
+    """goTo command with given average velocity and relative position
 
-def goto_rel_duration(groupState, x, y, z, duration):
+    Args:
+        groupState GroupState: crazyflies and timehelper objects
+        x float: Desired x position 
+        y float: Desired y position
+        z float: Desired z position
+        v float: average velocity 
+    """    
+    goto_velocity(groupState, x, y, z, v, True)
+
+def goto_duration_relative(groupState, x, y, z, duration):
     goto_duration(groupState, x, y, z, duration, True)
 
 def move_direction(groupState, direction, distance, duration):
@@ -76,7 +116,6 @@ def move_direction(groupState, direction, distance, duration):
     return duration
 
 def stop_and_hover(groupState, height=None):
-
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
         position = cf.position()
@@ -113,8 +152,6 @@ def setLEDColor(groupState, r, g, b):
 ### 
 #  Trajectory commands...
 ###
-
-
 def circle(groupState, radius, velocity, radians, direction):
     crazyflies = groupState.crazyflies
     timeHelper = groupState.timeHelper
