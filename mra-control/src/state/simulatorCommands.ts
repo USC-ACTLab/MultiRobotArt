@@ -137,14 +137,14 @@ export const moveSpeed = (groupState: SimulatorGroupState, x: number, y: number,
 export const moveCircleVel = (groupState: SimulatorGroupState, radius: number, velocity: number, degrees: number, direction: any): [number, Map<string, Trajectory>] =>{
 	var duration = 0;
 	let trajectories: Map<string, Trajectory> = new Map<string, Trajectory>;
-	console.log('Circle!')
+	// console.log('Circle!')
 	groupState.robotIDs.forEach((robotId) =>{
 		const axes = ['Y', 'Z'];
 		const radians = toRadians(degrees);
 		const clockwise = true;
 		const arclength = Math.abs(radius * (radians));
 		duration = arclength / velocity;
-		console.log('duration', duration, 'arclength', arclength)
+		// console.log('duration', duration, 'arclength', arclength)
 		const circleTraj = useSimulator.getState().robotCircle(robotId, radius, axes, radians, clockwise, duration);
 		trajectories.set(robotId, circleTraj);
 		// useSimulator.getState().updateTrajectory(robotId, circleTraj, duration);
