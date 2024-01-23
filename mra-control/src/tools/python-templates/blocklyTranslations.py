@@ -61,7 +61,7 @@ def goto_velocity(groupState, x, y, z, v, rel=False):
     max_duration = 0
     for cf in crazyflies:
         curr_pos = cf.position()
-        dist = np.linalg.norm(np.array(curr_pos), np.array([x, y, z]))
+        dist = np.linalg.norm(np.array(curr_pos) - np.array([x, y, z]))
         duration = dist / v
         cf.goTo((float(x), float(y), float(z)), 0, duration=duration, relative=rel)
         max_duration = max(duration, max_duration)
@@ -294,6 +294,55 @@ def stretch(groupState, command, x_stretch, y_stretch, z_stretch, time_stretch):
 
 def addTrajectories(groupState, command1, command2):
     # TODO: Need to convert goTo's to low level commands with formula
+    originalGroupState = groupState
+    simCrazyflies1 = []
+    for cf in groupState.crazyflies:
+        rclpy.spin_once(cf.node)
+        simCrazyflies1.append(CrazyflieSimLogger(cf.position()))
+    simTimeHelper1 = TimeHelperSimLogger()
+    simTimeHelper1.currTime = originalGroupState.timeHelper.time()
+    groupState1 = SimpleNamespace(crazyflies=simCrazyflies1, timeHelper=simTimeHelper1) 
+    # Execute Simulated Commands
+    command1(groupState1)
+    # Process commands to add startTime
+    setStartTimes(groupState1)
+
+    simCrazyflies2 = []
+    for cf in groupState.crazyflies:
+        rclpy.spin_once(cf.node)
+        simCrazyflies2.append(CrazyflieSimLogger(cf.position()))
+    simTimeHelper2 = TimeHelperSimLogger()
+    simTimeHelper2.currTime = originalGroupState.timeHelper.time()
+    groupState2 = SimpleNamespace(crazyflies=simCrazyflies2, timeHelper=simTimeHelper2)
+
+        # Execute Simulated Commands
+    command1(groupState2)
+    # Process commands to add startTime
+    setStartTimes(groupState2)
+
+    # Convert any goTo commands to LL Commands
+    convertToLL(groupState1)
+    convertToLL(groupState2)
+
+    duration1 = groupState1.crazyflies.commands[-1].startTime + groupState1.crazyflies.commands[-1].duration
+    duration2 = groupState2.crazyflies.commands[-1].startTime + groupState2.crazyflies.commands[-1].duration
+    if duration1 > duration2:
+        # Command 1 is longer, scale 2 appropriately
+        command_duration = duration1
+        scaling_factor = duration1 / duration2
+        for command in groupState2.crazyflies.commands:
+            command.startTime *= scaling_factor
+            command.duration *= scaling_factor
+    else:
+        # Command 2 is longer, scale 1 appropriately
+        command_duration = duration2
+        scaling_factor = duration2 / duration1
+        for command in groupState1.crazyflies.commands:
+            command.startTime *= scaling_factor
+            command.duration *= scaling_factor
+    
+
+def convertToLL(groupState):
     pass
 
 def subtractTrajectories(groupState, command1, command2):
