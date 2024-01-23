@@ -94,11 +94,15 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 		launcherText += '    cfs = []\n';
 
 		for (const r of robotIndices) {
+            if (r === undefined){
+                continue;
+            }
 			launcherText += `    cfs.append(crazyflies[${r}])\n`;
         }
 		launcherText += `    nodes.append(${groupName}_node.worker_node(cfs, len(nodes), ${numGroups}))\n`;
+        launcherText += `\n`;
 		mainNode.splice(launcherNodeLine, 0, launcherText);
-		launcherNodeLine += 2;
+		launcherNodeLine += 1;
 
 		// Save worker node
 		const workerNodeFile = new Blob([workerNode.join('\n')], {type: 'text/plain'});
