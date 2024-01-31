@@ -27,7 +27,7 @@ export const blockAddTrajectories: RobartBlockDefinition = {
 		var secondTrajectory = python.statementToCode(block, 'secondTrajectory');
 		firstTrajectory = firstTrajectory.trim();
 		secondTrajectory = secondTrajectory.trim();
-		const code = `addTrajectories(groupState, lambda groupState: ${firstTrajectory}, lambda groupState: ${secondTrajectory}\n`;
+		const code = `addTrajectories(groupState, lambda groupState: ${firstTrajectory}, lambda groupState: ${secondTrajectory})\n`;
 		return code;
 	},
 	javascriptGenerator: (block, js) => {
