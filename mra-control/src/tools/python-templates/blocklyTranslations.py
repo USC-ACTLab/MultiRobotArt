@@ -316,7 +316,7 @@ def addTrajectories(groupState, command1, command2):
     groupState2 = SimpleNamespace(crazyflies=simCrazyflies2, timeHelper=simTimeHelper2)
 
         # Execute Simulated Commands
-    command1(groupState2)
+    command2(groupState2)
     # Process commands to add startTime
     setStartTimes(groupState2)
 
@@ -340,10 +340,66 @@ def addTrajectories(groupState, command1, command2):
         for command in groupState1.crazyflies.commands:
             command.startTime *= scaling_factor
             command.duration *= scaling_factor
+
+    # Conver to 20Hz
+    # Assume same duration for now...
+
+    # Should be same duration and length, so just add...
+    for cf1, cf2 in zip(groupState1.crazyflies, groupState2.crazyflies):
+        for c1, c2 in zip(cf1.commands, cf2.commands):
+            if c1.command == 'cmdPos':
+                new_position = np.array(c1.position) + np.array(c2.position)
+                c1.position = new_position
     
+    execute_commands(groupState1, groupState)
+
+            
+
+
+def goToPolynomial(T, p, v, a, p2, v2, a2):
+        poly = [0] * 8
+        # Taken from crazyflie Firmware Library
+        T2 = T * T
+        T3 = T2 * T
+        T4 = T3 * T
+        T5 = T4 * T
+        T6 = T5 * T
+        T7 = T6 * T
+        poly[0] = p
+        poly[1] = v
+        poly[2] = a / 2
+        poly[3] = 0
+        poly[4] = -(5 * (14 * p - 14 * p2 + 8 * T * v + 6 * T * v2 + 2 * T2 * a - T2 * a2)) / (2 * T4)
+        poly[5] = (84 * p - 84 * p2 + 45 * T * v + 39 * T * v2 + 10 * T2 * a - 7 * T2 * a2) / T5
+        poly[6] = -(140 * p - 140 * p2 + 72 * T * v + 68 * T * v2 + 15 * T2 * a - 13 * T2 * a2) / (2 * T6)
+        poly[7] = (2 * (10 * p - 10 * p2 + 5 * T * v + 5 * T * v2 + T2 * a - T2 * a2)) / T7
+        return lambda t: sum([poly[i]*t**i] for i in range(len(poly)))
 
 def convertToLL(groupState):
-    pass
+    new_group_state = {} # Make sim...?
+    for cf in groupState.crazyflies:
+        simCF = CrazyflieSimLogger(cf.position())
+        currPosition = simCF.position()
+        new_commands = []
+        for command in cf.commands:
+            if command.command == 'goTo' or command.command == 'land' or command.command == 'takeoff':
+                startTime = command.startTime
+                # Convert to Polynomial
+                if command.relative == True:
+                    goal = np.array(command.position) + np.array(currPosition)
+                else:
+                    goal = command.position
+                fx = goToPolynomial(command.duration, currPosition[0], 0, 0, goal[0], 0, 0)
+                fy = goToPolynomial(command.duration, currPosition[1], 0, 0, goal[1], 0, 0)
+                fz = goToPolynomial(command.duration, currPosition[2], 0, 0, goal[2], 0, 0)
+
+                timesteps = np.arange(0, command.duration, 1/Hz)
+                commands = [Command('cmdPos', t+startTime, (fx(t), fy(t), fz(t)), 0, command.duration, relative=False) for t in timesteps]
+                new_commands.extend(commands) # Remove goto/land/takeoff commands later
+            else:
+                new_commands.append(command)
+        cf.commands = new_commands
+            
 
 def subtractTrajectories(groupState, command1, command2):
     pass
