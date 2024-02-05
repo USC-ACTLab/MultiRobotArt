@@ -11,7 +11,7 @@ import translations from './python-templates/blocklyTranslations.py?raw';
 import launchServer from './python-templates/launch.py?raw';
 import timeHelper from './python-templates/TimeHelper.py?raw';
 import crazyflieLoggers from './python-templates/crazyflieLoggers.py?raw';
-import readmeText from './python-templates/readme.md?raw';
+import readmeText from './python-templates/Readme.md?raw';
 
 const extractLineNumber = (text: string, toMatch: string): number => {
 	// Get index of first match, split by lines and count # lines until occurance
