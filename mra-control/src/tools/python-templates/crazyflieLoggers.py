@@ -74,7 +74,7 @@ class CrazyflieSimLogger:
             yaw float: Desired yaw
             duration float: length of time of command
             relative (bool, optional): Whether pos and yaw are relative to the starting position. Defaults to False.
-        """        
+        """
         goToCommand = Command(command='goTo', position=pos, yaw=yaw, relative=relative, duration=duration)
         self.commands.append(goToCommand)
         self.currPosition = pos

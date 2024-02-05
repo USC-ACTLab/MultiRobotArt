@@ -293,9 +293,9 @@ def stretch(groupState, command, x_stretch, y_stretch, z_stretch, time_stretch):
     execute_commands(groupState, originalGroupState)
 
 def addTrajectories(groupState, command1, command2):
-    # TODO: Need to convert goTo's to low level commands with formula
     originalGroupState = groupState
     simCrazyflies1 = []
+    #TODO: Make a method that takes in group state and returns sim'd groupState
     for cf in groupState.crazyflies:
         rclpy.spin_once(cf.node)
         simCrazyflies1.append(CrazyflieSimLogger(cf.position()))
@@ -315,7 +315,7 @@ def addTrajectories(groupState, command1, command2):
     simTimeHelper2.currTime = originalGroupState.timeHelper.time()
     groupState2 = SimpleNamespace(crazyflies=simCrazyflies2, timeHelper=simTimeHelper2)
 
-        # Execute Simulated Commands
+    # Execute Simulated Commands
     command2(groupState2)
     # Process commands to add startTime
     setStartTimes(groupState2)
@@ -324,33 +324,48 @@ def addTrajectories(groupState, command1, command2):
     convertToLL(groupState1)
     convertToLL(groupState2)
 
-    duration1 = groupState1.crazyflies.commands[-1].startTime + groupState1.crazyflies.commands[-1].duration
-    duration2 = groupState2.crazyflies.commands[-1].startTime + groupState2.crazyflies.commands[-1].duration
+    # Get duration of latest non-notify setpoints stop command
+    if groupState1.crazyflies[0].commands[-1].command == 'notifySetpointsStop':
+        finalCommand1 = -2
+    else:
+        finalCommand1 = -1
+    if groupState2.crazyflies[0].commands[-1].command == 'notifySetpointsStop':
+        finalCommand2 = -2
+    else:
+        finalCommand2 = -1
+
+    # Get duration of each command
+    duration1 = groupState1.crazyflies[0].commands[finalCommand1].startTime + groupState1.crazyflies[finalCommand1].commands[-1].duration - groupState1.crazyflies[0].commands[0].startTime
+    duration2 = groupState2.crazyflies[0].commands[finalCommand2].startTime + groupState2.crazyflies[0].commands[finalCommand2].duration - groupState2.crazyflies[0].commands[0].startTime
+
     if duration1 > duration2:
         # Command 1 is longer, scale 2 appropriately
         command_duration = duration1
         scaling_factor = duration1 / duration2
-        for command in groupState2.crazyflies.commands:
-            command.startTime *= scaling_factor
-            command.duration *= scaling_factor
+        for cf in groupState2.crazyflies:
+            for command in cf.commands:
+                    command.startTime *= scaling_factor
+                    command.duration *= scaling_factor
     else:
         # Command 2 is longer, scale 1 appropriately
         command_duration = duration2
         scaling_factor = duration2 / duration1
-        for command in groupState1.crazyflies.commands:
-            command.startTime *= scaling_factor
-            command.duration *= scaling_factor
+        for cf in groupState1.crazyflies:
+            for command in cf.commands:
+                command.startTime *= scaling_factor
+                command.duration *= scaling_factor
 
-    # Conver to 20Hz
+    # TODO: Convert to 20Hz
     # Assume same duration for now...
+    # take list of commands, gather positions, and interpolate/extrapolate
 
     # Should be same duration and length, so just add...
-    for cf1, cf2 in zip(groupState1.crazyflies, groupState2.crazyflies):
+    for cf1, cf2, realCf in zip(groupState1.crazyflies, groupState2.crazyflies, originalGroupState.crazyflies):
+        initial_position = realCf.position()
         for c1, c2 in zip(cf1.commands, cf2.commands):
             if c1.command == 'cmdPos':
-                new_position = np.array(c1.position) + np.array(c2.position)
+                new_position = np.array(c1.position) + np.array(c2.position) - initial_position
                 c1.position = new_position
-    
     execute_commands(groupState1, groupState)
 
             
@@ -358,6 +373,7 @@ def addTrajectories(groupState, command1, command2):
 
 def goToPolynomial(T, p, v, a, p2, v2, a2):
         poly = [0] * 8
+
         # Taken from crazyflie Firmware Library
         T2 = T * T
         T3 = T2 * T
@@ -373,12 +389,14 @@ def goToPolynomial(T, p, v, a, p2, v2, a2):
         poly[5] = (84 * p - 84 * p2 + 45 * T * v + 39 * T * v2 + 10 * T2 * a - 7 * T2 * a2) / T5
         poly[6] = -(140 * p - 140 * p2 + 72 * T * v + 68 * T * v2 + 15 * T2 * a - 13 * T2 * a2) / (2 * T6)
         poly[7] = (2 * (10 * p - 10 * p2 + 5 * T * v + 5 * T * v2 + T2 * a - T2 * a2)) / T7
-        return lambda t: sum([poly[i]*t**i] for i in range(len(poly)))
+        return lambda t: sum([poly[i]*t**i for i in range(len(poly))])
 
 def convertToLL(groupState):
-    new_group_state = {} # Make sim...?
+    # Convert high level command to series of low level commands
+    # Typically, this is converting a goTo command to cmdPos using a 7-Degree polynomial
     for cf in groupState.crazyflies:
-        simCF = CrazyflieSimLogger(cf.position())
+        # TODO: Change to correct initialPosition!
+        simCF = CrazyflieSimLogger(cf.initialPosition)
         currPosition = simCF.position()
         new_commands = []
         for command in cf.commands:
@@ -394,8 +412,8 @@ def convertToLL(groupState):
                 fz = goToPolynomial(command.duration, currPosition[2], 0, 0, goal[2], 0, 0)
 
                 timesteps = np.arange(0, command.duration, 1/Hz)
-                commands = [Command('cmdPos', t+startTime, (fx(t), fy(t), fz(t)), 0, command.duration, relative=False) for t in timesteps]
-                new_commands.extend(commands) # Remove goto/land/takeoff commands later
+                commands = [Command('cmdPos', t+startTime, (fx(t), fy(t), fz(t)), 0, 1/Hz, relative=False) for t in timesteps]
+                new_commands.extend(commands)
             else:
                 new_commands.append(command)
         cf.commands = new_commands
@@ -408,20 +426,25 @@ def execute_commands(simGroupState, originalGroupState):
     # Note, assumes all crazyflies in group are issued similar commands (all are told goTo)
     # Assumes first command is to be executed immediately
     # If not the case, different groups should be used
-
     commandsForSingleCF = simGroupState.crazyflies[0].commands
     highLevel = True
-
     for i, command in enumerate(commandsForSingleCF):
+        print(highLevel, command.command)
         if highLevel and command.command == 'cmdPos':
             highLevel = False
         if not highLevel and command.command != 'cmdPos':
             highLevel = True
             for realCF in originalGroupState.crazyflies:
                 realCF.notifySetpointsStop()
+                realCF.goTo(realCF.position(), 0, 0.5)
         for simCF, realCF in zip(simGroupState.crazyflies, originalGroupState.crazyflies):
             execute_single_command(simCF.commands[i], realCF)
         originalGroupState.timeHelper.sleep(command.duration)
+    
+    # Reset to high level by sending a notifySetpointsStop() command
+    if not highLevel:
+        realCF.notifySetpointsStop()
+        realCF.goTo(realCF.position(), 0, 0.5)
 
 def execute_single_command(command, crazyflie):
     if command.command == 'goTo':
@@ -438,5 +461,4 @@ def execute_single_command(command, crazyflie):
         pass
     elif command.command == 'notifySetpointsStop':
         crazyflie.notifySetpointsStop()
-
 
