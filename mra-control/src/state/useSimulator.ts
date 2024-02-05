@@ -209,7 +209,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		},
 		setRobots: (robots) => {
 			const simRobots: Record<string, RobotSimState> = {};
+			const bboxSize = new THREE.Vector3(0.2, 0.2, 0.35)
 			Object.values(robots).forEach((robot) => {
+				const position = new THREE.Vector3(robot.startingPosition[0], robot.startingPosition[1], robot.startingPosition[2])
 				simRobots[robot.id] = {
 					id: robot.id,
 					// boundingBox: new THREE.Box3(),
@@ -223,9 +225,10 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					trajectories: new Map<string, traj.Trajectory[]>,
 					trajectoryStartTime: -1,
 					trajectoryQueue: new Queue<string>,
+					boundingBox: new THREE.Box3(position.clone().sub(bboxSize), position.clone().add(bboxSize)),
+
 				};
 				// simRobots[robot.id].boundingBox?.setFromObject()
-				// get().updateRobotBoundingBox(robot.id, new THREE.Box3());
 			});
 			set({robots: simRobots});
 		},
@@ -253,7 +256,6 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
           thisRobot.boundingBox &&
           thisRobot.boundingBox.intersectsBox(otherRobot.boundingBox)
 				)
-
 					return (
 						otherRobotId !== robotId && otherRobot.boundingBox && thisRobot.boundingBox && thisRobot.boundingBox.intersectsBox(otherRobot.boundingBox)
 					);

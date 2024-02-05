@@ -429,7 +429,6 @@ def execute_commands(simGroupState, originalGroupState):
     commandsForSingleCF = simGroupState.crazyflies[0].commands
     highLevel = True
     for i, command in enumerate(commandsForSingleCF):
-        print(highLevel, command.command)
         if highLevel and command.command == 'cmdPos':
             highLevel = False
         if not highLevel and command.command != 'cmdPos':
