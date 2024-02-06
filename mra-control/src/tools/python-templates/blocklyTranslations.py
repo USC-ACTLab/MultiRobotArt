@@ -61,7 +61,10 @@ def goto_velocity(groupState, x, y, z, v, rel=False):
     max_duration = 0
     for cf in crazyflies:
         curr_pos = cf.position()
-        dist = np.linalg.norm(np.array(curr_pos) - np.array([x, y, z]))
+        if not rel:
+            dist = np.linalg.norm(np.array(curr_pos) - np.array([x, y, z]))
+        else:
+            dist = np.linalg.norm(np.array((x, y, z)))
         duration = dist / v
         cf.goTo((float(x), float(y), float(z)), 0, duration=duration, relative=rel)
         max_duration = max(duration, max_duration)
