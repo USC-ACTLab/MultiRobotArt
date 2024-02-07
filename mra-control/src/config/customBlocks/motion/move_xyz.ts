@@ -21,13 +21,13 @@ export const blockMoveXyz: RobartBlockDefinition = {
 				.appendField(new Blockly.FieldNumber(0), 'z')
 				.appendField('meters');
 			this.appendDummyInput()
-				.appendField('at')
+				.appendField('at max speed: ')
 				.appendField(new Blockly.FieldNumber(0.5, 0.01), 'speed')
 				.appendField('m/s');
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('Move a direction at an average given speed.');
+			this.setTooltip('Move a direction with a maximum given speed.');
 			this.setHelpUrl('');
 		},
 	},
@@ -36,6 +36,7 @@ export const blockMoveXyz: RobartBlockDefinition = {
 		var y = block.getFieldValue('y') as number;
 		var z = block.getFieldValue('z') as number;
 		var speed = block.getFieldValue('speed') as number;
+		speed /= 2; // Dividing by two gives the proper max speed. No division is proper average speed.
 		var code = 'goto_velocity_relative_position(groupState, ' + x + ',' + y + ',' + z + ',' + speed + ')\n';
 		return code;
 	},
@@ -44,6 +45,7 @@ export const blockMoveXyz: RobartBlockDefinition = {
 		var y = block.getFieldValue('y') as number;
 		var z = block.getFieldValue('z') as number;
 		var speed = block.getFieldValue('speed') as number;
+		speed /= 2;
 		return `simulator.moveSpeed(groupState, ${x}, ${y}, ${z}, ${speed})\n`;
 	},
 };

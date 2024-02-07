@@ -21,7 +21,7 @@ export const blockGoToSpeed: RobartBlockDefinition = {
 			this.setPreviousStatement(true, null);
 			this.setNextStatement(true, null);
 			this.setColour(90);
-			this.setTooltip('Move to a desired position at a certain speed. NOTE: Desired speed is an average speed, not a maximum speed.');
+			this.setTooltip('Move to a desired position at a certain speed.');
 			this.setHelpUrl('');
 		},
 	},
@@ -30,6 +30,7 @@ export const blockGoToSpeed: RobartBlockDefinition = {
 		var yPos = block.getFieldValue('y_pos') as number;
 		var zPos = block.getFieldValue('z_pos') as number;
 		var speed = block.getFieldValue('speed') as number;
+		speed /= 2;
 		var code = 'go_to(groupState, ' + xPos + ',' + yPos + ',' + zPos + ',' + speed + ')\n';
 		return code;
 	},
@@ -38,7 +39,7 @@ export const blockGoToSpeed: RobartBlockDefinition = {
 		var yPos = block.getFieldValue('y_pos') as number;
 		var zPos = block.getFieldValue('z_pos') as number;
 		var speed = block.getFieldValue('speed') as number;
-
+		speed /= 2;
 		return `simulator.goToXyzSpeed(groupState, ${xPos}, ${yPos}, ${zPos}, ${speed})\n`;
 	},
 };
