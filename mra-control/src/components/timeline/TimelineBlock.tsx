@@ -26,7 +26,13 @@ export const TimelineBlock = ({item, scale}: {item: TimelineItem; scale: number}
 			updateItem(item.groupId, item.id, newStartTime);
 		}
 	});
-	const duration = item.duration;
+	let duration = 0;
+	if (item === undefined){
+		duration = 0.1
+	}
+	else{
+		duration = item.duration;
+	}
 	return (
 		<div
 			className={clsx(
