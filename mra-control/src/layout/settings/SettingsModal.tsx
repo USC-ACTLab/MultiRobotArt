@@ -46,11 +46,10 @@ export const SettingsModal = () => {
 							</div>
 						</Tabs.Item>
 						<Tabs.Item title="Blocks">Block Settings</Tabs.Item>
-						<Tabs.Item title="Preferences">Show Bounding Boxes
-						<Checkbox
-							onChange={handleBoundingBoxChange}	
-							
-						></Checkbox>
+						<Tabs.Item title="Preferences">
+							<Checkbox
+							onChange={handleBoundingBoxChange} />
+							<span style={{ marginLeft: '10px' }}>Remove Bounding Boxes</span>
 						</Tabs.Item>
 						<Tabs.Item title="Utilities">
 							<Button onClick={toggleCurveEditor}>Curve Editor</Button>
