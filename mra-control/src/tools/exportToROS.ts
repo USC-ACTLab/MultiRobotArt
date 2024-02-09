@@ -66,9 +66,12 @@ export const exportToROS = async (projectState: MRAState, fileName: string) => {
 		if (Object.keys(groupState.items).length === 0) {
 			continue;
 		}
+        const sortedItems = Object.entries(groupState.items).sort((a, b) => {
+            return a[1].startTime - b[1].startTime
+        })
+        
 
-		for (let block in groupState.items) {
-			const blockState = groupState.items[block];
+		for (let [block, blockState] of sortedItems) {
 			const startTime = blockState.startTime;
 			const pythonCode = projectState.blocks[blockState.blockId].python;
             pythonBlocks += '        # Block Name: ' + projectState.blocks[blockState.blockId].name + '\n';
