@@ -31,7 +31,7 @@ export const blockGoToSpeed: RobartBlockDefinition = {
 		var zPos = block.getFieldValue('z_pos') as number;
 		var speed = block.getFieldValue('speed') as number;
 		speed /= 2;
-		var code = 'go_to(groupState, ' + xPos + ',' + yPos + ',' + zPos + ',' + speed + ')\n';
+		var code = 'goto_velocity(groupState, ' + xPos + ', ' + yPos + ', ' + zPos + ', ' + speed + ')\n';
 		return code;
 	},
 	javascriptGenerator: (block, _js) => {
