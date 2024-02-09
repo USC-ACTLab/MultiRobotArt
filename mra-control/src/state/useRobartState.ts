@@ -356,22 +356,6 @@ export const useRobartState = create<MRAState & MRAActions>()(
 							warnings: get().warnings,
 						};
  
-						// Sort by start time, eval all blocks in order to accumulate duration
-						// var items_list = Object.keys(items). map(function(key){
-						//   return [key, items[key].startTime];
-						// });
-						// items_list.sort(function(a, b) {
-						//   return (b[1] as number) - (a[1] as number);
-						// });
-
-						// for(var i = 0; i < items_list.length; i++){
-						//   const timeLineItem = items_list[i][0];
-						//   const block = get().blocks[items[timeLineItem].blockId];
-						//   if (items[timeLineItem].startTime > startTime){
-						//     break;
-						//   }
-						//   eval(block.javaScript);
-						// }
 						var duration = 0;
 						if (groupId === 'This doesnt run') {
 							console.log(groupState); // Do not Remove!
@@ -384,10 +368,15 @@ export const useRobartState = create<MRAState & MRAActions>()(
 						let lines = get().blocks[blockId].javaScript.split('\n'); // Need to return a Record<robotId, Trajectory>...
 						lines.forEach((line) => {
 							if (line.length !== 0) {
-								let [dur, trajectoryRecord]: [number, Record<string, Trajectory>] = eval(line); // Return a Trajectory lambda function? Only compute actual trajectory when ready?
-								duration += dur;
-								if (line.length === 10000){
-									console.log(simulator);
+								try {
+									let [dur, trajectoryRecord]: [number, Record<string, Trajectory>] = eval(line); // Return a Trajectory lambda function? Only compute actual trajectory when ready?
+									duration += dur;
+									if (line.length === 10000){
+										console.log(simulator);
+									}
+								}
+								catch (error){
+									console.error('Error in adding block to timeline', error)
 								}
 							}
 						});
