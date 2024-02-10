@@ -28,11 +28,18 @@ export type KinematicConstraintState = {
 	setWorkspaceDimensions: (dim: THREE.Box3) => void;
 };
 
+export type PositionHistoryEntry = {
+	timestep: number;
+	robotPositions: Record<string, THREE.Vector3>;
+}
+
+export type PositionHistory  = PositionHistoryEntry[];
+
 export type ConstraintChecker = {
 	checkConstraints: (robotIDs: string[]) => ConstraintWarning[] | undefined;
 	checkKinematicConstraints: (robotIDs: string[]) => ConstraintWarning[] | undefined;
 	checkDynamicConstraints: (robotIDs: string[]) => ConstraintWarning[] | undefined;
-	positionHistory: Map<number, Map<string, THREE.Vector3>>;
+	positionHistory: [];
 };
 
 export type ConstraintState = DynamicConstraintState & KinematicConstraintState & ConstraintChecker;
@@ -43,7 +50,7 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 			maxVelocity: 1.0,
 			maxAcceleration: 5.0,
 			workspaceDimensions: new THREE.Box3(new THREE.Vector3(-4, -2.5, -0.01), new THREE.Vector3(2, 2.5, 2.5)),
-			positionHistory: new Map<number, Map<string, THREE.Vector3>>(),
+			positionHistory: [],
 			deltaT: 1 / 60,
 			setMaxVelocity(vel) {
 				set({
@@ -61,29 +68,25 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 				});
 			},
 			checkDynamicConstraints(robotIDs: string[]) {
-				const positions = get().positionHistory;
-				if (positions.size === 0) {
+				const positions = get().positionHistory as PositionHistory;
+				if (positions.length === 0) {
 					return undefined;
 				}
-
-				// Grab robot IDs
-				const timesteps = Array.from(positions.keys());
-				const sortedTimesteps = timesteps.sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
 
 				let warnings: ConstraintWarning[] = [];
 				//Check velocity Constraints
 				robotIDs.forEach(id => {
 					// For Each robot Check if currPos - prevPos > maxVel
-					for (let i = 1; i < sortedTimesteps.length; i++) {
-						const currentPosition = positions.get(sortedTimesteps[i])?.get(id);
-						const previousPosition = positions.get(sortedTimesteps[i - 1])?.get(id);
+					for (let i = 1; i < positions.length; i++) {
+						const currentPosition = positions[i]?.robotPositions[id];
+						const previousPosition = positions[i-1]?.robotPositions[id];
 						if (currentPosition && previousPosition) {
 							const velocity = currentPosition.distanceTo(previousPosition) / get().deltaT;
 							if (currentPosition && previousPosition &&  velocity > get().maxVelocity) {
 								const robotName = useRobartState.getState().robots[id].name;
 								warnings.push({
-									time: sortedTimesteps[i],
-									repr: 'robot ' + robotName + ' has violated a velocity constraint at time ' + sortedTimesteps[i].toFixed(2) + '. It was travelling at ' + velocity.toFixed(2) + ' m/s.\n',
+									time: positions[i].timestep,
+									repr: 'robot ' + robotName + ' has violated a velocity constraint at time ' + positions[i].timestep.toFixed(2) + '. It was travelling at ' + velocity.toFixed(2) + ' m/s.\n',
 									violationType: 'velocity',
 									robotId: id,
 								});
@@ -104,23 +107,22 @@ export const useCrazyflieConstraintState = create<ConstraintState>()(
 				return dynamicConstraints?.concat(kinematicConstraints);
 			},
 			checkKinematicConstraints(robotIDs: string[]) {
-				const history = get().positionHistory;
-				if (history.size > 0) {
+				const history = get().positionHistory as PositionHistory;
+				if (history.length > 0) {
 					let warnings: ConstraintWarning[] = [];
-					const timesteps = Array.from(history.keys());
 
-					const sortedTimesteps = timesteps.sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
 					// Check workspace bounds
 					robotIDs.forEach(id => {
 					// For Each robot Check if currPos - prevPos > maxVel
-						for (let i = 1; i < sortedTimesteps.length; i++) {
-							const currentPosition = history.get(sortedTimesteps[i])?.get(id);
+						for (let i = 1; i < history.length; i++) {
+							const currentPosition = history[i]?.robotPositions[id];
 							if (currentPosition) {
 								if (!this.workspaceDimensions.containsPoint(currentPosition)) {
 									const robotName = useRobartState.getState().robots[id].name;
+									console.log(history[i])
 									warnings.push({
-										time: sortedTimesteps[i],
-										repr: 'robot ' + robotName + ' has violated a workspace constraint at time ' + sortedTimesteps[i].toFixed(2) + '. It\'s position was ' + currentPosition.x.toFixed(2) + ', ' + currentPosition.y.toFixed(2) + ', ' + currentPosition.z.toFixed(2) + '\n',
+										time: history[i].timestep,
+										repr: 'robot ' + robotName + ' has violated a workspace constraint at time ' + history[i].timestep.toFixed(2) + '. It\'s position was ' + currentPosition.x.toFixed(2) + ', ' + currentPosition.y.toFixed(2) + ', ' + currentPosition.z.toFixed(2) + '\n',
 										violationType: 'velocity',
 										robotId: id,
 									});
