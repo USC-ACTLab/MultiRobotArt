@@ -258,7 +258,7 @@ def rotate(groupState, command, x_rot, y_rot, z_rot):
                 pass
     execute_commands(groupState, originalGroupState)
 
-def stretch(groupState, command, x_stretch, y_stretch, z_stretch, time_stretch):
+def stretchTrajectory(groupState, command, x_stretch, y_stretch, z_stretch, time_stretch):
     originalGroupState = groupState
     simCrazyflies = []
     for cf in groupState.crazyflies:
