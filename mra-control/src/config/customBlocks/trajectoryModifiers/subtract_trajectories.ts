@@ -28,7 +28,7 @@ export const blockSubtractTrajectories: RobartBlockDefinition = {
 		firstTrajectory = firstTrajectory.trim();
 		secondTrajectory = secondTrajectory.trim();
 
-		return `subtractTrajectories(groupState, lambda groupState: ${firstTrajectory}, lambda groupState: ${secondTrajectory}, false)\n`;
+		return `subtractTrajectories(groupState, lambda groupState: ${firstTrajectory}, lambda groupState: ${secondTrajectory}, False)\n`;
 	},
 	javascriptGenerator: (block, js) => {
 		// var xPosition = block.getFieldValue('x_pos') as number;
