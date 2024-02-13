@@ -423,7 +423,80 @@ def convertToLL(groupState):
             
 
 def subtractTrajectories(groupState, command1, command2):
-    pass
+    originalGroupState = groupState
+    simCrazyflies1 = []
+    #TODO: Make a method that takes in group state and returns sim'd groupState
+    for cf in groupState.crazyflies:
+        rclpy.spin_once(cf.node)
+        simCrazyflies1.append(CrazyflieSimLogger(cf.position()))
+    simTimeHelper1 = TimeHelperSimLogger()
+    simTimeHelper1.currTime = originalGroupState.timeHelper.time()
+    groupState1 = SimpleNamespace(crazyflies=simCrazyflies1, timeHelper=simTimeHelper1) 
+    # Execute Simulated Commands
+    command1(groupState1)
+    # Process commands to add startTime
+    setStartTimes(groupState1)
+
+    simCrazyflies2 = []
+    for cf in groupState.crazyflies:
+        rclpy.spin_once(cf.node)
+        simCrazyflies2.append(CrazyflieSimLogger(cf.position()))
+    simTimeHelper2 = TimeHelperSimLogger()
+    simTimeHelper2.currTime = originalGroupState.timeHelper.time()
+    groupState2 = SimpleNamespace(crazyflies=simCrazyflies2, timeHelper=simTimeHelper2)
+
+    # Execute Simulated Commands
+    command2(groupState2)
+    # Process commands to add startTime
+    setStartTimes(groupState2)
+
+    # Convert any goTo commands to LL Commands
+    convertToLL(groupState1)
+    convertToLL(groupState2)
+
+    # Get duration of latest non-notify setpoints stop command
+    if groupState1.crazyflies[0].commands[-1].command == 'notifySetpointsStop':
+        finalCommand1 = -2
+    else:
+        finalCommand1 = -1
+    if groupState2.crazyflies[0].commands[-1].command == 'notifySetpointsStop':
+        finalCommand2 = -2
+    else:
+        finalCommand2 = -1
+
+    # Get duration of each command
+    duration1 = groupState1.crazyflies[0].commands[finalCommand1].startTime + groupState1.crazyflies[finalCommand1].commands[-1].duration - groupState1.crazyflies[0].commands[0].startTime
+    duration2 = groupState2.crazyflies[0].commands[finalCommand2].startTime + groupState2.crazyflies[0].commands[finalCommand2].duration - groupState2.crazyflies[0].commands[0].startTime
+
+    if duration1 > duration2:
+        # Command 1 is longer, scale 2 appropriately
+        command_duration = duration1
+        scaling_factor = duration1 / duration2
+        for cf in groupState2.crazyflies:
+            for command in cf.commands:
+                    command.startTime *= scaling_factor
+                    command.duration *= scaling_factor
+    else:
+        # Command 2 is longer, scale 1 appropriately
+        command_duration = duration2
+        scaling_factor = duration2 / duration1
+        for cf in groupState1.crazyflies:
+            for command in cf.commands:
+                command.startTime *= scaling_factor
+                command.duration *= scaling_factor
+
+    # TODO: Convert to 20Hz
+    # Assume same duration for now...
+    # take list of commands, gather positions, and interpolate/extrapolate
+
+    # Should be same duration and length, so just add...
+    for cf1, cf2, realCf in zip(groupState1.crazyflies, groupState2.crazyflies, originalGroupState.crazyflies):
+        initial_position = realCf.position()
+        for c1, c2 in zip(cf1.commands, cf2.commands):
+            if c1.command == 'cmdPos':
+                new_position = np.array(c1.position) + np.array(c2.position) - initial_position
+                c1.position = new_position
+    execute_commands(groupState1, groupState)
 
 def execute_commands(simGroupState, originalGroupState):
     # Note, assumes all crazyflies in group are issued similar commands (all are told goTo)

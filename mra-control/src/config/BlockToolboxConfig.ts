@@ -57,7 +57,7 @@ export const blocklyToolboxConfiguration: ToolboxDefinition = {
 			name: 'Trajectory Modifiers',
 			contents: [
 				blockToToolbox(CUSTOM_BLOCKS.blockNegate),
-				blockToToolbox(CUSTOM_BLOCKS.multiTraj),
+				// blockToToolbox(CUSTOM_BLOCKS.multiTraj),
 				blockToToolbox(CUSTOM_BLOCKS.blockAddTrajectories),
 				blockToToolbox(CUSTOM_BLOCKS.blockSubtractTrajectories),
 				blockToToolbox(CUSTOM_BLOCKS.blockStretchTrajectories),

@@ -39,7 +39,7 @@ export const CUSTOM_BLOCKS = {
 	blockGetPosition,
 	blockColor,
 	blockColorOff,
-	multiTraj,
+	// multiTraj,
 	blockNegate,
 	blockAddTrajectories,
 	blockSubtractTrajectories,
