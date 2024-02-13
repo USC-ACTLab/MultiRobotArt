@@ -148,6 +148,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			positionHistory.push({timestep: newSimTime, robotPositions: []});
 			// update trajectories from most recent trajectory
 			Object.keys(robots).forEach((robotId) => {
+				if (robots[robotId] == undefined)
+					return;
+				
 				if (robots[robotId].timeAlongTrajectory >= 1) {
 					//switch trajectories
 					let newTraj: Map<string, traj.Trajectory>;
@@ -238,7 +241,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		},
 		updateRobotBoundingBox: (robotId, boundingBox) => {
 			set((state) => {
-				state.robots[robotId].boundingBox = boundingBox;
+				if (state.robots[robotId] !== undefined)
+					state.robots[robotId].boundingBox = boundingBox;
 			});
 		},
 		checkCollisions: (robotId) => {
@@ -267,17 +271,18 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		},
 		updateTrajectory: (robotId, trajectory, duration) => {
 			set((state) => {
-				state.robots[robotId].timeAlongTrajectory = 0;
-				state.robots[robotId].trajectory = trajectory;
-				state.robots[robotId].trajectoryDuration = duration;
-				state.robots[robotId].trajectoryStartTime = state.time;
+				if (state.robots[robotId] !== undefined)
+					state.robots[robotId].timeAlongTrajectory = 0;
+					state.robots[robotId].trajectory = trajectory;
+					state.robots[robotId].trajectoryDuration = duration;
+					state.robots[robotId].trajectoryStartTime = state.time;
 			});
 		},
 		addTrajectory: (robotId, javascriptLine) => {
 			// Add trajectory to trajectories Map
-			// TODO: Add trajectory to queue
 			set((state) => {
-				state.robots[robotId].trajectoryQueue.enqueue(javascriptLine);
+				if (state.robots[robotId] !== undefined)
+					state.robots[robotId].trajectoryQueue.enqueue(javascriptLine);
 			});
 		},
 		getMostRecentTrajectory: (robotId: string, time: number): [traj.Trajectory | undefined, number] => {

@@ -496,7 +496,16 @@ export const useRobartState = create<MRAState & MRAActions>()(
 					},
 					removeRobotFromGroup: (groupId, robotId) => {
 						set((state) => {
-							delete state.timelineState.groups[groupId].robots[robotId];
+							const { timelineState } = state;
+							const { groups } = timelineState;
+							
+							// Create a new object without the specified robotId and filter out undefined values
+							const updatedRobots = Object.fromEntries(
+								Object.entries(groups[groupId].robots).filter(([key, value]) => key !== robotId && value !== undefined)
+							);
+						
+							// Update the state with the new robots object
+							groups[groupId].robots = updatedRobots;
 						});
 					},
 					createRobot: () => {
