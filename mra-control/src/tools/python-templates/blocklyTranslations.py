@@ -5,7 +5,9 @@ from PIL import ImageColor
 import rclpy
 from crazyflieLoggers import *
 import rowan
+from scipy.spatial.transform import Rotation as R
 
+import traceback
 
 Hz = 20
 
@@ -60,11 +62,14 @@ def goto_velocity(groupState, x, y, z, v, rel=False):
     crazyflies = groupState.crazyflies
     max_duration = 0
     for cf in crazyflies:
+        # try:
+        #     if not isinstance(cf, CrazyflieSimLogger):
+        #         rclpy.spin_once(cf.node)
+        # except Exception:
+        #     cf.node.get_logger().error(traceback.format_exc())
+        #     pass
         curr_pos = cf.position()
-        if not rel:
-            dist = np.linalg.norm(np.array(curr_pos) - np.array([x, y, z]))
-        else:
-            dist = np.linalg.norm(np.array((x, y, z)))
+        dist = np.linalg.norm(np.array(curr_pos) - np.array([x, y, z]))
         duration = dist / v
         cf.goTo((float(x), float(y), float(z)), 0, duration=duration, relative=rel)
         max_duration = max(duration, max_duration)
@@ -142,12 +147,14 @@ def enableHighLevelCommander(cf):
 ###
 
 def setLEDColorFromHex(groupState, hex):
+    # return
     crazyflies = groupState.crazyflies
     rgb = ImageColor.getcolor(hex, "RGB")
     for cf in crazyflies:
         cf.setLEDColor(*rgb)
 
 def setLEDColor(groupState, r, g, b):
+    # return
     crazyflies = groupState.crazyflies
     for cf in crazyflies:
         cf.setLEDColor(r, g, b)
@@ -167,6 +174,7 @@ def circle(groupState, radius, velocity, radians, direction):
     fz = lambda t: clockwise * radius * np.sin(t * velocity)
 
     timesteps = np.arange(0, radians/velocity, 1/Hz)
+
     initialPositions = [cf.position() for cf in crazyflies]
     for t in timesteps:
         for initPos, cf in zip(initialPositions, crazyflies):
@@ -175,20 +183,17 @@ def circle(groupState, radius, velocity, radians, direction):
             cf.cmdPosition(pos)
         timeHelper.sleepForRate(Hz)
 
-    for cf in crazyflies:
-        cf.notifySetpointsStop()
-
-    # for cf in crazyflies:
-    #     cf.goTo(cf.position(), 0, 1)
-
-
 # Trajectory Modifiers...
 
 def negate(groupState, command):
     originalGroupState = groupState
     simCrazyflies = []
     for cf in groupState.crazyflies:
-        rclpy.spin_once(cf.node)
+        # try:
+        #     if not isinstance(cf, CrazyflieSimLogger):
+        #         rclpy.spin_once(cf.node)
+        # except Exception:
+        #     cf.node.get_logger().error(traceback.format_exc())
         simCrazyflies.append(CrazyflieSimLogger(cf.position()))
     simTimeHelper = TimeHelperSimLogger()
     simTimeHelper.currTime = originalGroupState.timeHelper.time()
@@ -199,7 +204,12 @@ def negate(groupState, command):
     setStartTimes(groupState)
     # negate every command
     for simcf, cf in zip(groupState.crazyflies, originalGroupState.crazyflies):
-        rclpy.spin_once(cf.node)
+        # try:
+        #     rclpy.spin_once(cf.node)
+        # except Exception:
+        #     cf.node.get_logger().error(traceback.format_exc())
+        #     print('negate2')
+        #     pass
         initialPosition = cf.position()
         for i, command in enumerate(simcf.commands):
             cfCommand = command.command
@@ -221,112 +231,105 @@ def negate(groupState, command):
     execute_commands(groupState, originalGroupState)
 
 def rotate(groupState, command, x_rot, y_rot, z_rot):
-    originalGroupState = groupState
-    simCrazyflies = []
-    for cf in groupState.crazyflies:
-        rclpy.spin_once(cf.node)
-        simCrazyflies.append(CrazyflieSimLogger(cf.position()))
-    simTimeHelper = TimeHelperSimLogger()
-    simTimeHelper.currTime = originalGroupState.timeHelper.time()
-    groupState = SimpleNamespace(crazyflies=simCrazyflies, timeHelper=simTimeHelper)
-    # Execute Simulated Commands
-    command(groupState)
-    # Process commands to add startTime
-    setStartTimes(groupState)
-    for simcf, cf in zip(groupState.crazyflies, originalGroupState.crazyflies):
-        rclpy.spin_once(cf.node)
+    simGroupState = simCommand(groupState, command)
+    while x_rot > np.pi:
+        x_rot -= 2*np.pi
+    while y_rot > np.pi:
+        y_rot -= 2*np.pi
+    while z_rot > 2*np.pi:
+        z_rot -= 2*np.pi
+    r = R.from_euler('xyz', (x_rot, y_rot, z_rot), degrees=False)
+
+    for simcf, cf in zip(simGroupState.crazyflies, groupState.crazyflies):
+        # try:
+        #     if not isinstance(cf, CrazyflieSimLogger):
+        #         rclpy.spin_once(cf.node)
+        # except Exception:
+        #     cf.node.get_logger().error(traceback.format_exc())
         initialPosition = cf.position()
         for i, command in enumerate(simcf.commands):
             cfCommand = command.command
             if cfCommand == 'goTo' or cfCommand == 'cmdPos':
                 if command.relative == False:
                     originalDestination = command.position
-                    directionVector = np.array(initialPosition) - np.array(originalDestination)
-                    rotQuat = rowan.from_euler(x_rot, y_rot, z_rot, convention='xyz')
-                    rotatedVector = rowan.rotate(rotQuat, directionVector)
+                    directionVector = np.array(originalDestination) - np.array(initialPosition)
+                    rotatedVector = r.apply(directionVector)
+                    # rotQuat = rowan.from_euler(x_rot, y_rot, z_rot, convention='xyz')
+                    # rotatedVector = rowan.rotate(rotQuat, directionVector)
                     newDestination = rotatedVector + initialPosition
                     simcf.commands[i].position = newDestination
                 else:
                     originalDestination = command.position
-                    directionVector = np.array(initialPosition) - np.array(originalDestination)
-                    rotQuat = rowan.from_euler(x_rot, y_rot, z_rot, convention='xyz')
-                    rotatedVector = rowan.rotate(rotQuat, directionVector)
+                    directionVector = np.array(originalDestination)
+                    # rotQuat = rowan.from_euler(x_rot, y_rot, z_rot, convention='xyz')
+                    # rotatedVector = rowan.rotate(rotQuat, directionVector)
+                    rotatedVector = r.apply(directionVector)
                     newDestination = rotatedVector
                     simcf.commands[i].position = newDestination
             else:
                 # Just run the original command, no need to alter anything
                 pass
-    execute_commands(groupState, originalGroupState)
+    execute_commands(simGroupState, groupState)
 
 def stretchTrajectory(groupState, command, x_stretch, y_stretch, z_stretch, time_stretch):
-    originalGroupState = groupState
-    simCrazyflies = []
-    for cf in groupState.crazyflies:
-        rclpy.spin_once(cf.node)
-        simCrazyflies.append(CrazyflieSimLogger(cf.position()))
-    simTimeHelper = TimeHelperSimLogger()
-    simTimeHelper.currTime = originalGroupState.timeHelper.time()
-    groupState = SimpleNamespace(crazyflies=simCrazyflies, timeHelper=simTimeHelper)
-    # Execute Simulated Commands
-    command(groupState)
-    # Process commands to add startTime
-    setStartTimes(groupState)
-    for simcf, cf in zip(groupState.crazyflies, originalGroupState.crazyflies):
-        rclpy.spin_once(cf.node)
+    simGroupState = simCommand(groupState, command)
+    for simcf, cf in zip(simGroupState.crazyflies, groupState.crazyflies):
+        # try:
+        #     if not isinstance(cf, CrazyflieSimLogger):
+        #         rclpy.spin_once(cf.node)
+        # except Exception:
+        #     cf.node.get_logger().error(traceback.format_exc())
         initialPosition = cf.position()
         for i, command in enumerate(simcf.commands):
             cfCommand = command.command
             if cfCommand == 'goTo' or cfCommand == 'cmdPos' or cfCommand == 'takeoff' or cfCommand == 'land':
                 if command.relative == False:
                     originalDestination = command.position
-                    directionVector = np.array(initialPosition) - np.array(originalDestination)
-                    stretchedVector = directionVector.multiply(np.array((x_stretch, y_stretch, z_stretch)))
+                    directionVector =  np.array(originalDestination) - np.array(initialPosition)
+                    stretchedVector = np.multiply(directionVector, (x_stretch, y_stretch, z_stretch)) # directionVector.multiply(np.array((x_stretch, y_stretch, z_stretch)))
                     newDestination = stretchedVector + initialPosition
                     simcf.commands[i].position = newDestination
                     simcf.commands[i].duration *= time_stretch
                 else:
                     originalDestination = command.position
                     directionVector = np.array(initialPosition) - np.array(originalDestination)
-                    newDestination = directionVector.multiply(np.array((x_stretch, y_stretch, z_stretch)))
+                    newDestination = np.multiply(directionVector, (x_stretch, y_stretch, z_stretch))
                     simcf.commands[i].position = newDestination
                     simcf.commands[i].duration *= time_stretch
             else:
                 # Just run the original command, no need to alter anything
                 pass
-    execute_commands(groupState, originalGroupState)
+    execute_commands(simGroupState, groupState)
 
-def addTrajectories(groupState, command1, command2):
-    originalGroupState = groupState
-    simCrazyflies1 = []
-    #TODO: Make a method that takes in group state and returns sim'd groupState
-    for cf in groupState.crazyflies:
-        rclpy.spin_once(cf.node)
-        simCrazyflies1.append(CrazyflieSimLogger(cf.position()))
+def simCommand(originalGroupState, command):
+    simCrazyflies = []
+    for cf in originalGroupState.crazyflies:
+        # try:
+        #     if not isinstance(cf, CrazyflieSimLogger):
+        #         rclpy.spin_once(cf.node)
+        # except Exception:
+        #     cf.node.get_logger().error(traceback.format_exc())
+        simCrazyflies.append(CrazyflieSimLogger(cf.position()))
     simTimeHelper1 = TimeHelperSimLogger()
     simTimeHelper1.currTime = originalGroupState.timeHelper.time()
-    groupState1 = SimpleNamespace(crazyflies=simCrazyflies1, timeHelper=simTimeHelper1) 
+    simGroupState = SimpleNamespace(crazyflies=simCrazyflies, timeHelper=simTimeHelper1) 
     # Execute Simulated Commands
-    command1(groupState1)
-    # Process commands to add startTime
-    setStartTimes(groupState1)
+    command(simGroupState)
 
-    simCrazyflies2 = []
-    for cf in groupState.crazyflies:
-        rclpy.spin_once(cf.node)
-        simCrazyflies2.append(CrazyflieSimLogger(cf.position()))
-    simTimeHelper2 = TimeHelperSimLogger()
-    simTimeHelper2.currTime = originalGroupState.timeHelper.time()
-    groupState2 = SimpleNamespace(crazyflies=simCrazyflies2, timeHelper=simTimeHelper2)
+    # Reset position
+    for cf in simGroupState.crazyflies:
+        cf.currPosition = cf.initialPosition
+    
+    setStartTimes(simGroupState)
+    return simGroupState
 
-    # Execute Simulated Commands
-    command2(groupState2)
-    # Process commands to add startTime
-    setStartTimes(groupState2)
+def addTrajectories(groupState, command1, command2):
+    groupState1 = simCommand(groupState, command1)
+    groupState2 = simCommand(groupState, command2)
 
     # Convert any goTo commands to LL Commands
     convertToLL(groupState1)
     convertToLL(groupState2)
-
     # Get duration of latest non-notify setpoints stop command
     if groupState1.crazyflies[0].commands[-1].command == 'notifySetpointsStop':
         finalCommand1 = -2
@@ -338,9 +341,8 @@ def addTrajectories(groupState, command1, command2):
         finalCommand2 = -1
 
     # Get duration of each command
-    duration1 = groupState1.crazyflies[0].commands[finalCommand1].startTime + groupState1.crazyflies[finalCommand1].commands[-1].duration - groupState1.crazyflies[0].commands[0].startTime
+    duration1 = groupState1.crazyflies[0].commands[finalCommand1].startTime + groupState1.crazyflies[0].commands[finalCommand1].duration - groupState1.crazyflies[0].commands[0].startTime
     duration2 = groupState2.crazyflies[0].commands[finalCommand2].startTime + groupState2.crazyflies[0].commands[finalCommand2].duration - groupState2.crazyflies[0].commands[0].startTime
-
     if duration1 > duration2:
         # Command 1 is longer, scale 2 appropriately
         command_duration = duration1
@@ -359,16 +361,33 @@ def addTrajectories(groupState, command1, command2):
                 command.duration *= scaling_factor
 
     # TODO: Convert to 20Hz
+    
+    # New commands for group1
+    # for cf in groupState1.crazyflies:
+    #     new_commands = []
+    #     counter = 0
+    #     for t in np.arange(0, max(duration1, duration2), 0.05):
+    #         curr_command = cf.commands[counter]
+    #         if t == curr_command.startTime:
+
+            
+
     # Assume same duration for now...
     # take list of commands, gather positions, and interpolate/extrapolate
-
     # Should be same duration and length, so just add...
-    for cf1, cf2, realCf in zip(groupState1.crazyflies, groupState2.crazyflies, originalGroupState.crazyflies):
+    for cf1, cf2, realCf in zip(groupState1.crazyflies, groupState2.crazyflies, groupState.crazyflies):
+        # try:
+        #     if not isinstance(realCf, CrazyflieSimLogger):
+        #         rclpy.spin_once(realCf.node)
+        # except Exception:
+        #     cf.node.get_logger().error(traceback.format_exc())
         initial_position = realCf.position()
         for c1, c2 in zip(cf1.commands, cf2.commands):
             if c1.command == 'cmdPos':
                 new_position = np.array(c1.position) + np.array(c2.position) - initial_position
                 c1.position = new_position
+        if len(cf1.commands) > len(cf2.commands):
+            cf1.commands = cf1.commands[:len(cf2.commands)]
     execute_commands(groupState1, groupState)
 
             
@@ -420,83 +439,11 @@ def convertToLL(groupState):
             else:
                 new_commands.append(command)
         cf.commands = new_commands
+
             
 
 def subtractTrajectories(groupState, command1, command2):
-    originalGroupState = groupState
-    simCrazyflies1 = []
-    #TODO: Make a method that takes in group state and returns sim'd groupState
-    for cf in groupState.crazyflies:
-        rclpy.spin_once(cf.node)
-        simCrazyflies1.append(CrazyflieSimLogger(cf.position()))
-    simTimeHelper1 = TimeHelperSimLogger()
-    simTimeHelper1.currTime = originalGroupState.timeHelper.time()
-    groupState1 = SimpleNamespace(crazyflies=simCrazyflies1, timeHelper=simTimeHelper1) 
-    # Execute Simulated Commands
-    command1(groupState1)
-    # Process commands to add startTime
-    setStartTimes(groupState1)
-
-    simCrazyflies2 = []
-    for cf in groupState.crazyflies:
-        rclpy.spin_once(cf.node)
-        simCrazyflies2.append(CrazyflieSimLogger(cf.position()))
-    simTimeHelper2 = TimeHelperSimLogger()
-    simTimeHelper2.currTime = originalGroupState.timeHelper.time()
-    groupState2 = SimpleNamespace(crazyflies=simCrazyflies2, timeHelper=simTimeHelper2)
-
-    # Execute Simulated Commands
-    command2(groupState2)
-    # Process commands to add startTime
-    setStartTimes(groupState2)
-
-    # Convert any goTo commands to LL Commands
-    convertToLL(groupState1)
-    convertToLL(groupState2)
-
-    # Get duration of latest non-notify setpoints stop command
-    if groupState1.crazyflies[0].commands[-1].command == 'notifySetpointsStop':
-        finalCommand1 = -2
-    else:
-        finalCommand1 = -1
-    if groupState2.crazyflies[0].commands[-1].command == 'notifySetpointsStop':
-        finalCommand2 = -2
-    else:
-        finalCommand2 = -1
-
-    # Get duration of each command
-    duration1 = groupState1.crazyflies[0].commands[finalCommand1].startTime + groupState1.crazyflies[finalCommand1].commands[-1].duration - groupState1.crazyflies[0].commands[0].startTime
-    duration2 = groupState2.crazyflies[0].commands[finalCommand2].startTime + groupState2.crazyflies[0].commands[finalCommand2].duration - groupState2.crazyflies[0].commands[0].startTime
-
-    if duration1 > duration2:
-        # Command 1 is longer, scale 2 appropriately
-        command_duration = duration1
-        scaling_factor = duration1 / duration2
-        for cf in groupState2.crazyflies:
-            for command in cf.commands:
-                    command.startTime *= scaling_factor
-                    command.duration *= scaling_factor
-    else:
-        # Command 2 is longer, scale 1 appropriately
-        command_duration = duration2
-        scaling_factor = duration2 / duration1
-        for cf in groupState1.crazyflies:
-            for command in cf.commands:
-                command.startTime *= scaling_factor
-                command.duration *= scaling_factor
-
-    # TODO: Convert to 20Hz
-    # Assume same duration for now...
-    # take list of commands, gather positions, and interpolate/extrapolate
-
-    # Should be same duration and length, so just add...
-    for cf1, cf2, realCf in zip(groupState1.crazyflies, groupState2.crazyflies, originalGroupState.crazyflies):
-        initial_position = realCf.position()
-        for c1, c2 in zip(cf1.commands, cf2.commands):
-            if c1.command == 'cmdPos':
-                new_position = np.array(c1.position) + np.array(c2.position) - initial_position
-                c1.position = new_position
-    execute_commands(groupState1, groupState)
+    pass
 
 def execute_commands(simGroupState, originalGroupState):
     # Note, assumes all crazyflies in group are issued similar commands (all are told goTo)
@@ -509,22 +456,26 @@ def execute_commands(simGroupState, originalGroupState):
             highLevel = False
         if not highLevel and command.command != 'cmdPos':
             highLevel = True
-            for realCF in originalGroupState.crazyflies:
-                realCF.notifySetpointsStop()
-                realCF.goTo(realCF.position(), 0, 0.5)
+            # for realCF in originalGroupState.crazyflies:
+            #     realCF.notifySetpointsStop()
+                # realCF.goTo(realCF.position(), 0, 0.5)
         for simCF, realCF in zip(simGroupState.crazyflies, originalGroupState.crazyflies):
             execute_single_command(simCF.commands[i], realCF)
         originalGroupState.timeHelper.sleep(command.duration)
-    
-    # Reset to high level by sending a notifySetpointsStop() command
     if not highLevel:
-        realCF.notifySetpointsStop()
-        realCF.goTo(realCF.position(), 0, 0.5)
+        for realCF in originalGroupState.crazyflies:
+            realCF.notifySetpointsStop()
+        # originalGroupState.timeHelper.sleep(0.1)
+        for realCF in originalGroupState.crazyflies:
+            realCF.goTo(realCF.position(), 0, 2.00)
+            # realCF.setLEDColor(0, 0, 0.5)
+            print('appended goTo')
 
 def execute_single_command(command, crazyflie):
     if command.command == 'goTo':
         crazyflie.goTo(command.position, command.yaw, command.duration, command.relative)
     elif command.command == 'cmdPos':
+        # print(command.position)
         crazyflie.cmdPosition(command.position)
     elif command.command == 'takeoff':
         crazyflie.takeoff(command.height, command.duration)
@@ -536,4 +487,5 @@ def execute_single_command(command, crazyflie):
         pass
     elif command.command == 'notifySetpointsStop':
         crazyflie.notifySetpointsStop()
+        pass
 
