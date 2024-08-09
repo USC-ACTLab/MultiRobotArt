@@ -102,7 +102,14 @@ def goto_velocity_relative_position(groupState, x, y, z, v):
         z float: Desired z position
         v float: average velocity 
     """    
-    goto_velocity(groupState, x, y, z, v, True)
+    distance = np.linalg.norm((x, y, z))
+    time = distance / v
+    time *= 2
+    crazyflies = groupState.crazyflies
+    timeHelper = groupState.timeHelper
+    for cf in crazyflies:
+        cf.goTo((float(x), float(y), float(z)), 0.0, time, relative=True)
+    timeHelper.sleep(time)
 
 def goto_duration_relative(groupState, x, y, z, duration):
     goto_duration(groupState, x, y, z, duration, True)
