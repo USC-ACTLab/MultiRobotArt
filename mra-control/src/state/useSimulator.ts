@@ -298,7 +298,11 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			return [mostRecentTraj, mostRecentTime];
 		},
 		robotGoTo: (robotId, pos, vel, acc, duration) => {
+
 			const robot = get().robots[robotId];
+			if (robot === undefined) {
+				return nullTrajectory;
+			}
 
 			// Degree 7 Polynomial solution to IVP
 			const a0 = robot.pos.clone();
