@@ -54,6 +54,7 @@ export type SimulatorState = {
 	trajectoryQueue: Queue<string>;
 	trajectoryMarkers: Array<{position: THREE.Vector3; color: THREE.Color; id: string}>;
 	markerFrequency: number;
+	lastStepTime: number;
 };
 
 const defaultSimulatorState: SimulatorState = {
@@ -66,6 +67,7 @@ const defaultSimulatorState: SimulatorState = {
 	trajectoryQueue: new Queue<string>(),
 	trajectoryMarkers: [],
 	markerFrequency: 0.25,
+	lastStepTime: performance.now(),
 };
 
 const nullTrajectory = new traj.PolynomialTrajectory(-1, []) as traj.Trajectory;
@@ -99,7 +101,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		...defaultSimulatorState,
 		play: () => {
 			// Set robots to initial positions...
-			set({status: 'RUNNING', time: 0, trajectoryMarkers: []});
+			set({status: 'RUNNING', time: 0, trajectoryMarkers: [], lastStepTime: performance.now()});
 			get().executeSimulation(0);
 		},
 		pause: () => {
@@ -129,10 +131,11 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			get().cancelSimulation();
 		},
 		step: () => {
-			const {status, time, timeDilation, robots: currentRobots, markerFrequency} = get();
+			const {status, time, timeDilation, robots: currentRobots, markerFrequency, lastStepTime} = get();
 			const trajectoryMarkers = get().trajectoryMarkers.slice();
 			if (status !== 'RUNNING') return;
-			const deltaT = 1 / (fps * timeDilation);
+			const currentTime = performance.now();
+			const deltaT = (currentTime - lastStepTime) / 1000 * timeDilation;
 			const newSimTime = time + deltaT;
 			const robots = {...currentRobots};
 
@@ -193,7 +196,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				}
 
 				if (positionHistory) {
-					const currTimestep = positionHistory[positionHistory.length - 1]
+					const currTimestep = positionHistory[positionHistory.length - 1];
 					currTimestep.robotPositions[robotId] = newPos;
 				}
 
@@ -203,20 +206,21 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					trajectoryMarkers.push({position: new THREE.Vector3().copy(robots[robotId].pos), color: robots[robotId].color, id:robotId + time});
 				}
 				// Do not delete! Needed to keep variables from being removed for being unused
-				if (time > 99999) {
-					console.log(groupState, simulator);
-				}
+				// if (time > 99999) {
+				// 	console.log(groupState, simulator);
+				// }
 			});
 
 			set({
 				robots,
 				time: newSimTime,
 				trajectoryMarkers: trajectoryMarkers,
+				lastStepTime: currentTime,
 			});
 		},
 		setRobots: (robots) => {
 			const simRobots: Record<string, RobotSimState> = {};
-			const bboxSize = new THREE.Vector3(0.2, 0.2, 0.35)
+			const bboxSize = new THREE.Vector3(0.2, 0.2, 0.35);
 			Object.values(robots).forEach((robot) => {
 				const position = new THREE.Vector3(robot.startingPosition[0], robot.startingPosition[1], robot.startingPosition[2])
 				simRobots[robot.id] = {

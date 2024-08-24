@@ -71,9 +71,8 @@ export const Simulation = () => {
 			</Plane>
 			{Object.values(robots).map((robot) => (
 				<group key={robot.id} ref={marker} position={robot.pos}>
-					robartState
+					{/* robartState */}
 					<Crazyflie robotId={robot.id} renderBoundingBox={renderBB} />
-					
 				</group>
 			))}
 			{Object.values(trajectoryMarkers).map((trajectoryMarker) => (
@@ -83,7 +82,6 @@ export const Simulation = () => {
 					</Sphere>
 				</group>
 			))}
-
 			<primitive object={camera}></primitive>
 		</>
 	);
