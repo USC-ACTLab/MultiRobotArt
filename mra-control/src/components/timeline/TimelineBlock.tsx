@@ -27,12 +27,12 @@ export const TimelineBlock = ({item, scale}: {item: TimelineItem; scale: number}
 		}
 	});
 	let duration = 0;
-	if (item === undefined){
-		duration = 0.1
-	}
-	else{
+	if (item === undefined) {
+		duration = 0.1;
+	} else {
 		duration = item.duration;
 	}
+
 	return (
 		<div
 			className={clsx(

@@ -36,9 +36,10 @@ export const blockOverlaps = (
 	startTime === undefined ||
   startTime < 0 ||
   Object.values(group.items).some((items) => {
-	if (items === undefined){
-		return false;
-	}
+  	if (items === undefined) {
+  		return false;
+  	}
+
   	const currItemStart = items.startTime;
   	const currItemEnd = items.startTime + items.duration;
   	const newBlockStart = startTime;

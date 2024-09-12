@@ -31,6 +31,7 @@
     "file-saver": "^2.0.5",
     "flowbite": "^1.6.3",
     "flowbite-react": "^0.3.8",
+    "force": "^0.0.3",
     "immer": "^9.0.19",
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
