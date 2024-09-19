@@ -104,7 +104,6 @@ def goto_velocity_relative_position(groupState, x, y, z, v):
     """    
     distance = np.linalg.norm((x, y, z))
     time = distance / v
-    time *= 2
     crazyflies = groupState.crazyflies
     timeHelper = groupState.timeHelper
     for cf in crazyflies:
