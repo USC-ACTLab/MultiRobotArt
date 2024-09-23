@@ -3,14 +3,14 @@
 // @ts-nocheck
 
 import * as THREE from 'three';
-import {create} from 'zustand';
-import {immer} from 'zustand/middleware/immer';
-import {Queue} from 'queue-typescript';
-import {type SimulatorGroupState} from './simulatorCommands';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+import { Queue } from 'queue-typescript';
+import { type SimulatorGroupState } from './simulatorCommands';
 import * as SIM from './simulatorCommands';
-import {type RobotState, useRobartState} from './useRobartState';
+import { type RobotState, useRobartState } from './useRobartState';
 import * as traj from './trajectories';
-import {type ConstraintWarning, useCrazyflieConstraintState} from './useConstraintState';
+import { type ConstraintWarning, useCrazyflieConstraintState } from './useConstraintState';
 export const fps = 60;
 
 // type TrajectoryPolynomial =
@@ -52,7 +52,7 @@ export type SimulatorState = {
 	status: 'RUNNING' | 'STOPPED' | 'PAUSED';
 	renderBoundingBoxes: boolean;
 	trajectoryQueue: Queue<string>;
-	trajectoryMarkers: Array<{position: THREE.Vector3; color: THREE.Color; id: string}>;
+	trajectoryMarkers: Array<{ position: THREE.Vector3; color: THREE.Color; id: string }>;
 	markerFrequency: number;
 	lastStepTime: number;
 };
@@ -90,9 +90,9 @@ export type SimulatorActions = {
 	checkCollisions: (robotId: string) => boolean;
 	updateTrajectory: (robotId: string, trajectory: traj.Trajectory, duration: number) => void;
 	addTrajectory: (robotId: string, trajectory: string) => void;
-	getMostRecentTrajectory: (robotId: string, time: number)  => [traj.Trajectory | undefined, number];
-	robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3, duration: number) => traj.Trajectory;  
-	robotCircle: (robotId: string, radius?: number, axes?: string[], radians?: number, clockwise?: boolean, duration?: number) => traj.Trajectory; 
+	getMostRecentTrajectory: (robotId: string, time: number) => [traj.Trajectory | undefined, number];
+	robotGoTo: (robotId: string, position: THREE.Vector3, velocity: THREE.Vector3, acceleration: THREE.Vector3, duration: number) => traj.Trajectory;
+	robotCircle: (robotId: string, radius?: number, axes?: string[], radians?: number, clockwise?: boolean, duration?: number) => traj.Trajectory;
 	executeSimulation: (startTime: number) => void;
 	cancelSimulation: () => void;
 };
@@ -101,7 +101,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		...defaultSimulatorState,
 		play: () => {
 			// Set robots to initial positions...
-			set({status: 'RUNNING', time: 0, trajectoryMarkers: [], lastStepTime: performance.now()});
+			set({ status: 'RUNNING', time: 0, trajectoryMarkers: [], lastStepTime: performance.now() });
 			get().executeSimulation(0);
 		},
 		pause: () => {
@@ -110,13 +110,13 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				return warning.repr;
 			});
 			const state = useRobartState.getState();
-			useRobartState.setState({...state, warnings: reprs});
+			useRobartState.setState({ ...state, warnings: reprs });
 
-			set({status: 'PAUSED'});
+			set({ status: 'PAUSED' });
 			get().cancelSimulation();
 		},
 		resume: () => {
-			set({status: 'RUNNING'});
+			set({ status: 'RUNNING' });
 			get().executeSimulation(get().time);
 		},
 		halt: () => {
@@ -125,19 +125,19 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				return warning.repr;
 			});
 			const state = useRobartState.getState();
-			useRobartState.setState({...state, warnings: reprs});
-	
-			set({status: 'STOPPED'});
+			useRobartState.setState({ ...state, warnings: reprs });
+
+			set({ status: 'STOPPED' });
 			get().cancelSimulation();
 		},
 		step: () => {
-			const {status, time, timeDilation, robots: currentRobots, markerFrequency, lastStepTime} = get();
+			const { status, time, timeDilation, robots: currentRobots, markerFrequency, lastStepTime } = get();
 			const trajectoryMarkers = get().trajectoryMarkers.slice();
 			if (status !== 'RUNNING') return;
 			const currentTime = performance.now();
 			const deltaT = (currentTime - lastStepTime) / 1000 * timeDilation;
 			const newSimTime = time + deltaT;
-			const robots = {...currentRobots};
+			const robots = { ...currentRobots };
 
 			const simulator = SIM;
 			const groupState: SimulatorGroupState = {
@@ -148,12 +148,12 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			const state = useCrazyflieConstraintState.getState();
 
 			const positionHistory = state.positionHistory;
-			positionHistory.push({timestep: newSimTime, robotPositions: []});
+			positionHistory.push({ timestep: newSimTime, robotPositions: [] });
 			// update trajectories from most recent trajectory
 			Object.keys(robots).forEach((robotId) => {
 				if (robots[robotId] == undefined)
 					return;
-				
+
 				if (robots[robotId].timeAlongTrajectory >= 1) {
 					//switch trajectories
 					let newTraj: Map<string, traj.Trajectory>;
@@ -170,8 +170,8 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 					[duration, newTraj] = eval(robots[robotId].trajectoryQueue.dequeue());
 					get().updateTrajectory(robotId, newTraj.get(robotId), duration);
 				}
-				
-	
+
+
 				// if trajectory doesn't exist or has non-positive duration, do nothing
 				if (get().robots[robotId]?.trajectory.duration === undefined || get().robots[robotId].trajectory.duration <= 0) {
 					return;
@@ -203,12 +203,12 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				robots[robotId].color = get().robots[robotId].color;
 
 				if (markerFrequency !== 0 && time % markerFrequency < deltaT) {
-					trajectoryMarkers.push({position: new THREE.Vector3().copy(robots[robotId].pos), color: robots[robotId].color, id:robotId + time});
+					trajectoryMarkers.push({ position: new THREE.Vector3().copy(robots[robotId].pos), color: robots[robotId].color, id: robotId + time });
 				}
 				// Do not delete! Needed to keep variables from being removed for being unused
-				// if (time > 99999) {
-				// 	console.log(groupState, simulator);
-				// }
+				if (time > 99999) {
+					console.log(groupState, simulator);
+				}
 			});
 
 			set({
@@ -241,7 +241,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				};
 				// simRobots[robot.id].boundingBox?.setFromObject()
 			});
-			set({robots: simRobots});
+			set({ robots: simRobots });
 		},
 		updateRobotBoundingBox: (robotId, boundingBox) => {
 			set((state) => {
@@ -264,9 +264,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 
 				if (
 					otherRobotId !== robotId &&
-          otherRobot.boundingBox &&
-          thisRobot.boundingBox &&
-          thisRobot.boundingBox.intersectsBox(otherRobot.boundingBox)
+					otherRobot.boundingBox &&
+					thisRobot.boundingBox &&
+					thisRobot.boundingBox.intersectsBox(otherRobot.boundingBox)
 				)
 					return (
 						otherRobotId !== robotId && otherRobot.boundingBox && thisRobot.boundingBox && thisRobot.boundingBox.intersectsBox(otherRobot.boundingBox)
@@ -277,9 +277,9 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 			set((state) => {
 				if (state.robots[robotId] !== undefined)
 					state.robots[robotId].timeAlongTrajectory = 0;
-					state.robots[robotId].trajectory = trajectory;
-					state.robots[robotId].trajectoryDuration = duration;
-					state.robots[robotId].trajectoryStartTime = state.time;
+				state.robots[robotId].trajectory = trajectory;
+				state.robots[robotId].trajectoryDuration = duration;
+				state.robots[robotId].trajectoryStartTime = state.time;
 			});
 		},
 		addTrajectory: (robotId, javascriptLine) => {
@@ -350,7 +350,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 
 			return (new traj.PolynomialTrajectory(duration, [a0, a1, a2, a3, a4, a5, a6, a7])) as traj.Trajectory;
 		},
-		robotCircle: (robotId: string, radius = 1, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false, duration=1): traj.Trajectory => {
+		robotCircle: (robotId: string, radius = 1, axes = ['Y', 'Z'], radians = 2 * Math.PI, clockwise = false, duration = 1): traj.Trajectory => {
 			const robot = get().robots[robotId];
 			const trajectory = new traj.CircleTrajectory(duration, robot.pos, radius, axes, radians, clockwise);
 			return trajectory as traj.Trajectory;
@@ -375,7 +375,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 				};
 				const simulator = SIM; // This is the simulator object for commands, necessary for the eval to work.*/
 				// END: The need of said local variables
-        
+
 				Object.values(group.items).forEach(timelineItem => {
 					const offset = timelineItem.startTime - startTime;
 					if (offset < 0) return;
@@ -398,7 +398,7 @@ export const useSimulator = create<SimulatorState & SimulatorActions>()(
 		cancelSimulation: () => {
 			// Clear all of the timeouts
 			simulatorTimeouts.map((timeout) => {
-				clearInterval(timeout); 
+				clearInterval(timeout);
 			});
 			while (simulatorTimeouts.length > 0) simulatorTimeouts.pop();
 		},

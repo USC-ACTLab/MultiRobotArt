@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Crazyflie} from '@MRAControl/components/vector/Crazyflie';
-import {useRobartState} from '@MRAControl/state/useRobartState';
-import {useSimulator} from '@MRAControl/state/useSimulator';
-import {CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane, Sphere} from '@react-three/drei';
-import {useFrame, useThree} from '@react-three/fiber';
-import {useRef} from 'react';
+import { Crazyflie } from '@MRAControl/components/vector/Crazyflie';
+import { useRobartState } from '@MRAControl/state/useRobartState';
+import { useSimulator } from '@MRAControl/state/useSimulator';
+import { CatmullRomLine, GizmoHelper, GizmoViewport, Grid, OrbitControls, Plane, Sphere } from '@react-three/drei';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useRef } from 'react';
 import React from 'react';
 import type THREE from 'three';
-import {type Group, type Vector3} from 'three';
+import { type Group, type Vector3 } from 'three';
 
 let init = true;
 export const Simulation = () => {
@@ -20,12 +20,12 @@ export const Simulation = () => {
 	const robartState = useRobartState();
 	const simulatorState = useSimulator();
 	const renderBB = simulatorState.renderBoundingBoxes;
- 
-	const trajectoryMarkers: Array<{position: Vector3; color: THREE.Color; id: string}> = useSimulator((state) => state.trajectoryMarkers);
-	useFrame(({clock}) => {
+
+	const trajectoryMarkers: Array<{ position: Vector3; color: THREE.Color; id: string }> = useSimulator((state) => state.trajectoryMarkers);
+	useFrame(({ clock }) => {
 		step();
 	});
- 
+
 	if (Object.keys(robots).length !== 0) {
 		if (simulatorState.time === 0) {
 			Object.values(robots).forEach((robot) => {
@@ -39,7 +39,7 @@ export const Simulation = () => {
 		}
 	}
 
-	const {size, viewport, camera} = useThree();
+	const { size, viewport, camera } = useThree();
 	// if (init || camera.up !== new THREE.Vector3(0, 0, 1)) {
 	if (init || (camera.up.x !== 0 || camera.up.y !== 0 || camera.up.z !== 1)) {
 		camera.position.set(-5, 0, 2);
@@ -50,7 +50,7 @@ export const Simulation = () => {
 	return (
 		<>
 			<color attach="background" args={['black']} />
-			<OrbitControls  maxPolarAngle={Math.PI * (1 / 2 - 1 / 20)} minPolarAngle={0} minAzimuthAngle={-Math.PI / 2} maxAzimuthAngle={Math.PI / 2} minDistance={.5} maxDistance={5} object={camera}/>
+			<OrbitControls maxPolarAngle={Math.PI * (1 / 2 - 1 / 20)} minPolarAngle={0} minAzimuthAngle={-Math.PI / 2} maxAzimuthAngle={Math.PI / 2} minDistance={.5} maxDistance={5} object={camera} />
 			{/* <FlyControls></FlyControls> */}
 			<GizmoHelper alignment="bottom-right" margin={[80, 80]}>
 				<GizmoViewport labels={['X', 'Y', 'Z']} axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']} labelColor="white" />
@@ -71,17 +71,18 @@ export const Simulation = () => {
 			</Plane>
 			{Object.values(robots).map((robot) => (
 				<group key={robot.id} ref={marker} position={robot.pos}>
-					{/* robartState */}
 					<Crazyflie robotId={robot.id} renderBoundingBox={renderBB} />
+
 				</group>
 			))}
 			{Object.values(trajectoryMarkers).map((trajectoryMarker) => (
 				<group key={trajectoryMarker.id} position={trajectoryMarker.position}>
 					<Sphere args={[0.03]}>
-						<meshBasicMaterial color={[trajectoryMarker.color.r/255, trajectoryMarker.color.g/255, trajectoryMarker.color.b/255]}/> 
+						<meshBasicMaterial color={[trajectoryMarker.color.r / 255, trajectoryMarker.color.g / 255, trajectoryMarker.color.b / 255]} />
 					</Sphere>
 				</group>
 			))}
+
 			<primitive object={camera}></primitive>
 		</>
 	);

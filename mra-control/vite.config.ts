@@ -14,5 +14,10 @@ export default defineConfig({
 
   },
   build: {
-    minify: false
-  }});
+    minify: false,
+    terserOptions: {
+      compress: false,
+      mangle: false,
+    },
+  }
+});
