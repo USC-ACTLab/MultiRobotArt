@@ -1,3 +1,5 @@
+test
+
 # `mra-control` - Web UI for Robot Block Programming
 
 ## Project Description Page
@@ -32,6 +34,7 @@ Instructions for adding or modifying new blocks coming soon...
 Coming soon...
 
 ## TODOs:
+
 The github issues contain some TODOs and are listed here in order of priority/when they will be done. This does not include bug fixes that are ongoing.
 
 1. Multiple trajectories in one timeline block - compose multiple commands together
@@ -41,7 +44,6 @@ The github issues contain some TODOs and are listed here in order of priority/wh
 5. Arbitrary parametric equations block
 6. Nicer robot manager
 7. Trajectory visualization
-
 
 ## Overall Design Considerations
 
