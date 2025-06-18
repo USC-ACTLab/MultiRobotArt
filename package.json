@@ -1,0 +1,12 @@
+{
+  "name": "multirobotart",
+  "version": "1.0.0",
+  "description": "## Project Description Page",
+  "main": "test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
