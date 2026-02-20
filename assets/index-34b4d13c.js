@@ -39708,7 +39708,8 @@ from crazyflie_py import generate_trajectory
 import numpy as np
 from blocklyTranslations import *
 from types import SimpleNamespace
-from TimeHelper import TimeHelper # TODO add to files downloaded
+from TimeHelper import TimeHelper  # TODO add to files downloaded
+
 Hz = 30
 
 class worker_node(Node):
@@ -39807,7 +39808,9 @@ class crazyflie_node(Node):
 # Inject Imports Here:
 
 def launch(nodes):
-    executor = rclpy.executors.MultiThreadedExecutor()
+    # Allocate extra threads because worker callbacks can block for long durations.
+    thread_count = max(8, len(nodes) * 2)
+    executor = rclpy.executors.MultiThreadedExecutor(num_threads=thread_count)
 
     for node in nodes:
         executor.add_node(node)
@@ -39816,7 +39819,7 @@ def launch(nodes):
     thread.start()
     try:
         while rclpy.ok():
-            pass
+            time.sleep(0.1)
     except KeyboardInterrupt:
         pass
     rclpy.shutdown()
@@ -39839,7 +39842,8 @@ def main():
 
     #   -----------Insert Nodes Here----------- 
 
-    nodes.append(crazyflie_node(swarm))
+    # nodes.append(crazyflie_node(swarm))
+    nodes.append(swarm.allcfs)
     # Launch all nodes
     return launch(nodes)
 
@@ -39904,6 +39908,7 @@ from types import SimpleNamespace
 import numpy as np
 from PIL import ImageColor
 import rclpy
+import time
 from crazyflieLoggers import *
 import rowan
 from scipy.spatial.transform import Rotation as R
@@ -39911,6 +39916,24 @@ from scipy.spatial.transform import Rotation as R
 import traceback
 
 Hz = 20
+
+
+def _safe_cf_position(cf, retries=50, retry_sleep=0.01):
+    """
+    Read Crazyflie position robustly while ROS pose callbacks are catching up.
+    """
+    last_error = None
+    for _ in range(retries):
+        try:
+            return cf.position()
+        except ValueError as e:
+            # Seen when pose cache is temporarily empty:
+            # "need at least one array to concatenate"
+            last_error = e
+            time.sleep(retry_sleep)
+    if last_error is not None:
+        raise last_error
+    return cf.position()
 
 ###
 #  Landing/Takeoff commands
@@ -40099,13 +40122,20 @@ def circle(groupState, radius, velocity, radians, direction):
 
     timesteps = np.arange(0, radians / velocity, 1 / Hz)
 
-    initialPositions = [cf.position() for cf in crazyflies]
+    # start positions bumped up by 1 meter in z
+    initialPositions = [
+        (pos[0], pos[1], pos[2]) if len(pos) >= 3 else pos
+        for pos in (cf.position() for cf in crazyflies)
+    ]
     for t in timesteps:
         for initPos, cf in zip(initialPositions, crazyflies):
             pos = np.array([fx(t), fy(t), fz(t)])
             pos += np.array(initPos)
             cf.cmdPosition(pos)
         timeHelper.sleepForRate(Hz)
+
+    # for cf in crazyflies:
+    #     cf.notifySetpointsStop()
 
 
 # Trajectory Modifiers...
@@ -40262,7 +40292,7 @@ def simCommand(originalGroupState, command):
         #         rclpy.spin_once(cf.node)
         # except Exception:
         #     cf.node.get_logger().error(traceback.format_exc())
-        simCrazyflies.append(CrazyflieSimLogger(cf.position()))
+        simCrazyflies.append(CrazyflieSimLogger(_safe_cf_position(cf)))
     simTimeHelper1 = TimeHelperSimLogger()
     simTimeHelper1.currTime = originalGroupState.timeHelper.time()
     simGroupState = SimpleNamespace(crazyflies=simCrazyflies, timeHelper=simTimeHelper1)
@@ -40386,7 +40416,7 @@ def addTrajectories(groupState, command1, command2):
     for cf1, cf2, realCf in zip(
         groupState1.crazyflies, groupState2.crazyflies, groupState.crazyflies
     ):
-        initial_position = np.array(realCf.position())
+        initial_position = np.array(_safe_cf_position(realCf))
         i1 = i2 = 0
         new_commands = []
         total_time = 0
@@ -40695,7 +40725,7 @@ def generate_launch_description():
         ),
     ])
 `;
-const timeHelper = 'import rclpy\n\nclass TimeHelper:\n\n    def __init__(self, node):\n        self.node = node\n        # self.rosRate = None\n        self.rateHz = None\n        self.nextTime = None\n        self.zeroTime = self.time()\n        # self.visualizer = visNull.VisNull()\n\n    def time(self):\n        """Return current time in seconds."""\n        return self.node.get_clock().now().nanoseconds / 1e9\n\n    def sleep(self, duration):\n        """Sleeps for the provided duration in seconds."""\n        start = self.time()\n        end = start + duration\n        while self.time() < end:\n            pass\n            # rclpy.spin_once(self.node, timeout_sec=0)\n\n    def sleepForRate(self, rateHz):\n        """Sleep so that, if called in a loop, executes at specified rate."""\n        # Note: The following ROS 2 construct cannot easily be used, because in ROS 2\n        #       there is no implicit threading anymore. Thus, the rosRate.sleep() call\n        #       is blocking. Instead, we simulate the rate behavior ourselves.\n        # if self.rosRate is None or self.rateHz != rateHz:\n        #     self.rosRate = self.node.create_rate(rateHz)\n        #     self.rateHz = rateHz\n        # self.rosRate.sleep()\n        if self.nextTime is None or self.rateHz != rateHz:\n            self.rateHz = rateHz\n            self.nextTime = self.time() + 1.0 / rateHz\n        while self.time() < self.nextTime:\n            pass\n            # rclpy.spin_once(self.node, timeout_sec=0)\n        self.nextTime += 1.0 / rateHz\n\n    def sleepUntil(self, end_time):\n        while self.time() - self.zeroTime < end_time:\n            pass\n            # rclpy.spin_once(self.node, timeout_sec=0)\n\n    def isShutdown(self):\n        """Return True if the script should abort, e.g. from Ctrl-C."""\n        return not rclpy.ok()';
+const timeHelper = 'import rclpy\nimport time\n\nclass TimeHelper:\n\n    def __init__(self, node):\n        self.node = node\n        # self.rosRate = None\n        self.rateHz = None\n        self.nextTime = None\n        self.zeroTime = self.time()\n        # self.visualizer = visNull.VisNull()\n\n    def time(self):\n        """Return current time in seconds."""\n        return self.node.get_clock().now().nanoseconds / 1e9\n\n    def sleep(self, duration):\n        """Sleeps for the provided duration in seconds."""\n        start = self.time()\n        end = start + duration\n        while self.time() < end:\n            time.sleep(0.001)\n            # rclpy.spin_once(self.node, timeout_sec=0)\n\n    def sleepForRate(self, rateHz):\n        """Sleep so that, if called in a loop, executes at specified rate."""\n        # Note: The following ROS 2 construct cannot easily be used, because in ROS 2\n        #       there is no implicit threading anymore. Thus, the rosRate.sleep() call\n        #       is blocking. Instead, we simulate the rate behavior ourselves.\n        # if self.rosRate is None or self.rateHz != rateHz:\n        #     self.rosRate = self.node.create_rate(rateHz)\n        #     self.rateHz = rateHz\n        # self.rosRate.sleep()\n        if self.nextTime is None or self.rateHz != rateHz:\n            self.rateHz = rateHz\n            self.nextTime = self.time() + 1.0 / rateHz\n        while self.time() < self.nextTime:\n            time.sleep(0.001)\n            # rclpy.spin_once(self.node, timeout_sec=0)\n        self.nextTime += 1.0 / rateHz\n\n    def sleepUntil(self, end_time):\n        while self.time() - self.zeroTime < end_time:\n            time.sleep(0.001)\n            # rclpy.spin_once(self.node, timeout_sec=0)\n\n    def isShutdown(self):\n        """Return True if the script should abort, e.g. from Ctrl-C."""\n        return not rclpy.ok()\n';
 const crazyflieLoggers = `
 from typing import Any, Collection
 from dataclasses import dataclass
